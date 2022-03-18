@@ -63,10 +63,20 @@
     <Compile Include="Abstract\IRoleService.cs" />
     <Compile Include="Abstract\IWriterService.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="Concreate\AboutManager.cs" />
+    <Compile Include="Concreate\AdminManager.cs" />
+    <Compile Include="Concreate\AuthManager.cs" />
+    <Compile Include="Concreate\CategoryManager.cs" />
+    <Compile Include="Concreate\ConcactManager.cs" />
+    <Compile Include="Concreate\ContentManager.cs" />
+    <Compile Include="Concreate\HeadingManager.cs" />
+    <Compile Include="Concreate\ImageFileManager.cs" />
+    <Compile Include="Concreate\MessageManager.cs" />
+    <Compile Include="Concreate\RoleManager.cs" />
+    <Compile Include="Concreate\WriterManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Concreate\" />
     <Folder Include="ValidationRules_FluentValidation\" />
   </ItemGroup>
   <ItemGroup>
