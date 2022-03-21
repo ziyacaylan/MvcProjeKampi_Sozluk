@@ -1,0 +1,55 @@
+﻿.container_new {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.kutu {
+    /*background-color:coral;*/
+    width: 350px;
+    height: 220px;
+    padding: 20px;
+    margin: 20px;
+    color: #000;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 16px;
+}
+
+.renk-1 {
+    background-color: #00ADB5;
+}
+
+.renk-2 {
+    background-color: #019267;
+}
+
+.renk-3 {
+    background-color: #FFBD35;
+}
+
+.renk-4 {
+    background-color: #B983FF;
+}
+
+.renk-5 {
+    background-color: #FF8882;
+}
+.frame{
+    border-bottom:2px solid #000;
+    //border-radius:6px;
+}
+.kutu h2 {
+    font-size: 2em;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+}
+
+.kutu h3 {
+    padding-top:20px;
+    padding-bottom:10px;
+    font-size: 1.2em;
+}
+h2{
+    text-align:center;
+}

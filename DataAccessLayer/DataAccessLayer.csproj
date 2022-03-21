@@ -76,10 +76,18 @@
     <Compile Include="EntityFramework\EfMessageDal.cs" />
     <Compile Include="EntityFramework\EfRoleDal.cs" />
     <Compile Include="EntityFramework\EfWriterDal.cs" />
+    <Compile Include="Migrations\202203211541426_mig_admin_update_username_type.cs" />
+    <Compile Include="Migrations\202203211541426_mig_admin_update_username_type.designer.cs">
+      <DependentUpon>202203211541426_mig_admin_update_username_type.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202203211541426_mig_admin_update_username_type.resx">
+      <DependentUpon>202203211541426_mig_admin_update_username_type.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />

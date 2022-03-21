@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/Styles/Statistics.css" rel="stylesheet" />
+
+<h2 class="alert alert-secondary">İstatistikler</h2>
+
+<div class="container_new">
+
+    <div class="kutu renk-1">
+        <h2 class="frame">@ViewBag.totalCategory</h2>
+        <h3>Toplam Kategori</h3>
+    </div>
+
+    <div class="kutu renk-2">
+        <h2 class="frame">@ViewBag.totalHeading</h2>
+        <h3>Yazılım Kategorisi Toplam Başlık</h3>
+    </div>
+
+    <div class="kutu renk-3">
+        <h2 class="frame">@ViewBag.writerNameContains_a</h2>
+        <h3>İsminde "a" Harfi Geçen Yazar Sayısı</h3>
+    </div>
+
+    <div class="kutu renk-4">
+        <h2 class="frame">@ViewBag.mostTitleCategory</h2>
+        <h3>En Fazla Başlığa Sahip Kategori</h3>
+    </div>
+
+    <div class="kutu renk-5">
+        <h2 class="frame">@ViewBag.result</h2>
+        <h3>Aktif ve Pasif Kategori Arasındaki Fark </h3>
+    </div>
+
+</div>
+
+
+
+

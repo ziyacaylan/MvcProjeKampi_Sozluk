@@ -41,7 +41,7 @@ to get the desired effect
             <a href="index3.html" class="brand-link">
                 <img src="~/AdminLTE-3.0.4/dist/img/admin.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                      style="opacity: .8">
-                <span class="brand-text font-weight-light">AdminLTE 3</span>
+                <span class="brand-text font-weight-light">Mvc Proje Kampı</span>
             </a>
 
             <!-- Sidebar -->
@@ -60,7 +60,7 @@ to get the desired effect
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-                        with font-awesome or any other icon font library -->
+    with font-awesome or any other icon font library -->
                         @if (User.IsInRole("B"))
                         {
 
@@ -179,6 +179,14 @@ to get the desired effect
                                 <i class="nav-icon far fa-envelope"></i>
                                 <p>
                                     Hata Sayfaları
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="/Statistic/Index/" class="nav-link">
+                                <i class="nav-icon fas fa-greater-than"></i>
+                                <p>
+                                    İstatistik
                                 </p>
                             </a>
                         </li>

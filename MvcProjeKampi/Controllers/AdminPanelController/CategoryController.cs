@@ -9,7 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace MvcProjeKampi.Controllers
+namespace MvcProjeKampi.Controllers.AdminPanelController
 {
     public class CategoryController : Controller
     {

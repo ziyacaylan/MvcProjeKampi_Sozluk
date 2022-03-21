@@ -1,0 +1,27 @@
+﻿@model EntityLayer.Concreate.Admin
+@{
+    ViewBag.Title = "AddAdmin";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Yeni Admin Ekleme Sayfası</h1>
+<br />
+
+@using (Html.BeginForm("AddAdmin", "Authorization", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.Label("Admin Kullanıcı Adı")
+        @Html.TextBoxFor(x => x.AdminUserName, new { @class = "form-control" })
+        @*@Html.ValidationMessageFor(x => x.CategoryName)*@
+        <br />
+        @Html.Label("Şifreyi Giriniz")
+        @Html.TextBoxFor(x => x.AdminPasswordHash, new { @class = "form-control" })
+        @*@Html.ValidationMessageFor(x => x.CategoryDescription)*@
+        <br />
+        @Html.Label("Rolü Seçiniz")
+        @Html.DropDownListFor(x => x.Role, (List<SelectListItem>)ViewBag.d, new { @class = "form-control" })
+        @*@Html.ValidationMessageFor(x => x.AdminID, null, new { @class = "text-danger" })*@
+        <br />
+        <button class="btn btn-info" id="btn_kaydet">Kaydet</button>
+    </div>
+}
