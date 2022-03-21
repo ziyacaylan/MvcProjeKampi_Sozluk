@@ -36,13 +36,13 @@ namespace BusinessLayer.Concreate
 
         public Admin GetByID(int id)
         {
-            return _adminDal.Get(x => x.AdminID == id);
+            return _adminDal.Get(x => x.AdminId == id);
         }
 
-        public Admin GetByName(string name)
-        {
-            return _adminDal.Get(x => x.AdminUserName == name);
-        }
+        //public Admin GetByName(string name)
+        //{
+        //    return _adminDal.Get(x => x.AdminUserName == name);
+        //}
 
         public List<Admin> GetList()
         {

@@ -1,0 +1,32 @@
+﻿@model EntityLayer.Concreate.Category
+@{
+    ViewBag.Title = "AddCategory";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+
+<h1>Yeni Kategori Ekleme Sayfası</h1>
+<br />
+
+@using (Html.BeginForm("AddCategory", "Category", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.Label("Kategori Adı")
+        @Html.TextBoxFor(x => x.CategoryName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.CategoryName)
+        <br /><br />
+        @Html.Label("Açıklama yazınız")
+        @Html.TextAreaFor(x => x.CategoryDescription, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.CategoryDescription)
+        <br /><br />
+        <button class="btn btn-info" id="btn_kaydet">Kaydet</button>
+    </div>
+}
+
+<script>
+    $('#btn_kaydet').click(function () {
+        swal("Tebrikler!", "Başarılı bir şekilde eklendi!", "success");
+    });
+</script>
