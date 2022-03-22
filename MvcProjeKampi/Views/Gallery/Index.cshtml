@@ -29,8 +29,8 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Sözlük Galerisi</h1>
+                <div class="col-sm-12" style="text-align:center;">
+                    <h1 class="alert alert-secondary">Sözlük Galerisi</h1>
                 </div>
 
             </div>
@@ -65,34 +65,6 @@
         </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
-    <!-- jQuery -->
-    @*<script src="~/AdminLTE-3.0.4/plugins/jquery/jquery.min.js"></script>*@
-    <!-- Bootstrap -->
-    <script src="~/AdminLTE-3.0.4/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery UI -->
-    <script src="~/AdminLTE-3.0.4/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <!-- Ekko Lightbox -->
-    <script src="~/AdminLTE-3.0.4/plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="~/AdminLTE-3.0.4/dist/js/adminlte.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="~/AdminLTE-3.0.4/dist/js/demo.js"></script>
-    <!-- Filterizr-->
-    <script src="~/AdminLTE-3.0.4/plugins/filterizr/jquery.filterizr.min.js"></script>
-    <!-- Page specific script -->
-    <script>
-        $(function () {
-            $(document).on('click', '[data-toggle="lightbox"]', function (event) {
-                event.preventDefault();
-                $(this).ekkoLightbox({
-                    alwaysShowClose: true
-                });
-            });
-            $('.filter-container').filterizr({ gutterPixels: 3 });
-            $('.btn[data-filter]').on('click', function () {
-                $('.btn[data-filter]').removeClass('active');
-                $(this).addClass('active');
-            });
-        })</script>
+    
 </body>
 </html>
