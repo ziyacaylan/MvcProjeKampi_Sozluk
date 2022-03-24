@@ -1,34 +1,111 @@
 ﻿@using EntityLayer.Concreate
-@model List<Admin>
+@using PagedList
+@using PagedList.Mvc
+@model PagedList.IPagedList<Admin>
+
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
 
-@*<link href="~/Content/bootstrap.min.css" rel="stylesheet" />*@
+@{
+    string color = "";
+    string buttonTyp = "";
+    string status = "";
+}
 <br />
-<h3 style="text-align:center;" class="alert alert-secondary">Admin Kullanıcılar Sayfası</h3>
-
+<h3 class="alert alert-secondary" style="text-align:center;">Admin Listesi</h3>
 <table class="table table-bordered">
     <tr>
-        <th>#</th>
-        <th>Kullanıcı Mail</th>
-        <th>Yetki</th>
-        <th>Status</th>
-        <th>Pasif Yap</th>
-        <th>Admin Güncelleme</th>
+        <th style="width: 1%; text-align: center">#</th>
+        <th style="width: 10%; text-align: center">Admin Adı</th>
+        <th style="width: 10%; text-align: center">Kullanıcı Adı</th>
+        <th style="width: 1%; text-align: center">Yetki</th>
+        <th style="width: 15%; text-align: center">Yetki Detay</th>
+        <th style="width: 6%; text-align: center">Aktif / Pasif</th>
+        <th style="width: 6%; text-align: center">Bilgilerini Güncelle</th>
+        <th style="width: 2%; text-align: center">Sil</th>
     </tr>
     @foreach (var item in Model)
     {
+        if (item.AdminStatus)
+        {
+            status = "Admin Pasif";
+            buttonTyp = "btn btn-danger";
+        }
+        if (!item.AdminStatus)
+        {
+            status = "Admin Aktif";
+            buttonTyp = "btn btn-success";
+        }
+
         <tr>
-            <th>@item.AdminId</th>
-            <td>@item.AdminUserName</td>
-            <td>@item.Role</td>
-            <td>Aktif</td>
-            <td><a href="/Category/DeleteCategory/@item.AdminId" class="btn btn-danger">Pasif Yap</a></td>
-            <td><a href="/Authorization/EditAdmin/@item.AdminId" class="btn btn-warning">Güncelle</a></td>
+            <td>@item.AdminId</td>
+            <td style="text-align: center">@item.AdminName</td>
+            <td style="text-align: center">@item.AdminUserName</td>
+            <td style="text-align: center"><b>@item.Role.RoleName</b></td>
+            <td style="text-align: center">@item.Role.Description</td>
+            @*<td style="text-align: center">
+                    @{ if (item.AdminStatus)
+                        {
+                            <b style="color: green "> Admin Aktif</b> }
+                        else
+                        {
+                            <b style="color: red">Admin Pasif</b> }
+                    }
+                </td>*@
+            <td style="text-align: center">
+                <a class="@(item.AdminStatus==true ? "btn btn-success" : "btn btn-danger") btn-sm" href="/Authorization/ChangeStatus/@item.AdminId">
+                    <i class="@(item.AdminStatus==true ? "far fa-check-circle" : "far fa-times-circle")">
+                    </i>
+                    <span>
+                        @Html.Raw(item.AdminStatus == true ? "<span>Pasif Yap</span>" : "<span>Aktif Yap</span>")
+                    </span>
+            </td>
+            @*<td><a href="/Authorization/UpdateRole/@item.AdminId" class="btn btn-warning">Yetkisini Değiştir</a></td>*@
+            <td style="text-align: center">
+                <a href="/Authorization/EditAdmin/@item.AdminId" class="btn btn-secondary">Bilgilerini Güncelle</a>
+            </td>
+            <td style="text-align: center">
+                <a href="/Authorization/DeleteAdmin/@item.AdminId" class="btn btn-danger preview" id="btn_4" onclick="return confirm('Kayıt silinecek. Devam edecek misiniz?')">
+                    <i class="fas fa-trash-alt"></i>
+                    Sil
+                </a>
+            </td>
         </tr>
     }
-
 </table>
-<a href="/Authorization/AddAdmin" class="btn btn-info"> Yeni Admin Tanımla</a>
+<div class="float-right">
+    @Html.PagedListPager((IPagedList)Model, sayfa => Url.Action("Index", new { sayfa }))
+</div>
+<a href="/Authorization/AddAdmin/" class="btn btn-info">Yeni Admin Tanımla</a>
+<a href="/Authorization/Roles/" class="btn btn-warning">Admin Yetkiler Sayfası</a>
+
+
+
+<script>
+    $("#btn_4").click(function button_delete() {
+        swal({
+            title: "Silmek istediğinize emin misiniz_?",
+            text: "Silme işlemini onayladığınızda .... silinecek...!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Silme işlemi başarılı.", {
+                        icon: "success",
+                    });
+                } else {
+                    swal("Silme işlemi iptal edildi...!");
+                }
+            });
+    })
+
+</script>
+
+

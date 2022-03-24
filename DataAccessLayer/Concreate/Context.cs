@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EntityLayer.Concreate;
-using EntityLayer.Concrete;
 
 namespace DataAccessLayer.Concreate
 {

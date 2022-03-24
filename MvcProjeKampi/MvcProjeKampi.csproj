@@ -282,6 +282,7 @@
     <Compile Include="Controllers\AdminPanelController\LoginController.cs" />
     <Compile Include="Controllers\AdminPanelController\MessageController.cs" />
     <Compile Include="Controllers\AdminPanelController\StatisticController.cs" />
+    <Compile Include="Controllers\AdminPanelController\TestController.cs" />
     <Compile Include="Controllers\AdminPanelController\WriterController.cs" />
     <Compile Include="Controllers\AdminPanelController\HomeController.cs" />
     <Compile Include="Controllers\WriterPanelController\DefaultController.cs" />
@@ -292,6 +293,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CategoryClass.cs" />
+    <Compile Include="Models\DataClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roles\AdminRoleProvider.cs" />
   </ItemGroup>
@@ -2224,6 +2226,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\EditRole.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -2747,7 +2750,6 @@
     <Content Include="Views\Heading\AddHeading.cshtml" />
     <Content Include="Views\Heading\EditHeading.cshtml" />
     <Content Include="Views\Heading\HeadingReport.cshtml" />
-    <Content Include="Views\Authorization\Index.cshtml" />
     <Content Include="Views\Authorization\AddAdmin.cshtml" />
     <Content Include="Views\Authorization\EditAdmin.cshtml" />
     <Content Include="Views\Contact\Index.cshtml" />
@@ -2785,6 +2787,12 @@
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Login\WriterLogin.cshtml" />
     <Content Include="Views\Statistic\Index.cshtml" />
+    <Content Include="Views\Authorization\Index.cshtml" />
+    <Content Include="Views\Test\SweetAlert.cshtml" />
+    <Content Include="Views\Authorization\Roles.cshtml" />
+    <Content Include="Views\Authorization\AddRolePartial.cshtml" />
+    <Content Include="Views\Authorization\EditRole.cshtml" />
+    <Content Include="Views\Login\AdminLogin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,27 +1,58 @@
-﻿@model EntityLayer.Concreate.Admin
+﻿@model EntityLayer.Dto.AdminLoginDto
 @{
     ViewBag.Title = "AddAdmin";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Yeni Admin Ekleme Sayfası</h1>
+<h1 class="alert alert-secondary" style="font-size:2em; text-align:center;">Yeni Admin Ekleme Sayfası</h1>
 <br />
-
 @using (Html.BeginForm("AddAdmin", "Authorization", FormMethod.Post))
 {
-    <div class="form-group">
+    <div class="form-group ml-1">
         @Html.Label("Admin Kullanıcı Adı")
         @Html.TextBoxFor(x => x.AdminUserName, new { @class = "form-control" })
-        @*@Html.ValidationMessageFor(x => x.CategoryName)*@
+        @*@Html.ValidationMessageFor(x => x.AdminUserName, "", new { @class = "text-danger" })*@
+        <br />
+        @Html.Label("Admin Mail Adresi")
+        @Html.TextBoxFor(x => x.AdminMail, new { @class = "form-control" })
+        @*@Html.ValidationMessageFor(x => x.AdminUserName, "", new { @class = "text-danger" })*@
         <br />
         @Html.Label("Şifreyi Giriniz")
-        @Html.TextBoxFor(x => x.AdminPasswordHash, new { @class = "form-control" })
-        @*@Html.ValidationMessageFor(x => x.CategoryDescription)*@
+        @Html.PasswordFor(x => x.AdminPassword, new { @class = "form-control" })
+        @*@Html.ValidationMessageFor(x => x.CategoryDescription, "", new { @class = "text-danger" })*@
         <br />
         @Html.Label("Rolü Seçiniz")
-        @Html.DropDownListFor(x => x.Role, (List<SelectListItem>)ViewBag.d, new { @class = "form-control" })
-        @*@Html.ValidationMessageFor(x => x.AdminID, null, new { @class = "text-danger" })*@
+        @Html.DropDownListFor(x => x.AdminRoleId, (List<SelectListItem>)ViewBag.valueAdminRole, new { @class = "form-control" })
         <br />
-        <button class="btn btn-info" id="btn_kaydet">Kaydet</button>
+        @Html.Label("Durumu Seçiniz : ")
+        <label class="btn btn-warning" id="statusLabel">
+            @Html.CheckBoxFor(x => x.AdminStatus, new { @id = "status_admin", @onclick = "Mycheck()" })
+            <span id="statusText" class=" glyphicon">Admin Pasif</span>
+        </label>
+
+
+        <br /><br />
+        <button class="btn btn-info">Kaydet</button>
     </div>
 }
+
+<script>
+    function Mycheck() {
+        var x = document.getElementById("status_admin");
+        if (x.checked) {
+            document.querySelector("#statusText").innerHTML = "Admin Aktif";
+            x.AdminStatusId = 1;
+            document.querySelector("#statusLabel").classList.remove("btn-warning");
+            document.querySelector("#statusLabel").classList.add("btn-success");
+        } else {
+            document.querySelector("#statusLabel").classList.remove("btn-success");
+            document.querySelector("#statusLabel").classList.add("btn-warning");
+            document.querySelector("#statusText").innerHTML = "Admin Pasif";
+            x.AdminStatusId = 0;
+        }
+    }
+</script>
+
+
+@*@Html.Label("Durumu Seçiniz")
+    @Html.CheckBox("AdminStatus", false, new { @class = "form-control" })*@

@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewBag.Title = "SweetAlert";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<br />
+
+@*@using (Html.BeginForm("SweetAlert", "Test", FormMethod.Get))
+    {*@
+<button class="btn btn-primary" id="btn_1">Buton1</button>
+<button class="btn btn-warning" id="btn_2">Buton2</button>
+<button class="btn btn-danger" id="btn_3" onclick="button_okay">Buton3</button>
+<button class="btn btn-danger preview" id="btn_4"> Sil</button>
+
+<script>
+    $('#btn_1').click(function () {
+        swal("Merhaba Mvc Proje Kampı")
+    });
+</script>
+
+<script>
+    $('#btn_2').click(function () {
+        swal("Mvc Proje Kampı", "Ders 96");
+    });
+</script>
+
+<script>
+    $('#btn_3').click(function () {
+        swal("Tebrikler!", "Başarılı bir şekilde eklendi!", "success");
+    });
+</script>
+
+<script type="text/javascript">
+    function button_okay() {
+        swal("Tebrikler!", "Başarılı bir şekilde eklendi!", "success");
+    }
+</script>
+
+<script>
+    $("#btn_4").click(function () {
+        swal({
+            title: "Silmek istediğinize emin misiniz_?",
+            text: "Silme işlemini onayladığınızda .... silinecek...!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Silme işlemi başarılı.", {
+                        icon: "success",
+                    });
+                } else {
+                    swal("Silme işlemi iptal edildi...!");
+                }
+            });
+    })
+
+</script>
+
+@*}*@

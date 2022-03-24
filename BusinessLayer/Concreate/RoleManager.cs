@@ -1,7 +1,6 @@
 ﻿using BusinessLayer.Abstract;
 using DataAccessLayer.Abstract;
 using EntityLayer.Concreate;
-using EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,19 +18,19 @@ namespace BusinessLayer.Concreate
             this._RoleDal = RoleDal;
         }
 
-        public void RoleAdd(Role Role)
+        public void RoleAdd(Role role)
         {
-            _RoleDal.Insert(Role);
+            _RoleDal.Insert(role);
         }
 
-        public void RoleDelete(Role Role)
+        public void RoleDelete(Role role)
         {
-            _RoleDal.Delete(Role);
+            _RoleDal.Delete(role);
         }
 
-        public void RoleUpdate(Role Role)
+        public void RoleUpdate(Role role)
         {
-            _RoleDal.Update(Role);
+            _RoleDal.Update(role);
         }
 
         public Role GetByID(int id)

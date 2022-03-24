@@ -1,0 +1,52 @@
+﻿@using EntityLayer.Concreate
+@using PagedList
+@using PagedList.Mvc
+@model PagedList.IPagedList<Role>
+
+@{
+    ViewBag.Title = "Roles";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+
+<h2 class="alert alert-secondary" style="text-align:center;">Admin Yetkiler</h2>
+
+@using (Html.BeginForm("Roles", "Authorization", FormMethod.Post))
+{
+    <table class="table table-bordered">
+        <tr>
+            <th style="width: 1%; text-align: center">Role ID</th>
+            <th style="width: 5%; text-align: center">Role Adı</th>
+            <th style="width: 15%; text-align: center">Role Tanımı</th>
+            <th style="width: 5%; text-align: center">Güncelleme</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RoleId</td>
+                <td>
+                    @item.RoleName
+                </td>
+                <td>
+                    @item.Description
+                </td>
+                <td style="text-align: center">
+                    <a href="/Authorization/EditRole/@item.RoleId" class="btn btn-secondary">Bilgilerini Güncelle</a>                  
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+<div style="float:right;">
+    @Html.PagedListPager((IPagedList)Model, sayfa => Url.Action("Index", new { sayfa }))
+</div>
+<br />
+@*<a href="/Authorization/Index" class="btn btn-warning" style="margin-left:10px;margin-right:10px;"> Yeni Role Ekle</a>*@
+
+<a href="/Authorization/Index" class="btn btn-dark"> Admin Listesi</a>
+@Html.Action("AddRolePartial", "Authorization")

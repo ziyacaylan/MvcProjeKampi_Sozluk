@@ -12,6 +12,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
     {
         // GET: Gallery
         ImageFileManager im = new ImageFileManager(new EfImageFileDal());
+        [Authorize]
         public ActionResult Index()
         {
             var files = im.GetList();

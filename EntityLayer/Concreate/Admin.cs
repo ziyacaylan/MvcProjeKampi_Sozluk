@@ -1,4 +1,4 @@
-﻿using EntityLayer.Concrete;
+﻿using EntityLayer.Concreate;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +14,7 @@ namespace EntityLayer.Concreate
         public int AdminId { get; set; }
         public string AdminName { get; set; }
         public bool AdminStatus { get; set; }
-        public string AdminUserName { get; set; }
+        public byte[] AdminUserName { get; set; }
         public byte[] AdminPasswordHash { get; set; }
         public byte[] AdminPasswordSalt { get; set; }
         public int? RoleId { get; set; }

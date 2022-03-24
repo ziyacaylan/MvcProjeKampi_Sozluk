@@ -1,8 +1,7 @@
-﻿using EntityLayer.Concreate;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace EntityLayer.Concrete
+namespace EntityLayer.Concreate
 {
     public class Role
     {

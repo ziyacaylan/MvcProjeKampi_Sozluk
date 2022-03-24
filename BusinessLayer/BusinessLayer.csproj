@@ -78,6 +78,7 @@
     <Compile Include="Concreate\RoleManager.cs" />
     <Compile Include="Concreate\WriterManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilies\Cryptos\Hashing\HashingHelper.cs" />
     <Compile Include="ValidationRules_FluentValidation\CategoryValidator.cs" />
     <Compile Include="ValidationRules_FluentValidation\ContactValidator.cs" />
     <Compile Include="ValidationRules_FluentValidation\MessageValidator.cs" />

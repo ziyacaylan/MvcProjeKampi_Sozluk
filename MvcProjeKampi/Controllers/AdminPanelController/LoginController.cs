@@ -12,6 +12,12 @@ using System.Web.Mvc;
 using System.Web.Security;
 using System.Security.Cryptography;
 using System.Text;
+using BusinessLayer.Abstract;
+using EntityLayer.Dto;
+using System.Net;
+using Newtonsoft.Json;
+
+
 
 namespace MvcProjeKampi.Controllers.AdminPanelController
 {
@@ -19,19 +25,13 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
     public class LoginController : Controller
     {
 
-        WriterManager wlm = new WriterManager(new EfWriterDal());
+        IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()));
 
         // GET: Login
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult AdminLogin()
         {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Index(Admin admin)
-        {
-            AdminManager adminManager = new AdminManager(new EfAdminDal());
+            //AdminManager adminManager = new AdminManager(new EfAdminDal());
             //var values = adminManager.GetByName(admin.AdminUserName);
 
             //if (values.AdminUserName == admin.AdminUserName && values.AdminPassword == admin.AdminPassword)
@@ -46,6 +46,26 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
             //}
             return View();
         }
+        [HttpPost]
+        public ActionResult AdminLogin(AdminLoginDto adminLoginDto)
+        {
+
+            if (authService.AdminLogIn(adminLoginDto))
+            {
+                FormsAuthentication.SetAuthCookie(adminLoginDto.AdminMail, false);
+                Session["AdminUserName"] = adminLoginDto.AdminMail;
+                return RedirectToAction("Index", "Category");
+            }
+            else
+            {
+                ViewData["ErrorMessage"] = "Kullanıcı adı veya Parola yanlış...!";
+                return View();
+            }
+
+        }
+
+
+
         [HttpGet]
         public ActionResult WriterLogin()
         {

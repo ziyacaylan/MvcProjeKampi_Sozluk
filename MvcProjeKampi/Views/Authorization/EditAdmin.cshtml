@@ -3,22 +3,66 @@
     ViewBag.Title = "EditAdmin";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-<h2>Admin Güncelleme Sayfası</h2>
+<h2 class="alert alert-secondary" style="text-align:center;">Admin Güncelleme Sayfası</h2>
 
 @using (Html.BeginForm("EditAdmin", "Authorization", FormMethod.Post))
 {
-    <div class="form-group">
-        @Html.HiddenFor(x => x.AdminId, new { @class = "form-control" })
-        @Html.Label("Admin Kullanıcı Adı")
-        @Html.TextBoxFor(x => x.AdminUserName, new { @class = "form-control" })
-        <br />
-        @Html.Label("Şifre")
-        @Html.TextBoxFor(x => x.AdminPasswordHash, new { @class = "form-control" })
-        <br />
-        @Html.Label("Admin Rolü Seçiniz")
-        @Html.TextBoxFor(x => x.Role, new { @class = "form-control" })
-        <br />
-        <button class="btn btn-success">Güncelle</button>
-    </div>
+    <form>
+        <div class="form-group">
+
+            @Html.HiddenFor(x => x.AdminId, new { @class = "form-control" })
+
+            <label for="exampleInputEmail1">Kullanıcı Adı</label>
+            @Html.TextBoxFor(x => x.AdminUserName, new { @class = "form-control", @placeholder = "Kullanıcı Adını Giriniz" })
+            @*<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>*@
+            <br />
+            @Html.Label("Rolü Seçiniz")
+            @Html.DropDownListFor(x => x.AdminStatus, (List<SelectListItem>)ViewBag.valueAdminRole, new { @class = "form-control" })
+            <br />
+            <label for="exampleInputPassword1" >@ViewBag.adminMail</label">
+            <br />
+            @Html.HiddenFor(x => x.AdminPasswordHash, new { @class = "form-control" })
+            @Html.HiddenFor(x => x.AdminPasswordSalt, new { @class = "form-control" })
+
+            <br />
+            @Html.Label("Durumu Seçiniz : ")
+            <label class="btn btn-warning" id="statusLabel">
+                @Html.CheckBoxFor(x => x.AdminStatus, new { @id = "status_admin", @onclick = "Mycheck()" })
+                <span id="statusText" class=" glyphicon">Admin Pasif</span>
+            </label>
+
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Güncelle</button>
+    </form>
 }
+
+    @*@model EntityLayer.Concreate.Admin
+        @{
+            ViewBag.Title = "EditAdmin";
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+
+        <h2>Admin Güncelleme Sayfası</h2>
+
+        @using (Html.BeginForm("EditAdmin", "Authorization", FormMethod.Post))
+        {
+            <div class="form-group">
+                @Html.HiddenFor(x => x.AdminId, new { @class = "form-control" })
+                @Html.Label("Admin Kullanıcı Adı")
+                @Html.TextBoxFor(x => x.AdminUserName, new { @class = "form-control" })
+                <br />
+                @Html.Label("Şifre")
+                @Html.TextBoxFor(x => x.AdminPasswordHash, new { @class = "form-control" })
+                <br />
+                @Html.Label("Admin Rolü Seçiniz")
+                @Html.TextBoxFor(x => x.Role, new { @class = "form-control" })
+                <br />
+                <button class="btn btn-success">Güncelle</button>
+            </div>
+        }*@

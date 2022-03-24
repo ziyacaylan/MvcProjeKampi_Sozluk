@@ -1,0 +1,26 @@
+﻿<script src="~/Scripts/jquery-3.4.1.js"></script>
+
+<button class="btn btn-primary" data-toggle="modal" data-target="#modal_1">
+    Yeni Role Girişi
+</button>
+
+<div class="modal" id="modal_1">    
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="alert alert-secondary" style="text-align:center;">...........Yeni Role Ekleme..............</h2>
+            </div>
+            <form method="post" action="/Authorization/AddRole/">
+                <div class="modal-body">
+                    <label>Role Adı</label>
+                    <input type="text" name="RoleName" class="form-control" />
+                    <br />
+                    <label>Role Tanımı</label>
+                    <input type="text" name="Description" class="form-control" />
+                    <br />
+                    <button class="btn btn-info">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
