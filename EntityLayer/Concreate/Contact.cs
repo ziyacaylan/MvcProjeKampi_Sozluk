@@ -20,6 +20,8 @@ namespace EntityLayer.Concreate
         public string UserSubject { get; set; }
         public string Message { get; set; }
         public DateTime MessageDate { get; set; }
+        public bool IsRead { get; set; }
+        public bool IsImportant { get; set; }
 
     }
 }

@@ -28,7 +28,7 @@ namespace BusinessLayer.Concreate
                 foreach (var item in admin)
                 {
                     if (HashingHelper.AdminVerifyPasswordHash(adminLoginDto.AdminMail, adminLoginDto.AdminPassword, item.AdminUserName,
-                        item.AdminPasswordHash, item.AdminPasswordSalt))
+                        item.AdminPasswordHash, item.AdminPasswordSalt) && item.AdminStatus)
                     {
                         return true;
                     }

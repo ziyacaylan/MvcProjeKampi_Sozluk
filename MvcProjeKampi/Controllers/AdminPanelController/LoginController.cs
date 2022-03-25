@@ -26,7 +26,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
     {
 
         IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()));
-
+        AdminManager adminManager = new AdminManager(new EfAdminDal());
         // GET: Login
         [HttpGet]
         public ActionResult AdminLogin()
@@ -50,7 +50,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         public ActionResult AdminLogin(AdminLoginDto adminLoginDto)
         {
 
-            if (authService.AdminLogIn(adminLoginDto))
+            if (authService.AdminLogIn(adminLoginDto) )
             {
                 FormsAuthentication.SetAuthCookie(adminLoginDto.AdminMail, false);
                 Session["AdminUserName"] = adminLoginDto.AdminMail;

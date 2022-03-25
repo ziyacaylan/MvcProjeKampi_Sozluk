@@ -3,6 +3,7 @@ using BusinessLayer.ValidationRules_FluentValidation;
 using DataAccessLayer.EntityFramework;
 using EntityLayer.Concreate;
 using FluentValidation.Results;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +18,17 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
 
         MessageManager mm = new MessageManager(new EfMessageDal());
         MessageValidator messagevalidator = new MessageValidator();
+
         [Authorize]
-        public ActionResult Inbox()
+        public ActionResult Inbox() //(int? sayfa)
         {
-            string mail = (string)Session["WriterMail"];
-            var messagelist = mm.GetListInbox(mail);
-            return View(messagelist);
+            string mail = (string)Session["AdminUserName"];
+            var messagelist = mm.GetListInbox(mail);//.ToPagedList(sayfa ?? 1, 8);
+             return View(messagelist);
         }
         public ActionResult Sendbox()
         {
-            string mail = (string)Session["WriterMail"];
+            string mail = (string)Session["AdminUserName"];
             var messagelist = mm.GetListSendBox(mail);
             return View(messagelist);
         }

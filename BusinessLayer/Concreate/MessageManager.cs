@@ -23,14 +23,44 @@ namespace BusinessLayer.Concreate
             return _messageDal.Get(x => x.MessageID == id);
         }
 
+        public List<Message> GetListDraftBox(string p)
+        {
+            return _messageDal.List(x=>x.IsDraft == true && x.SenderMail==p);
+        }
+
+        public List<Message> GetListImportantBox(string p)
+        {
+            return _messageDal.List(x=>x.IsImportant == true && x.ReceiverMail == p);
+        }
+
         public List<Message> GetListInbox(string p)
         {
             return _messageDal.List(x => x.ReceiverMail == p);
         }
 
+        public List<Message> GetListIUnReadBox(string p)
+        {
+            return _messageDal.List(x => x.IsRead == false && x.ReceiverMail == p);
+        }
+
+        public List<Message> GetListReadBox(string p)
+        {
+            return _messageDal.List(x => x.IsRead == true && x.ReceiverMail == p);
+        }
+
         public List<Message> GetListSendBox(string p)
         {
             return _messageDal.List(X => X.SenderMail == p);
+        }
+
+        public List<Message> GetListSpamBox(string p)
+        {
+            return _messageDal.List(x=>x.IsSpam == true && x.ReceiverMail == p);
+        }
+
+        public List<Message> GetListTrashBox(string p)
+        {
+            return _messageDal.List(x=>x.Trash == true);
         }
 
         public void MessageAdd(Message message)

@@ -84,6 +84,14 @@
     <Compile Include="Migrations\202203221038024_mig_change_admin_admin_user_name_type.designer.cs">
       <DependentUpon>202203221038024_mig_change_admin_admin_user_name_type.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203241513090__mig_update_message_table.cs" />
+    <Compile Include="Migrations\202203241513090__mig_update_message_table.designer.cs">
+      <DependentUpon>202203241513090__mig_update_message_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203241633542_mig_update_contact_table.cs" />
+    <Compile Include="Migrations\202203241633542_mig_update_contact_table.designer.cs">
+      <DependentUpon>202203241633542_mig_update_contact_table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -93,6 +101,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203221038024_mig_change_admin_admin_user_name_type.resx">
       <DependentUpon>202203221038024_mig_change_admin_admin_user_name_type.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203241513090__mig_update_message_table.resx">
+      <DependentUpon>202203241513090__mig_update_message_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203241633542_mig_update_contact_table.resx">
+      <DependentUpon>202203241633542_mig_update_contact_table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
