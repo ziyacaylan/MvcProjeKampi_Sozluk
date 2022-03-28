@@ -63,6 +63,7 @@
     <Compile Include="Abstract\IMessageDal.cs" />
     <Compile Include="Abstract\IRepository.cs" />
     <Compile Include="Abstract\IRoleDal.cs" />
+    <Compile Include="Abstract\ITalentDal.cs" />
     <Compile Include="Abstract\IWriterDal.cs" />
     <Compile Include="Concreate\Context.cs" />
     <Compile Include="Concreate\Repositories\GenericRepository.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="EntityFramework\EfImageFileDal.cs" />
     <Compile Include="EntityFramework\EfMessageDal.cs" />
     <Compile Include="EntityFramework\EfRoleDal.cs" />
+    <Compile Include="EntityFramework\EfTalentDal.cs" />
     <Compile Include="EntityFramework\EfWriterDal.cs" />
     <Compile Include="Migrations\202203211541426_mig_admin_update_username_type.cs" />
     <Compile Include="Migrations\202203211541426_mig_admin_update_username_type.designer.cs">
@@ -92,6 +94,14 @@
     <Compile Include="Migrations\202203241633542_mig_update_contact_table.designer.cs">
       <DependentUpon>202203241633542_mig_update_contact_table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203280747453_mig_add_talent_table.cs" />
+    <Compile Include="Migrations\202203280747453_mig_add_talent_table.designer.cs">
+      <DependentUpon>202203280747453_mig_add_talent_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203280806459_update_skill_table.cs" />
+    <Compile Include="Migrations\202203280806459_update_skill_table.designer.cs">
+      <DependentUpon>202203280806459_update_skill_table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -107,6 +117,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203241633542_mig_update_contact_table.resx">
       <DependentUpon>202203241633542_mig_update_contact_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203280747453_mig_add_talent_table.resx">
+      <DependentUpon>202203280747453_mig_add_talent_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203280806459_update_skill_table.resx">
+      <DependentUpon>202203280806459_update_skill_table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

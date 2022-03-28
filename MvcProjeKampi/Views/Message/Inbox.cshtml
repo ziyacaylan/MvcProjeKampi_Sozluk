@@ -7,26 +7,29 @@
     ViewBag.Title = "Inbox";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+@{ string read = ""; }
+@{ string important = ""; }
+@{ string mailRead = "";}
+@{ string[] m_pos = { "0", "false", "inbox" };}
 
 <!DOCTYPE html>
 <html>
 
-<!-- Theme style -->
-<link rel="stylesheet" href="~/AdminLTE-3.0.4/dist/css/adminlte.min.css">
-
+@*<h2 class="alert alert-secondary" style="text-align:center;">Mesaj Sayfası</h2>*@
 <body class="hold-transition sidebar-mini">
 
     <!-- Content Wrapper. Contains page content -->
     <!-- Content Header (Page header) -->
-    <section class="content-header">
+    <!--<section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Mesaj Sayfası</h1>
+                    <h1 class="alert alert-secondary" style="text-align:center;">Mesaj Sayfası</h1>
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
-    </section>
+        </div>-->
+    <!-- /.container-fluid -->
+    <!--</section>-->
     <!-- Main content -->
     <section class="content">
         <div class="row">
@@ -46,7 +49,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- /.card-tools -->
+                        /.card-tools
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body p-0">
@@ -75,24 +78,67 @@
                         <div class="table-responsive mailbox-messages">
                             <table class="table table-hover table-striped">
                                 <tbody>
+
                                     @foreach (var item in Model)
                                     {
+                                        read = (!item.IsRead) ? "warning" : "capitalize";
+                                        important = (!item.IsImportant) ? "body" : "warning";
+                                        mailRead = (!item.IsRead) ? "square" : "open";
                                         <tr>
                                             <td>
                                                 <div class="icheck-primary">
-                                                    <input type="checkbox" value="" id="check1">
+                                                    <input type="checkbox" value="@item.MessageID" id="check1">
                                                     <label for="check1"></label>
                                                 </div>
                                             </td>
-                                            <td class="mailbox-star"><a href="/Message/GetInboxMessageDetails/@item.MessageID"><i class="fas fa-star text-warning"></i></a></td>
-                                            <td class="mailbox-name"><a href="/Message/GetInboxMessageDetails/@item.MessageID">@item.SenderMail</a></td>
-                                            <td class="mailbox-subject">
-                                                <b>@item.Subject</b> - @item.MessageContent.Substring(0, 30)...
+                                            <td>
+                                                <a class="btn btn-default btn-sm" href="/Message/IsRead/@item.MessageID"><i class="fas fa-envelope-@mailRead text-@read"></i></a>
                                             </td>
+                                            <td class="mailbox-star"><a href="/Message/IsImportant/@item.MessageID"><i class="fas fa-star text-@important"></i></a></td>
+
+                                            <td class="mailbox-name"><a href="/Message/GetInboxMessageDetails/@item.MessageID">@item.SenderMail</a></td>
+
+
+                                            @*<td class="mailbox-subject"><b>@item.Subject</b> - @item.MessageContent.Substring(0, 30)...</td>*@
+                                            <td class="mailbox-subject">
+                                                @if (item.MessageContent.Length >= 50)
+                                                {
+                                                    @Html.Raw(item.MessageContent.Substring(0, 50))
+                                                    @*<b>@item.Subject</b><a> - </a> @item.MessageContent*@
+                                                }
+                                                else if (item.MessageContent.Length < 50)
+                                                {
+                                                    <b>@item.Subject</b><a> - </a>@Html.Raw(item.MessageContent)<a>...</a>
+                                                    @*<b>@item.Subject</b><a> - </a>@item.MessageContent.Substring(0, 30) <a>...</a>*@
+                                                }
+                                            </td>
+
+
+
                                             <td class="mailbox-attachment"></td>
-                                            <td class="mailbox-date">@item.MessageDate.ToString("dd-MMM-yyyy")</td>
+                                            <td class="mailbox-date"><b>@(((DateTime)item.MessageDate).ToString("dd-MMM-yyyy"))</b></td>
                                         </tr>
                                     }
+
+
+                                    @*@foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="icheck-primary">
+                                                        <input type="checkbox" value="" id="check1">
+                                                        <label for="check1"></label>
+                                                    </div>
+                                                </td>
+                                                <td class="mailbox-star"><a href="/Message/GetInboxMessageDetails/@item.MessageID"><i class="fas fa-star text-warning"></i></a></td>
+                                                <td class="mailbox-name"><a href="/Message/GetInboxMessageDetails/@item.MessageID">@item.SenderMail</a></td>
+                                                <td class="mailbox-subject">
+                                                    <b>@item.Subject</b> - @item.MessageContent.Substring(0, 30)...
+                                                </td>
+                                                <td class="mailbox-attachment"></td>
+                                                <td class="mailbox-date">@item.MessageDate.ToString("dd-MMM-yyyy")</td>
+                                            </tr>
+                                        }*@
                                 </tbody>
                             </table>
                             <!-- /.table -->
@@ -107,7 +153,7 @@
                                 <i class="far fa-square"></i>
                             </button>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm"><i class="far fa-trash-alt"></i></button>
+                                <button type="button" class="btn btn-default btn-sm"OnClientClick="DeleteMessages(); return false;"><i class="far fa-trash-alt"></i></button>
                                 <button type="button" class="btn btn-default btn-sm"><i class="fas fa-reply"></i></button>
                                 <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i></button>
                             </div>
@@ -132,48 +178,47 @@
         <!-- /.row -->
     </section>
 
-    <!-- REQUIRED SCRIPTS -->
-    <!-- jQuery -->
-    <script src="~/AdminLTE-3.0.4/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="~/AdminLTE-3.0.4/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE -->
-    <script src="~/AdminLTE-3.0.4/dist/js/adminlte.js"></script>
+    @section Editor
+{
+        <!-- summernote -->
+        @*<link rel="stylesheet" href="~/Themes/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.css">*@
+        <link href="~/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js" />
 
-    <!-- OPTIONAL SCRIPTS -->
-    <script src="~/AdminLTE-3.0.4/plugins/chart.js/Chart.min.js"></script>
-    <script src="~/AdminLTE-3.0.4/dist/js/demo.js"></script>
-    <script src="~/AdminLTE-3.0.4/dist/js/pages/dashboard3.js"></script>
-    <!--Summernote-->
-    <script src="~/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js"></script>
+        <!-- Summernote -->
+        @*<script src="~/Themes/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js"></script>*@
+        <script src="~/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js"></script>
 
-    <script src="~/AdminLTE-3.0.4/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <!-- Ekko Lightbox -->
-    <script src="~/AdminLTE-3.0.4/plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="~/AdminLTE-3.0.4/dist/js/adminlte.min.js"></script>
-    <!-- Filterizr-->
-    <script src="~/AdminLTE-3.0.4/plugins/filterizr/jquery.filterizr.min.js"></script>
-    <!-- Page specific script -->
+        <script>
+            function DeleteMessages() {
+                PageMethods.DeleteMeesage(m_pos);
+                islemHatali(m_pos[0]);
 
-    <!-- jQuery -->
-    <!--<script src="~/AdminLTE-3.0.4/plugins/jquery/jquery.min.js"></script>-->
-    <!-- Bootstrap -->
-    <!--<script src="~/AdminLTE-3.0.4/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>-->
-    <!-- summernote -->
-    <!--<link rel="stylesheet" href="~/Themes/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.css">
-    <link href="~/Themes/summernote/summernote-bs4.css" rel="stylesheet" />-->
-    <!-- Summernote -->
-    <!--<script src="~/Themes/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js"></script>
-    <script src="~/Themes/summernote/summernote-bs4.min.js"></script>-->
-
+                function islemHatali(sonuc) {
+                    alert('Bir hata oluştu.');
+                }
+            }
+        </script>
+    }
     <script>
-        $(function () {
-            // Summernote
-            $('#compose-textarea').summernote()
-        })
+        const cb = document.querySelector('#check1');
+        if (cb.checked) {
+            m_pos[0] = cb.nodeValue;
+            m_pos[1] = "true";
+        }
+        else {
+            m_pos[1] = "false";
+        }
     </script>
 
+    <script>
+        $('.nav.nav-treeview li a').click(function (e) {
+            if ($(this).hasClass('nav-link')) {
+                $('a').removeClass('active')
+                $(this).addClass('active');
+            }
+            e.preventDefault();
+        });
+    </script>
 </body>
 </html>
 

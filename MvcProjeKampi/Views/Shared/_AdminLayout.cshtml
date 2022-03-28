@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>AdminLTE 3 | Dashboard 3</title>
+    <title>Mvc Sözlük | Admin Paneli</title>
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="~/AdminLTE-3.0.4/plugins/fontawesome-free/css/all.min.css">
@@ -136,6 +136,37 @@ to get the desired effect
                                 </p>
                             </a>
                         </li>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="/Talent/Index/" class="nav-link">
+                                <i class="nav-icon fas fa-award"></i>
+                                <p>
+                                    Yetenekler
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/Talent/Index" target="_blank" class="nav-link">
+                                        @*<i class="far fa-circle nav-icon"></i>*@
+                                        <i class="far fa-hand-point-right"></i>
+                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;Yeteneklerim</p>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/Talent/TalentCard" target="_blank" class="nav-link">
+                                        @*<i class="far fa-circle nav-icon"></i>*@
+                                        <i class="far fa-hand-point-right"></i>
+                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;Yetenekl Listesi</p>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </li>
                         <li class="nav-item has-treeview">
                             <a href="/Heading/HeadingReport/" class="nav-link">
                                 <i class="nav-icon fas fa-bars"></i>
@@ -226,32 +257,32 @@ to get the desired effect
         </div>
         <!-- /.content-wrapper -->
     </div>
-    <!-- ./wrapper -->
-    <!-- REQUIRED SCRIPTS -->
-    <!-- jQuery -->
-    <script src="~/AdminLTE-3.0.4/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="~/AdminLTE-3.0.4/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE -->
-    <script src="~/AdminLTE-3.0.4/dist/js/adminlte.js"></script>
 
-    <!-- OPTIONAL SCRIPTS -->
+
+
+    @*./wrapper
+        REQUIRED SCRIPTS
+        jQuery*@
+    <script src="~/AdminLTE-3.0.4/plugins/jquery/jquery.min.js"></script>
+    @*Bootstrap*@
+    <script src="~/AdminLTE-3.0.4/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    @*AdminLTE*@
+    <script src="~/AdminLTE-3.0.4/dist/js/adminlte.js"></script>
+    @*OPTIONAL SCRIPTS*@
     <script src="~/AdminLTE-3.0.4/plugins/chart.js/Chart.min.js"></script>
     <script src="~/AdminLTE-3.0.4/dist/js/demo.js"></script>
     <script src="~/AdminLTE-3.0.4/dist/js/pages/dashboard3.js"></script>
-    <!--Summernote-->
+    @*Summernote*@
     <script src="~/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js"></script>
 
     <script src="~/AdminLTE-3.0.4/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <!-- Ekko Lightbox -->
+    @*Ekko Lightbox*@
     <script src="~/AdminLTE-3.0.4/plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
-    <!-- AdminLTE App -->
+    @*AdminLTE App*@
     <script src="~/AdminLTE-3.0.4/dist/js/adminlte.min.js"></script>
-    <!-- Filterizr-->
+    @*Filterizr*@
     <script src="~/AdminLTE-3.0.4/plugins/filterizr/jquery.filterizr.min.js"></script>
-    <!-- Page specific script -->
-
-
+    @*Page specific script*@
     <script>
         $(function () {
             $(document).on('click', '[data-toggle="lightbox"]', function (event) {
@@ -267,5 +298,7 @@ to get the desired effect
             });
         })</script>
 
+    @RenderSection("Editor", false)
+
 </body>
-</html >
+</html>

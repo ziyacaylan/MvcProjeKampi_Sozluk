@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace EntityLayer.Concreate
 {
@@ -18,6 +19,7 @@ namespace EntityLayer.Concreate
         [StringLength(100)]
         public string Subject { get; set; }
 
+        [AllowHtml] //bu tanım mesaj içerisinde çeşitli kompanentler kullanmamıza olanak sağlayacak
         public string MessageContent { get; set; }
 
         public DateTime MessageDate { get; set; }

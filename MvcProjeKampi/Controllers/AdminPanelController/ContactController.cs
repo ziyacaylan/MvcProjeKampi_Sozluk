@@ -21,11 +21,53 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
             var contactvalues = cm.GetList();
             return View(contactvalues);
         }
-
+        
         public ActionResult GetContactDetails(int id)
         {
             var contactvalues = cm.GetByID(id);
+            if (contactvalues.IsRead)
+            {
+                contactvalues.IsRead = false;
+            }
+            else
+            {
+                contactvalues.IsRead = true;
+            }
+
+            cm.ContactUpdate(contactvalues);
             return View(contactvalues);
+        }
+        public ActionResult IsRead(int id)
+        {
+            var messageValue = cm.GetByID(id);
+
+            if (messageValue.IsRead)
+            {
+                messageValue.IsRead = false;
+            }
+            else
+            {
+                messageValue.IsRead = true;
+            }
+
+            cm.ContactUpdate(messageValue);
+            return RedirectToAction("Index");
+        }
+        public ActionResult IsImportant(int id)
+        {
+            var messageValue = cm.GetByID(id);
+
+            if (messageValue.IsImportant)
+            {
+                messageValue.IsImportant = false;
+            }
+            else
+            {
+                messageValue.IsImportant = true;
+            }
+
+            cm.ContactUpdate(messageValue);
+            return RedirectToAction("Index");
         }
         public PartialViewResult MessageListMenu()
         {

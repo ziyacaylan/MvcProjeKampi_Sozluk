@@ -1,0 +1,65 @@
+﻿@using EntityLayer.Concreate
+@using PagedList
+@using PagedList.Mvc
+@model PagedList.IPagedList<Talent>
+@*@model List<Talent>*@
+@{
+    ViewBag.Title = "TalentCard";
+    Layout = "~/Views/Shared/_TalentLayout.cshtml";
+}
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<link href="~/Themes/dist/css/adminlte.min.css" rel="stylesheet" />
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<br />
+<h1 style="color:#fff;">Yetenekler Sayfası</h1>
+<br />
+<div style="margin-right: 1em; margin-left: 1em">
+    <table class="table table-bordered">
+        <tr>
+            <th style="width: 1%; color: #fff; text-align: center"><b>ID</b></th>
+            <th style="width: 5%; color: #fff; text-align: center"><b>Yetenek Adı</b></th>
+            <th style="width: 5%; color: #fff; text-align: center"><b>Yetenek Detayı</b></th>
+            <th style="width: 1%; color: #fff; text-align: center"><b>Yetenek Düzeyi</b></th>
+            <th style="width: 5%; color: #fff; text-align: center"><b>Yetenek Alanı</b></th>
+            <th style="width: 1%; color: #fff; text-align: center"><b>Sil</b></th>
+            <th style="width: 1%; color: #fff; text-align: center"><b>Güncelle</b></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="width: 1%; color: #fff; text-align: center">@item.Id</td>
+                <td style="width: 5%; color: #fff; text-align: center">@item.SkillName</td>
+                <td style="width: 5%; color: #fff; text-align: center">@item.SkillDetails</td>
+                <td style="width: 1%; color: #fff; text-align: center"> @item.SkillLevel</td>
+                <td style="width: 5%; color: #fff; text-align: center">@item.SkillArea</td>
+
+                <td style="width: 1%; text-align: center"><a href="/Talent/DeleteTalent/@item.Id" class="btn btn-danger preview delete-confirm" id="btn_4">Sil</td>
+                <td style="width: 1%; text-align: center"><a href="/Talent/UpdateTalent/@item.Id" class="btn btn-warning">Güncelle</a></td>
+            </tr>
+        }
+    </table>
+    <div style="color: beige">
+            <ul class="alert-light" style="font-size: 20px;background-color:transparent;"> @Html.PagedListPager((IPagedList)Model, page => Url.Action("TalentCard", new { page }))</ul>
+        </div>
+    <a href="/Talent/Index" class="btn btn-info">Geri Git</a>
+    <a href="/Talent/AddNewTalent" class="btn btn-success">Yeni Yetenek Ekle</a>
+</div>
+
+<script>
+    $('.delete-confirm').on('click', function (event) {
+        event.preventDefault();
+        const url = $(this).attr('href');
+        swal({
+            title: 'Silmek istediğinize emin misiniz_?',
+            text: 'Bu kayıt veritabanından silinecek...!',
+            icon: 'warning',
+            buttons: ["Hayır", "Evet!"],
+        }).then(function (value) {
+            if (value) {
+                window.location.href = url;
+            }
+        });
+    });
+</script>
+

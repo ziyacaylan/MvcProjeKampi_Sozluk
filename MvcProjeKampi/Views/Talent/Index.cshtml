@@ -1,0 +1,57 @@
+﻿@using EntityLayer.Concreate
+@using PagedList
+@using PagedList.Mvc
+@model PagedList.IPagedList<Talent>
+@*@model List<Talent>*@
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_TalentLayout.cshtml";
+}
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<link href="~/Themes/dist/css/adminlte.min.css" rel="stylesheet" />
+
+<!-- main -->
+<div class="main">
+    <h1 style="color:#fff;">Yeteneklerim Bölümü</h1>
+    <div class="main-info w3l">
+        <div class="main-row">
+            <!-- main-row-one -->
+            <div class="profile-grid logo wthree">
+                <img src="~/Themes/Skill_Theme/web/images/my_pic.jpg" alt="" style="width:125px;height:125px;">
+                <h2>Ziya ÇAYLAN </h2>
+                <p>Software Developper</p>
+
+            </div>
+            @*<h3 class="title">Skills</h3>*@
+            <div class="col-md-6 skills-right bar_group">
+
+                @foreach (var item in Model)
+                {
+                    <div class='bar_group__bar thin' label=' @item.SkillArea :&nbsp; @item.SkillName &nbsp;&nbsp; %@item.SkillLevel' value='@item.SkillLevel'></div>
+                }
+
+
+            </div>
+            <!--bar-js-->
+            <script src="~/Themes/Skill_Theme/web/js/bars.js"></script>
+            <div class="social-icons agileits">
+                <ul>
+                    <li><a href="#"></a></li>
+                    <li><a href="#" class="fb"></a></li>
+                    <li><a href="#" class="be"></a></li>
+                    <li><a href="#" class="gg"></a></li>
+                </ul>
+            </div>
+            <div class="clear"> </div>
+            <div style="color: beige">
+                <ul class="alert-light" style="font-size: 20px;background-color:transparent;"> @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))</ul>
+            </div>
+        </div>
+    </div>
+    <!-- copyright -->
+    <div class="copyright">
+        <p> © 2016 Skills Profile Widget . All rights reserved | Design by Ziya  <a target="_blank"></a></p>
+    </div>
+    <!-- //copyright -->
+</div>
+<!-- main -->

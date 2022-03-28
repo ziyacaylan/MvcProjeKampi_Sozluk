@@ -70,7 +70,7 @@
                 <a href="/Authorization/EditAdmin/@item.AdminId" class="btn btn-secondary">Bilgilerini Güncelle</a>
             </td>
             <td style="text-align: center">
-                <a href="/Authorization/DeleteAdmin/@item.AdminId" class="btn btn-danger preview" id="btn_4" onclick="return confirm('Kayıt silinecek. Devam edecek misiniz?')">
+                <a href="/Authorization/DeleteAdmin/@item.AdminId" class="btn btn-danger preview delete-confirm" id="btn_4" >
                     <i class="fas fa-trash-alt"></i>
                     Sil
                 </a>
@@ -84,6 +84,22 @@
 <a href="/Authorization/AddAdmin/" class="btn btn-info">Yeni Admin Tanımla</a>
 <a href="/Authorization/Roles/" class="btn btn-warning">Admin Yetkiler Sayfası</a>
 
+<script>
+    $('.delete-confirm').on('click', function (event) {
+        event.preventDefault();
+        const url = $(this).attr('href');
+        swal({
+            title: 'Silmek istediğinize emin misiniz_?',
+            text: 'Bu kayıt veritabanından silinecek...!',
+            icon: 'warning',
+            buttons: ["Cancel", "Yes!"],
+        }).then(function (value) {
+            if (value) {
+                window.location.href = url;
+            }
+        });
+    });
+</script>
 
 
 <script>

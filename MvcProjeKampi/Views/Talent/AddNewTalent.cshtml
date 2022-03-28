@@ -1,0 +1,61 @@
+﻿@model EntityLayer.Concreate.Talent
+@{
+    ViewBag.Title = "AddNewTalent";
+    Layout = "~/Views/Shared/_TalentLayout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Yetenek Ekleme</title>
+</head>
+<body>
+    <!-- main -->
+    <div class="main">
+
+        <h1>Yeni Yetenek Ekleme Sayfası</h1>
+        <div class="main-info">
+            <div class="main-row">
+                <div class="col-md-6 skills-right bar_group" style="max-width: 100%">
+                    @using (Html.BeginForm("AddNewTalent", "Talent", FormMethod.Post))
+                    {
+                        <form method="post" action="#">
+                            <div class="modal-body">
+                                @Html.Label("Yetenek Adı")
+                                <br />
+                                @Html.TextBoxFor(x => x.SkillName, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.SkillName, "", new { @class = "text-danger" })
+                                <br /> <br />
+                                @Html.Label("Yetenek Detayı")
+                                <br />
+                                @Html.TextBoxFor(x => x.SkillDetails, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.SkillDetails, "", new { @class = "text-danger" })
+                                <br /> <br />
+                                @Html.Label("Yetenek Bilgisi (100 üzerinden)")
+                                <br />
+                                @Html.TextBoxFor(x => x.SkillLevel, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.SkillLevel, "", new { @class = "text-danger" })
+                                <br /> <br />
+                                @Html.Label("Yetenek Alanı")
+                                <br />
+                                @Html.TextBoxFor(x => x.SkillArea, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.SkillArea, "", new { @class = "text-danger" })
+                                <br /> <br />
+                                <div style="text-align: center">
+                                    <button class="btn btn-primary">Kaydet</button>
+                                </div>
+                                <br />
+                            </div>
+                        </form>
+                    }
+                </div>
+                <!--bar-js-->
+                <script src="~/Themes/Skills_Theme/web/js/bars.js"></script>
+                <div class="clear"> </div>
+            </div>
+        </div>
+        <p>
+        </p>
+    </div>
+</body>
+</html>

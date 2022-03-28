@@ -1,0 +1,95 @@
+﻿@model EntityLayer.Concreate.Message
+@{
+    ViewBag.Title = "GetDraftDetails";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+
+<meta charset="UTF-8">
+<title>Summernote</title>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.7/summernote.css" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.7/summernote.js"></script>
+</head>
+
+
+<body class="hold-transition sidebar-mini">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Gelen Mesaj Detayları</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                @Html.Action("MessageListMenu", "Contact")
+                <div class="col-md-9">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">Mesajı Oku</h3>
+                            <div class="card-tools">
+                                <a href="#" class="btn btn-tool" data-toggle="tooltip" title="Previous"><i class="fas fa-chevron-left"></i></a>
+                                <a href="#" class="btn btn-tool" data-toggle="tooltip" title="Next"><i class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <div class="mailbox-read-info">
+                                <h5>Konu: @Html.DisplayFor(x => x.Subject)</h5>
+                                <br />
+
+                                <h6>
+                                    Alıcı: @Html.DisplayFor(x => x.ReceiverMail)
+                                    <span class="mailbox-read-time float-right">@Model.MessageDate.ToString("dd-MMM-yyyy")</span>
+                                </h6>
+                            </div>
+                            <!-- /.mailbox-read-info -->
+                            <!-- /.mailbox-controls -->
+                            <div class="mailbox-read-message">
+                                <p>@Html.Raw(Model.MessageContent)</p>
+                                <p>@*@Html.DisplayFor(x => x.MessageContent)*@</p>
+
+                            </div>
+                            <!-- /.mailbox-read-message -->
+                        </div>
+                        <!-- /.card-footer -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+    </section>
+
+
+    @section Editor
+{
+        <!-- summernote -->
+        @*<link rel="stylesheet" href="~/Themes/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.css">*@
+        <link href="~/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js" />
+
+        <!-- Summernote -->
+        @*<script src="~/Themes/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js"></script>*@
+        <script src="~/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js"></script>
+        <script>
+            $(function () {
+                // Summernote
+                $('#compose-textarea').summernote()
+            })
+        </script>
+    }
+
+
+</body>
+</html>
+

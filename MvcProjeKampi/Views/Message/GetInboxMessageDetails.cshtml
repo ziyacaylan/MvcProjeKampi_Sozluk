@@ -46,7 +46,8 @@
                             <!-- /.mailbox-read-info -->
                             <!-- /.mailbox-controls -->
                             <div class="mailbox-read-message">
-                                <p>@Html.DisplayFor(x => x.MessageContent)</p>
+                                <p>@Html.Raw(Model.MessageContent)</p>
+                                <p>@*@Html.DisplayFor(x => x.MessageContent)*@</p>
 
                             </div>
                             <!-- /.mailbox-read-message -->
@@ -59,5 +60,22 @@
             </div>
             <!-- /.row -->
     </section>
+
+    @section Editor
+{
+        <!-- summernote -->
+        @*<link rel="stylesheet" href="~/Themes/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.css">*@
+        <link href="~/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js" />
+
+        <!-- Summernote -->
+        @*<script src="~/Themes/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js"></script>*@
+        <script src="~/AdminLTE-3.0.4/plugins/summernote/summernote-bs4.min.js"></script>
+        <script>
+            $(function () {
+                // Summernote
+                $('#compose-textarea').summernote()
+            })
+        </script>
+    }
 </body>
 </html>
