@@ -1,15 +1,16 @@
-﻿@model EntityLayer.Concreate.Writer
+﻿@model EntityLayer.Dto.WriterLoginDto
 @{
     ViewBag.Title = "WriterProfile";
     Layout = "~/Views/Shared/_WriterLayout.cshtml";
 }
 
-<h2>Profilinizi Düzenleyiniz</h2>
+<h2 class="alert alert-secondary" style="text-align:center;">Profilinizi Düzenleyiniz</h2>
+
 @using (Html.BeginForm("WriterProfile", "WriterPanel", FormMethod.Post))
 {
     <div class="form-group">
         @*@Html.Label("Yazar ID")*@
-        @Html.HiddenFor(x => x.WriterID, new { @class = "form-control" })
+        @Html.HiddenFor(x => x.id, new { @class = "form-control" })
         @Html.Label("Yazar Adı")
         @Html.TextBoxFor(x => x.WriterName, new { @class = "form-control" })
         @Html.ValidationMessageFor(x => x.WriterName, null, new { @class = "text-danger" })
@@ -39,5 +40,4 @@
         @Html.ValidationMessageFor(x => x.WriterAbout, null, new { @class = "text-danger" })
         <br />
         <button class="btn btn-info">Yazarı Güncelle</button>
-    </div>
-}
+    </div>}

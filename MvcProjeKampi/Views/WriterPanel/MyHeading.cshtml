@@ -112,11 +112,11 @@
                                         </i>
                                         Düzenle
                                     </a>
-                                    <a class="@(item.HeadingStatus==true ? "btn btn-success" : "btn btn-danger") btn-sm" href="/WriterPanel/DeleteHeading/@item.HeadingID">
+                                    <a class="@(item.HeadingStatus==true ? "btn btn-danger" : "btn btn-success") btn-sm" href="/WriterPanel/DeleteHeading/@item.HeadingID">
                                         <i class="fas fa-trash">
                                         </i>
                                         <span>
-                                            @Html.Raw(item.HeadingStatus == true ? "<span>Pasif Yap</span>" : "<span>Aktif Yap</span>")
+                                            @Html.Raw(item.HeadingStatus == true ? "<span>Sil</span>" : "<span>Aktif Yap</span>")
                                         </span>
                                     </a>
                                 </td>

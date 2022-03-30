@@ -10,7 +10,7 @@ namespace EntityLayer.Dto
     {
         public int id { get; set; }
         public string WriterName { get; set; }
-        public string WriterSurName { get; set; }
+        public string WriterSurname { get; set; }
         public string WriterTitle { get; set; }
         public string WriterAbout { get; set; }
         public string WriterImage { get; set; }

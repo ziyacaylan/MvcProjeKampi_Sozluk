@@ -2884,7 +2884,6 @@
     <Content Include="Views\Default\Index.cshtml" />
     <Content Include="Views\Default\Headings.cshtml" />
     <Content Include="Views\Shared\_WriterLayout.cshtml" />
-    <Content Include="Views\WriterPanel\WriterProfile.cshtml" />
     <Content Include="Views\WriterPanel\MyHeading.cshtml" />
     <Content Include="Views\WriterPanel\NewHeading.cshtml" />
     <Content Include="Views\WriterPanel\EditHeading.cshtml" />
@@ -3007,6 +3006,7 @@
     <Content Include="Themes\captcha\vendor\bootstrap\css\bootstrap-reboot.min.css.map" />
     <Content Include="Themes\captcha\vendor\bootstrap\css\bootstrap.css.map" />
     <Content Include="Themes\captcha\vendor\bootstrap\css\bootstrap.min.css.map" />
+    <Content Include="Views\WriterPanel\WriterProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

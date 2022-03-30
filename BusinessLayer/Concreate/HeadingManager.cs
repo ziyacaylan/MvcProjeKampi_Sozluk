@@ -18,6 +18,11 @@ namespace BusinessLayer.Concreate
             _headingDal = headingDal;
         }
 
+        public List<Heading> GetActiveHeadingList()
+        {
+            return _headingDal.List(x => x.HeadingStatus == true);
+        }
+
         public Heading GetByID(int id)
         {
             return _headingDal.Get(x => x.HeadingID == id);
@@ -31,6 +36,11 @@ namespace BusinessLayer.Concreate
         public List<Heading> GetListByWriter(int id)
         {
             return _headingDal.List(x => x.WriterID == id);
+        }
+
+        public List<Heading> GetListByWriterActiveHeadings(int id)
+        {
+            return _headingDal.List(x => x.WriterID == id && x.HeadingStatus == true);
         }
 
         public void HeadingAdd(Heading heading)

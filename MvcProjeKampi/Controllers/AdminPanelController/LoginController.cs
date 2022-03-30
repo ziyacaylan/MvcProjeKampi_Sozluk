@@ -26,6 +26,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
 
         IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()), new WriterManager(new EfWriterDal()));
         AdminManager adminManager = new AdminManager(new EfAdminDal());
+        WriterManager wm = new WriterManager(new EfWriterDal());
         // GET: Login
         [HttpGet]
         public ActionResult AdminLogin()
@@ -67,9 +68,15 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         {
             FormsAuthentication.SignOut();
             Session.Abandon();
-            return RedirectToAction("Headings", "Default");
+            return RedirectToAction("WriterLogin");//("Headings", "Default");
         }
+        public ActionResult WriterLogOut()
+        {
 
+            FormsAuthentication.SignOut();
+            Session.Abandon();
+            return RedirectToAction("AllHeading", "WriterPanel");
+        }
 
         [HttpGet]
         public ActionResult WriterLogin()
@@ -91,8 +98,8 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
 
                 if (authService.WriterLogIn(writerLoginDto))
                 {
-                    FormsAuthentication.SetAuthCookie(writerLoginDto.WriterMail, false);
                     Session["WriterMail"] = writerLoginDto.WriterMail;
+                    FormsAuthentication.SetAuthCookie(writerLoginDto.WriterMail, false);
                     return RedirectToAction("MyContent", "WriterPanelContent");
                 }
                 else

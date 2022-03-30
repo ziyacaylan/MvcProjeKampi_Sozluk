@@ -11,6 +11,8 @@ using PagedList;
 using PagedList.Mvc;
 using FluentValidation.Results;
 using BusinessLayer.ValidationRules_FluentValidation;
+using EntityLayer.Dto;
+using BusinessLayer.Abstract;
 
 namespace MvcProjeKampi.Controllers.WriterPanelController
 {
@@ -19,36 +21,39 @@ namespace MvcProjeKampi.Controllers.WriterPanelController
         HeadingManager hm = new HeadingManager(new EfHeadingDal());
         CategoryManager cm = new CategoryManager(new EfCategoryDal());
         WriterManager wm = new WriterManager(new EfWriterDal());
+        IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()), new WriterManager(new EfWriterDal()));
         int id;
         // GET: WriterPanel
         [HttpGet]
-        public ActionResult WriterProfile(int id = 0)
+        public ActionResult WriterProfile(int id=0)
         {
             string p = (string)Session["WriterMail"];
             ViewBag.d = p;
             id = wm.GetWriterIDByWriterMail(p);
-            var writervalue = wm.GetByID(id);
+            var writervalue = wm.GetByIdWriterDto(id);
             return View(writervalue);
         }
 
         [HttpPost]
-        public ActionResult WriterProfile(Writer p)
-        {
-            //WriterValidator writervalidator = new WriterValidator();
-            //ValidationResult result = writervalidator.Validate(p);
+        public ActionResult WriterProfile(WriterLoginDto p)
+        {            
+            //var writerValue = wm.GetByIdWriterDto(id);
+            WriterValidator writervalidator = new WriterValidator();
+            ValidationResult result = writervalidator.Validate(p);
+            
 
-            //if (result.IsValid)
-            //{
-            //    wm.WriterUpdate(p);
-            //    return RedirectToAction("AllHeading", "WriterPanel");
-            //}
-            //else
-            //{
-            //    foreach (var item in result.Errors)
-            //    {
-            //        ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
-            //    }
-            //}
+            if (result.IsValid)
+            {
+                wm.WriterUpdate(p);
+                return RedirectToAction("AllHeading", "WriterPanel");
+            }
+            else
+            {
+                foreach (var item in result.Errors)
+                {
+                    ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+                }
+            }
             return View();
         }
         //[AllowAnonymous]
@@ -57,7 +62,7 @@ namespace MvcProjeKampi.Controllers.WriterPanelController
             p = (String)Session["WriterMail"];
             var writerIDInfo = wm.GetWriterIDByWriterMail(p);
             id = writerIDInfo;
-            var values = hm.GetListByWriter(writerIDInfo);
+            var values = hm.GetListByWriterActiveHeadings(writerIDInfo);
             return View(values);
         }
 
@@ -121,7 +126,7 @@ namespace MvcProjeKampi.Controllers.WriterPanelController
         public ActionResult AllHeading(int sayfa = 1)
         {
 
-            var headings = hm.GetList().ToPagedList(sayfa, 10);
+            var headings = hm.GetActiveHeadingList().ToPagedList(sayfa, 10);
             return View(headings);
         }
     }

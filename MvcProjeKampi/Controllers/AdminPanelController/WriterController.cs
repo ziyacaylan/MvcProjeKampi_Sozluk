@@ -38,7 +38,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
             {
                 if (result.IsValid)
                 {
-                    authService.WriterRegister(p.WriterName, p.WriterSurName, p.WriterTitle, p.WriterAbout, p.WriterImage, p.WriterMail, p.WriterPassword, p.WriterStatus);
+                    authService.WriterRegister(p.WriterName, p.WriterSurname, p.WriterTitle, p.WriterAbout, p.WriterImage, p.WriterMail, p.WriterPassword, p.WriterStatus);
 
                     return RedirectToAction("MyContent", "WriterPanelContent");
                 }
@@ -64,7 +64,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
             WriterLoginDto value = new WriterLoginDto();
             value.id = id;
             value.WriterName = writervalue.WriterName;
-            value.WriterSurName = writervalue.WriterSurname;
+            value.WriterSurname = writervalue.WriterSurname;
             value.WriterTitle = writervalue.WriterTitle;
             value.WriterStatus = writervalue.WriterStatus;
             value.WriterPassword = "";
@@ -82,7 +82,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
             p.WriterStatus = true;
             if (result.IsValid)
             {
-                authService.WriterRegisterEdit(p.id,p.WriterName, p.WriterSurName, p.WriterTitle, p.WriterAbout, p.WriterImage, p.WriterMail, p.WriterPassword, p.WriterStatus);
+                authService.WriterRegisterEdit(p.id,p.WriterName, p.WriterSurname, p.WriterTitle, p.WriterAbout, p.WriterImage, p.WriterMail, p.WriterPassword, p.WriterStatus);
                 return RedirectToAction("index");
             }
             else
