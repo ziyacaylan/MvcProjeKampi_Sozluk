@@ -16,8 +16,7 @@ using BusinessLayer.Abstract;
 using EntityLayer.Dto;
 using System.Net;
 using Newtonsoft.Json;
-
-
+using MvcProjeKampi.Models;
 
 namespace MvcProjeKampi.Controllers.AdminPanelController
 {
@@ -25,32 +24,19 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
     public class LoginController : Controller
     {
 
-        IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()));
+        IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()), new WriterManager(new EfWriterDal()));
         AdminManager adminManager = new AdminManager(new EfAdminDal());
         // GET: Login
         [HttpGet]
         public ActionResult AdminLogin()
         {
-            //AdminManager adminManager = new AdminManager(new EfAdminDal());
-            //var values = adminManager.GetByName(admin.AdminUserName);
-
-            //if (values.AdminUserName == admin.AdminUserName && values.AdminPassword == admin.AdminPassword)
-            //{
-            //    FormsAuthentication.SetAuthCookie(values.AdminUserName, false);
-            //    Session["AdminUserName"] = values.AdminUserName;
-            //    return RedirectToAction("Index", "AdminCategory");
-            //}
-            //else
-            //{
-            //    RedirectToAction("Index");
-            //}
             return View();
         }
         [HttpPost]
         public ActionResult AdminLogin(AdminLoginDto adminLoginDto)
         {
 
-            if (authService.AdminLogIn(adminLoginDto) )
+            if (authService.AdminLogIn(adminLoginDto))
             {
                 FormsAuthentication.SetAuthCookie(adminLoginDto.AdminMail, false);
                 Session["AdminUserName"] = adminLoginDto.AdminMail;
@@ -63,7 +49,12 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
             }
 
         }
-
+        public ActionResult LogOut()
+        {
+            FormsAuthentication.SignOut();
+            Session.Abandon();
+            return RedirectToAction("Headings", "Default");
+        }
 
 
         [HttpGet]
@@ -72,26 +63,37 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
             return View();
         }
         [HttpPost]
-        public ActionResult WriterLogin(Writer writer)
+        public ActionResult WriterLogin(WriterLoginDto writerLoginDto)
         {
-            //var values = wlm.GetWriter(writer.WriterMail, writer.WriterPassword);
-            //if (values != null)
-            //{
-            //    FormsAuthentication.SetAuthCookie(values.WriterMail, false);
-            //    Session["WriterMail"] = values.WriterMail;
-            //    return RedirectToAction("MyContent", "WriterPanelContent");
-            //}
-            //else
-            //{
-            //    RedirectToAction("WriterLogin");
-            //}
+            var response = Request["g-recaptcha-response"];
+            const string secret = "6LdF1CsfAAAAANcIbb5_0HAekzsPO7lkD8N7qLDw";
+            var client = new WebClient();
+            var reply =
+                client.DownloadString(
+                    string.Format("https://www.google.com/recaptcha/api/siteverify?secret={0}&response={1}", secret, response));
+            var captchaResponse = JsonConvert.DeserializeObject<CaptchaResult>(reply);
+            if (captchaResponse.Success)
+            {
+
+                if (authService.WriterLogIn(writerLoginDto))
+                {
+                    FormsAuthentication.SetAuthCookie(writerLoginDto.WriterMail, false);
+                    Session["WriterMail"] = writerLoginDto.WriterMail;
+                    return RedirectToAction("MyContent", "WriterPanelContent");
+                }
+                else
+                {
+                    ViewData["ErrorMessage"] = "Kullanıcı adı veya Parola yanlış...!";
+                    return View();
+                }
+            }
+            else
+            {
+                TempData["Message"] = "Lütfen Güvenliği Doğrulayınız";
+                return RedirectToAction("WriterLogin");
+            }
             return View();
         }
-        public ActionResult LogOut()
-        {
-            FormsAuthentication.SignOut();
-            Session.Abandon();
-            return RedirectToAction("Headings", "Default");
-        }
+
     }
 }

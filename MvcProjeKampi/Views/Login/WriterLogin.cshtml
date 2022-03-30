@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="~/AdminLTE-3.0.4/login-form-20/css/style.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">*@
 
 </head>
 <body class="img js-fullheight" style="background-image: url(/AdminLTE-3.0.4/login-form-20/images/bg.jpg);">
@@ -32,6 +35,7 @@
                         @using (Html.BeginForm("WriterLogin", "Login", FormMethod.Post))
                         {
                             @*<form action="#" class="signin-form">*@
+                            <p class="text-center text-danger bg-dark">@ViewData["ErrorMessage"]</p>
                             <div class="form-group">
                                 <input type="text" class="form-control" name="WriterMail" placeholder="Mail Adresin" required>
                             </div>
@@ -40,7 +44,7 @@
                                 <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
                             </div>
                             <div class="form-group">
-                                <button type="submit" class="form-control btn btn-primary submit px-3">Giriş Yap</button>
+                                <button type="submit" id="btnGonder" value="GÖNDER" data-callback="onSubmit" class="form-control btn btn-primary submit px-3">Giriş Yap</button>
                             </div>
                             <div class="form-group d-md-flex">
                                 <div class="w-50">
@@ -54,7 +58,10 @@
                                     <a href="#" style="color: #fff">Şifremi Unuttum</a>
                                 </div>
                             </div>
-                            @*</form>*@
+                            @*<--- --->BURAYA SİTE ANAHTARI GELECEK</--->*@
+                            <div class="g-recaptcha offset-md-1" data-sitekey="6LdF1CsfAAAAAGIgSb6pECQc92fqVDcm6ASSWCoR"></div>
+                            <br />
+                            <p class="text-center text-danger bg-dark">@TempData["Message"]</p>
                         }
                         <p class="w-100 text-center">&mdash; Veya Sosyal Medya İle Giriş Yapın &mdash;</p>
                         <div class="social d-flex text-center">
@@ -66,10 +73,6 @@
             </div>
         </div>
     </section>
-
-
-
-
 
     <script src="~/AdminLTE-3.0.4/login-form-20/js/jquery.min.js"></script>
     <script src="~/AdminLTE-3.0.4/login-form-20/js/popper.js"></script>

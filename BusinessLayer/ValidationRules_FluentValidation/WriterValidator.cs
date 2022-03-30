@@ -1,4 +1,5 @@
 ﻿using EntityLayer.Concreate;
+using EntityLayer.Dto;
 using FluentValidation;
 //using NSubstitute;
 using System;
@@ -10,12 +11,13 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.ValidationRules_FluentValidation
 {
-    public class WriterValidator : AbstractValidator<Writer>
+    public class WriterValidator : AbstractValidator<WriterLoginDto>
     {
         public WriterValidator()
         {
             RuleFor(x => x.WriterName).NotEmpty().WithMessage("Yazar adını boş geçemezsiniz...");
-            RuleFor(x => x.WriterSurname).NotEmpty().WithMessage("Yazar soyadını boş geçemezsiniz...");
+            RuleFor(x => x.WriterSurName).NotEmpty().WithMessage("Yazar soyadını boş geçemezsiniz...");
+            RuleFor(x => x.WriterPassword).NotEmpty().WithMessage("Şifre alanını boş geçemezsiniz...");
             RuleFor(x => x.WriterAbout).NotEmpty().WithMessage("Hakkında kısmını boş geçemezsiniz...");
             RuleFor(x => x.WriterTitle).NotEmpty().WithMessage("Ünvan kısmını boş geçemezsiniz...");
             RuleFor(x => x.WriterAbout).Must(IsAboutValid).WithMessage("Hakkında kısmında mutlaka 'a' harfi geçmesi gerekmektedir.");

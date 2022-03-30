@@ -34,20 +34,21 @@ namespace MvcProjeKampi.Controllers.WriterPanelController
         [HttpPost]
         public ActionResult WriterProfile(Writer p)
         {
-            WriterValidator writervalidator = new WriterValidator();
-            ValidationResult result = writervalidator.Validate(p);
-            if (result.IsValid)
-            {
-                wm.WriterUpdate(p);
-                return RedirectToAction("AllHeading", "WriterPanel");
-            }
-            else
-            {
-                foreach (var item in result.Errors)
-                {
-                    ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
-                }
-            }
+            //WriterValidator writervalidator = new WriterValidator();
+            //ValidationResult result = writervalidator.Validate(p);
+
+            //if (result.IsValid)
+            //{
+            //    wm.WriterUpdate(p);
+            //    return RedirectToAction("AllHeading", "WriterPanel");
+            //}
+            //else
+            //{
+            //    foreach (var item in result.Errors)
+            //    {
+            //        ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+            //    }
+            //}
             return View();
         }
         //[AllowAnonymous]

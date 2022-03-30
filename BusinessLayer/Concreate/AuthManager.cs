@@ -13,10 +13,12 @@ namespace BusinessLayer.Concreate
     public class AuthManager : IAuthService
     {
         IAdminService _adminService;
+        IWriterService _writerService;
 
-        public AuthManager(IAdminService adminService)
+        public AuthManager(IAdminService adminService, IWriterService writerService)
         {
             _adminService = adminService;
+            _writerService = writerService;
         }
 
         public bool AdminLogIn(AdminLoginDto adminLoginDto)
@@ -37,13 +39,6 @@ namespace BusinessLayer.Concreate
             }
         }
 
-        public string AdminMailDecode(string mail)
-        {
-            string decodeMail;
-            decodeMail = HashingHelper.AdminMailDecode(mail);
-            return decodeMail;
-        }
-
         public void AdminRegister(string adminUserName, string adminMail, string password, int adminRole, bool status)
         {
             byte[] mailHash, passwordHash, passwordSalt;
@@ -59,5 +54,87 @@ namespace BusinessLayer.Concreate
             };
             _adminService.AdminAdd(admin);
         }
+
+        public bool IsWriterVerifyRegister(string mail)
+        {
+            var writerMailCheck = _writerService.GetByWriterMail(mail);
+            if (writerMailCheck != null)
+            {
+                if (writerMailCheck.WriterMail == mail)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+
+        // Writer Auth işlemleri 
+        public bool WriterLogIn(WriterLoginDto writerLoginDto)
+        {
+            using (var crypto = new System.Security.Cryptography.HMACSHA512())
+            {
+                var mailHash = crypto.ComputeHash(Encoding.UTF8.GetBytes(writerLoginDto.WriterMail));
+                var writer = _writerService.GetList();
+                foreach (var item in writer)
+                {
+                    if (HashingHelper.WriterVerifyPasswordHash(writerLoginDto.WriterPassword, item.WriterPasswordHash, item.WriterPasswordSalt))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public void WriterRegister(string writerName, string writerSurName, string writerTitle, string writerAbout, string writerImage, string writerMail, string password, bool WriterStatus)
+        {
+            byte[] passwordHash, passwordSalt;
+            HashingHelper.WriterCreatePasswordHash(password, out passwordHash, out passwordSalt);
+            var writer = new Writer
+            {
+                WriterName = writerName,
+                WriterSurname = writerSurName,
+                WriterImage = writerImage,
+                WriterAbout = writerAbout,
+                WriterMail = writerMail,                
+                WriterPasswordHash = passwordHash,
+                WriterPasswordSalt = passwordSalt,
+                WriterTitle = writerTitle,
+                WriterStatus = WriterStatus
+            };
+            _writerService.WriterAdd(writer);
+        }
+
+        public void WriterRegisterEdit(int id,string writerName, string writerSurName, string writerTitle, string writerAbout, string writerImage, string writerMail, string password, bool WriterStatus)
+        {
+            byte[] passwordHash, passwordSalt;
+            HashingHelper.WriterCreatePasswordHash(password, out passwordHash, out passwordSalt);
+            var writer = new Writer
+            {
+                WriterID = id,
+                WriterName = writerName,
+                WriterSurname = writerSurName,
+                WriterImage = writerImage,
+                WriterAbout = writerAbout,
+                WriterMail = writerMail,
+                WriterPasswordHash = passwordHash,
+                WriterPasswordSalt = passwordSalt,
+                WriterTitle = writerTitle,
+                WriterStatus = WriterStatus
+            };
+            _writerService.WriterUpdate(writer);
+        }
     }
+
 }
+
+    

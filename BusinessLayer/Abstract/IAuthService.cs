@@ -9,8 +9,15 @@ namespace BusinessLayer.Abstract
 {
     public interface IAuthService
     {
+        // Admin Login
         void AdminRegister(string adminUserName, string adminMail, string password, int adminRole, bool status);
         bool AdminLogIn(AdminLoginDto adminLoginDto);
-        string AdminMailDecode(string mail);
+
+        // Writer Login 
+        void WriterRegister(string writerName, string writerSurName, string writerTitle, string writerAbout, string writerImage, string writerMail, string password, bool WriterStatus);
+        void WriterRegisterEdit(int id,string writerName, string writerSurName, string writerTitle, string writerAbout, string writerImage, string writerMail, string password, bool WriterStatus);
+        bool WriterLogIn(WriterLoginDto writerLoginDto);
+        bool IsWriterVerifyRegister(string mail);
+
     }
 }

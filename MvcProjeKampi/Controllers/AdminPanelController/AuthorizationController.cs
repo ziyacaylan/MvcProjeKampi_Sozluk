@@ -19,7 +19,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
 
         AdminManager adminManager = new AdminManager(new EfAdminDal());
         RoleManager RoleManager = new RoleManager(new EfRoleDal());
-        IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()));
+        IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()), new WriterManager(new EfWriterDal()));
         public ActionResult Index(int? sayfa)
         {
             var adminvalues = adminManager.GetList().ToPagedList(sayfa ?? 1, 5);
@@ -58,7 +58,6 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
 
             ViewBag.valueAdminRole = valueAdminRole;
             var adminvalue = adminManager.GetByID(id);
-            ViewBag.adminMail = authService.AdminMailDecode(adminvalue.AdminUserName.ToString());
             return View(adminvalue);
         }
         [HttpPost]

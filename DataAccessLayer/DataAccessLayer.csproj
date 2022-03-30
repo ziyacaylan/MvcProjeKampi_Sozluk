@@ -102,6 +102,14 @@
     <Compile Include="Migrations\202203280806459_update_skill_table.designer.cs">
       <DependentUpon>202203280806459_update_skill_table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203291234185_mig_update_writer_pass_hashing.cs" />
+    <Compile Include="Migrations\202203291234185_mig_update_writer_pass_hashing.designer.cs">
+      <DependentUpon>202203291234185_mig_update_writer_pass_hashing.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203291950184_mig_update_writer_table_type.cs" />
+    <Compile Include="Migrations\202203291950184_mig_update_writer_table_type.designer.cs">
+      <DependentUpon>202203291950184_mig_update_writer_table_type.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -123,6 +131,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203280806459_update_skill_table.resx">
       <DependentUpon>202203280806459_update_skill_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203291234185_mig_update_writer_pass_hashing.resx">
+      <DependentUpon>202203291234185_mig_update_writer_pass_hashing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203291950184_mig_update_writer_table_type.resx">
+      <DependentUpon>202203291950184_mig_update_writer_table_type.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
