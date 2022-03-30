@@ -35,19 +35,33 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         [HttpPost]
         public ActionResult AdminLogin(AdminLoginDto adminLoginDto)
         {
-
-            if (authService.AdminLogIn(adminLoginDto))
+            var response = Request["g-recaptcha-response"];
+            const string secret = "6LdF1CsfAAAAANcIbb5_0HAekzsPO7lkD8N7qLDw";
+            var client = new WebClient();
+            var reply =
+                client.DownloadString(
+                    string.Format("https://www.google.com/recaptcha/api/siteverify?secret={0}&response={1}", secret, response));
+            var captchaResponse = JsonConvert.DeserializeObject<CaptchaResult>(reply);
+            if (captchaResponse.Success)
             {
-                FormsAuthentication.SetAuthCookie(adminLoginDto.AdminMail, false);
-                Session["AdminUserName"] = adminLoginDto.AdminMail;
-                return RedirectToAction("Index", "Category");
+
+                if (authService.AdminLogIn(adminLoginDto))
+                {
+                    FormsAuthentication.SetAuthCookie(adminLoginDto.AdminMail, false);
+                    Session["AdminUserName"] = adminLoginDto.AdminMail;
+                    return RedirectToAction("Index", "Category");
+                }
+                else
+                {
+                    ViewData["ErrorMessage"] = "Kullanıcı adı veya Parola yanlış...!";
+                    return View();
+                }
             }
             else
             {
-                ViewData["ErrorMessage"] = "Kullanıcı adı veya Parola yanlış...!";
-                return View();
+                TempData["Message"] = "Lütfen Güvenliği Doğrulayınız";
+                return RedirectToAction("AdminLogin");
             }
-
         }
         public ActionResult LogOut()
         {

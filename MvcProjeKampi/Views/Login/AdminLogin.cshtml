@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="~/AdminLTE-3.0.4/login-form-19/css/style.css">
-
+    <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 <body>
     <section class="ftco-section">
@@ -31,9 +31,10 @@
                         <div class="img d-flex align-items-center justify-content-center" style="background-image: url(/AdminLTE-3.0.4/login-form-19/images/bg.jpeg); "></div>
                         <h3 class="text-center mb-0">Hoşgeldiniz</h3>
                         <p class="text-center">Lütfen bilgilerinizi giriniz.</p>
-                        <p class="text-center" style="color: red">@ViewData["ErrorMessage"]</p>
+                        @*<p class="text-center" style="color: red">@ViewData["ErrorMessage"]</p>*@
                         @using (Html.BeginForm("AdminLogin", "Login", FormMethod.Post))
                         {
+                            <p class="text-center text-danger bg-dark">@ViewData["ErrorMessage"]</p>
                             <div class="form-group">
                                 <div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-user"></span></div>
                                 <input type="text" class="form-control" name="AdminMail" placeholder="Kullanıcı Adı" required>
@@ -47,6 +48,9 @@
                                     <a href="#">Şifremi Unuttum</a>
                                 </div>
                             </div>
+                            <div class="form-group g-recaptcha" data-sitekey="6LdF1CsfAAAAAGIgSb6pECQc92fqVDcm6ASSWCoR"></div>
+                            <br />
+                            <p class="text-center text-danger bg-dark">@TempData["Message"]</p>
                             <div class="form-group">
                                 <button type="submit" class="btn form-control btn-primary rounded submit px-3">Giriş Yap</button>
                             </div>
