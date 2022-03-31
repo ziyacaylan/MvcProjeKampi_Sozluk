@@ -43,6 +43,11 @@ namespace BusinessLayer.Concreate
             return _headingDal.List(x => x.WriterID == id && x.HeadingStatus == true);
         }
 
+        public int GetTotalHeading()
+        {
+            return _headingDal.List().Count();
+        }
+
         public void HeadingAdd(Heading heading)
         {
             _headingDal.Insert(heading);

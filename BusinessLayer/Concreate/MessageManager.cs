@@ -63,6 +63,11 @@ namespace BusinessLayer.Concreate
             return _messageDal.List(x=>x.Trash == true);
         }
 
+        public int GetTotalMessages()
+        {
+            return _messageDal.List().Count();
+        }
+
         public List<Message> IsDraft(string p)
         {
             return _messageDal.List(x => x.IsDraft == true && x.SenderMail == p && x.Trash == false);

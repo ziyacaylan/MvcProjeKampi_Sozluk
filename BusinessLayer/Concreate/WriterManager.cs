@@ -52,6 +52,11 @@ namespace BusinessLayer.Concreate
             return _writerDal.List();
         }
 
+        public int GetTotalWriter()
+        {
+            return _writerDal.List().Count();
+        }
+
         public int GetWriterIDByWriterMail(string mail)
         {
             return (_writerDal.List(x => x.WriterMail == mail).Select(y => y.WriterID).FirstOrDefault());

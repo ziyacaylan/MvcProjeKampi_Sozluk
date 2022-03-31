@@ -110,6 +110,10 @@
     <Compile Include="Migrations\202203291950184_mig_update_writer_table_type.designer.cs">
       <DependentUpon>202203291950184_mig_update_writer_table_type.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203311351433_mig_image_table_update.cs" />
+    <Compile Include="Migrations\202203311351433_mig_image_table_update.designer.cs">
+      <DependentUpon>202203311351433_mig_image_table_update.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -137,6 +141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203291950184_mig_update_writer_table_type.resx">
       <DependentUpon>202203291950184_mig_update_writer_table_type.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203311351433_mig_image_table_update.resx">
+      <DependentUpon>202203311351433_mig_image_table_update.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

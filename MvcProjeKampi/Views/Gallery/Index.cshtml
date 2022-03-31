@@ -1,5 +1,7 @@
 ﻿@using EntityLayer.Concreate
-@model List<ImageFile>
+@using PagedList
+@using PagedList.Mvc
+@model PagedList.IPagedList<ImageFile>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -19,9 +21,13 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="~/AdminLTE-3.0.4/dist/css/adminlte.min.css">
+    <link href="~/Themes/dist/css/adminlte.min.css" rel="stylesheet" />
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="~/Content/PagedList.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+
 </head>
 <body class="hold-transition sidebar-mini">
 
@@ -51,10 +57,18 @@
                             <div class="row">
                                 @foreach (var item in Model)
                                 {
-                                    <div class="col-sm-2">
-                                        <a href="@item.ImagePath" data-toggle="lightbox" data-title="@item.ImageName" data-gallery="gallery">
-                                            <img src="@item.ImagePath" class="img-fluid mb-2" alt="white sample" style="height: 200px; width: 400px;" />
-                                        </a>
+                                    <div class="card" style="border-top-left-radius: 5px; border-top-right-radius: 5px; margin: 10px; background-color: #EEEEEE ">
+                                        <div>
+                                            <a href="@item.ImagePath" data-toggle="lightbox" data-title="@item.ImageName" data-gallery="gallery">
+                                                <img src="@item.ImagePath" class="img-fluid mb-2" alt="white sample" style="height: 150px; width: 200px; border-top-left-radius: 5px; border-top-right-radius: 5px; " />
+                                            </a>
+                                        </div>
+                                        <div style="text-align: center; margin-bottom:5px;">
+                                            <a href="/Gallery/DeleteImage/@item.ImageID" class="btn btn-dark preview delete-confirm" id="btn_4" style="margin-bottom: 3px;"> <i class="fas fa-trash-alt"></i> &nbsp&nbsp&nbsp Sil</a>
+                                            @*<td style="width: 1%; text-align: center">
+                                            <a href="/Talent/DeleteTalent/@item.Id" class="btn btn-danger preview delete-confirm" id="btn_4">Sil</a>
+                                                </td>*@
+                                        </div>
                                     </div>
                                 }
                             </div>
@@ -64,7 +78,27 @@
             </div>
         </div><!-- /.container-fluid -->
     </section>
-    <!-- /.content -->
-    
+    <!-- /.PageList -->
+    <div style="color: beige;">
+        <ul class="alert-light float-right" style="font-size: 20px;background-color:transparent;"> @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))</ul>
+        <a href="/Gallery/AddImage" class="btn btn-outline-info" style="margin-left:6px;">Yeni Resim Ekle </a>
+    </div>
+
+    <script>
+        $('.delete-confirm').on('click', function (event) {
+            event.preventDefault();
+            const url = $(this).attr('href');
+            swal({
+                title: 'Silmek istediğinize emin misiniz_?',
+                text: 'Bu kayıt veritabanından silinecek...!',
+                icon: 'warning',
+                buttons: ["Hayır", "Evet!"],
+            }).then(function (value) {
+                if (value) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
 </body>
 </html>

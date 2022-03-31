@@ -296,6 +296,7 @@
     <Compile Include="Models\CaptchaResult.cs" />
     <Compile Include="Models\CategoryClass.cs" />
     <Compile Include="Models\DataClass.cs" />
+    <Compile Include="Models\ImageViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roles\AdminRoleProvider.cs" />
   </ItemGroup>
@@ -2190,7 +2191,7 @@
     <Content Include="AdminLTE-3.0.4\web_1\css\simpleLightbox.css" />
     <Content Include="AdminLTE-3.0.4\web_1\css\snow.css" />
     <Content Include="AdminLTE-3.0.4\web_1\css\style.css" />
-    <Content Include="AdminLTE-3.0.4\web_1\images\banner.jpg" />
+    <Content Include="AdminLTE-3.0.4\web_1\images\banner_1.jpg" />
     <Content Include="AdminLTE-3.0.4\web_1\images\close.png" />
     <Content Include="AdminLTE-3.0.4\web_1\images\contact.jpg" />
     <Content Include="AdminLTE-3.0.4\web_1\images\exp.jpg" />
@@ -3015,9 +3016,12 @@
     <Content Include="Views\WriterPanelMessage\SpamMessage.cshtml" />
     <Content Include="Views\WriterPanelMessage\TrashMailBox.cshtml" />
     <Content Include="Views\WriterPanel\ContentByHeading.cshtml" />
+    <Content Include="Views\Home\HomePage.cshtml" />
+    <Content Include="Views\Gallery\AddImage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images\Gallery\" />
     <Folder Include="ScreenShots\" />
   </ItemGroup>
   <ItemGroup>

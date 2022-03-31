@@ -18,6 +18,7 @@ namespace BusinessLayer.Abstract
         Writer GetByID(int id);
         Writer GetByWriterMail(string mail);
         int GetWriterIDByWriterMail(string mail);
+        int GetTotalWriter();
         WriterLoginDto GetByIdWriterDto(int id);
     }
 }

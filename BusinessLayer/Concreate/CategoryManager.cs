@@ -44,5 +44,9 @@ namespace BusinessLayer.Concreate
             return _categorydal.List();
         }
 
+        public int GetTotalCategory()
+        {
+            return _categorydal.List().Count();
+        }
     }
 }
