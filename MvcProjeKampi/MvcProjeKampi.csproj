@@ -3007,6 +3007,14 @@
     <Content Include="Themes\captcha\vendor\bootstrap\css\bootstrap.css.map" />
     <Content Include="Themes\captcha\vendor\bootstrap\css\bootstrap.min.css.map" />
     <Content Include="Views\WriterPanel\WriterProfile.cshtml" />
+    <Content Include="Views\WriterPanelMessage\GetUnreadMessage.cshtml" />
+    <Content Include="Views\WriterPanelMessage\GetReadMessage.cshtml" />
+    <Content Include="Views\WriterPanelMessage\GetImportantMessage.cshtml" />
+    <Content Include="Views\WriterPanelMessage\DraftMessages.cshtml" />
+    <Content Include="Views\WriterPanelMessage\GetDraftDetails.cshtml" />
+    <Content Include="Views\WriterPanelMessage\SpamMessage.cshtml" />
+    <Content Include="Views\WriterPanelMessage\TrashMailBox.cshtml" />
+    <Content Include="Views\WriterPanel\ContentByHeading.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

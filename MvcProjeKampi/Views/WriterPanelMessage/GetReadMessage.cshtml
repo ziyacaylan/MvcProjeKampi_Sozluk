@@ -2,9 +2,8 @@
 @model List<Message>
 @{
     ViewBag.Title = "GetReadMessage";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Views/Shared/_WriterLayout.cshtml";
 }
-
 
 @{ string read = ""; }
 @{ string important = ""; }
@@ -40,7 +39,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="row">
-            @Html.Action("MessageListMenu", "Contact")
+            @Html.Action("MessageListMenu", "WriterPanelMessage")
             <!-- /.col -->
             <div class="col-md-9">
                 <div class="card card-primary card-outline">
@@ -91,36 +90,36 @@
                                         important = (!item.IsImportant) ? "body" : "warning";
                                         mailRead = (!item.IsRead) ? "square" : "open";
 
-                                    <tr>
-                                        <td>
-                                            <div class="icheck-primary">
-                                                <input type="checkbox" value="" id="check1">
-                                                <label for="check1"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-default btn-sm" href="/Message/IsRead/@item.MessageID"><i class="fas fa-envelope-@mailRead text-@read"></i></a>
-                                        </td>
-                                        <td class="mailbox-star"><a href="/Message/IsImportant/@item.MessageID"><i class="fas fa-star text-@important"></i></a></td>
+                                        <tr>
+                                            <td>
+                                                <div class="icheck-primary">
+                                                    <input type="checkbox" value="" id="check1">
+                                                    <label for="check1"></label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-default btn-sm" href="/WriterPanelMessage/IsRead/@item.MessageID"><i class="fas fa-envelope-@mailRead text-@read"></i></a>
+                                            </td>
+                                            <td class="mailbox-star"><a href="/WriterPanelMessage/IsImportant/@item.MessageID"><i class="fas fa-star text-@important"></i></a></td>
 
-                                        <td class="mailbox-name"><a href="/Message/GetInboxMessageDetails/@item.MessageID">@item.SenderMail</a></td>
+                                            <td class="mailbox-name"><a href="/WriterPanelMessage/GetInboxMessageDetails/@item.MessageID">@item.SenderMail</a></td>
 
-                                        @*<td class="mailbox-subject"><b>@item.Subject</b> - @item.MessageContent.Substring(0, 30)...</td>*@
-                                        <td class="mailbox-subject">
-                                            @if (item.MessageContent.Length >= 50)
-                                            {
-                                                @Html.Raw(item.MessageContent.Substring(0, 50))
-                                                @*<b>@item.Subject</b><a> - </a> @item.MessageContent*@
-                                            }
-                                            else if (item.MessageContent.Length < 50)
-                                            {
-                                                <b>@item.Subject</b><a> - </a>@Html.Raw(item.MessageContent)<a>...</a>
-                                                @*<b>@item.Subject</b><a> - </a>@item.MessageContent.Substring(0, 30) <a>...</a>*@
-                                            }
-                                        </td>
-                                        <td class="mailbox-attachment"></td>
-                                        <td class="mailbox-date"><b>@(((DateTime)item.MessageDate).ToString("dd-MMM-yyyy"))</b></td>
-                                    </tr>
+                                            @*<td class="mailbox-subject"><b>@item.Subject</b> - @item.MessageContent.Substring(0, 30)...</td>*@
+                                            <td class="mailbox-subject">
+                                                @if (item.MessageContent.Length >= 50)
+                                                {
+                                                    @Html.Raw(item.MessageContent.Substring(0, 50))
+                                                    @*<b>@item.Subject</b><a> - </a> @item.MessageContent*@
+                                                }
+                                                else if (item.MessageContent.Length < 50)
+                                                {
+                                                    <b>@item.Subject</b><a> - </a>@Html.Raw(item.MessageContent)<a>...</a>
+                                                    @*<b>@item.Subject</b><a> - </a>@item.MessageContent.Substring(0, 30) <a>...</a>*@
+                                                }
+                                            </td>
+                                            <td class="mailbox-attachment"></td>
+                                            <td class="mailbox-date"><b>@(((DateTime)item.MessageDate).ToString("dd-MMM-yyyy"))</b></td>
+                                        </tr>
                                     }
 
                                 </tbody>
@@ -164,3 +163,4 @@
 
 </body>
 </html>
+

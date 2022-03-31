@@ -22,6 +22,7 @@ namespace MvcProjeKampi.Controllers.WriterPanelController
         CategoryManager cm = new CategoryManager(new EfCategoryDal());
         WriterManager wm = new WriterManager(new EfWriterDal());
         IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()), new WriterManager(new EfWriterDal()));
+        ContentManager contentManager = new ContentManager(new EfContentDal());
         int id;
         // GET: WriterPanel
         [HttpGet]
@@ -64,6 +65,12 @@ namespace MvcProjeKampi.Controllers.WriterPanelController
             id = writerIDInfo;
             var values = hm.GetListByWriterActiveHeadings(writerIDInfo);
             return View(values);
+        }
+        // Başlıklara ait tüm yazılar
+        public ActionResult ContentByHeading(int id)
+        {
+            var contentvalues = contentManager.GetListByHeadingID(id);
+            return View(contentvalues);
         }
 
         [HttpGet]
@@ -131,9 +138,3 @@ namespace MvcProjeKampi.Controllers.WriterPanelController
         }
     }
 }
-
-//< customErrors mode = "On" >
-
-//           < error statusCode = "404" redirect = "/ErrorPage/Page404/" />
-
-//          </ customErrors >

@@ -53,6 +53,11 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         public ActionResult GetSendboxMessageDetails(int id)
         {
             var values = mm.GetByID(id);
+            if (!values.IsRead)
+            {
+                values.IsRead = true;
+            }
+            mm.MessageUpdate(values);
             return View(values);
         }
 
@@ -158,6 +163,11 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         public ActionResult GetDraftDetails(int id)
         {
             var result = mm.GetByID(id);
+            if (!result.IsRead)
+            {
+                result.IsRead = true;
+            }
+            mm.MessageUpdate(result);
             return View(result);
         }
 
@@ -214,7 +224,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         public ActionResult GetReadMessage()
         {
             string session = (string)Session["AdminUserName"];
-            var messageValue = mm.GetListIUnReadBox(session);
+            var messageValue = mm.GetListReadBox(session);
             return View(messageValue);
         }
 

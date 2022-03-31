@@ -86,7 +86,7 @@ namespace BusinessLayer.Concreate
                 var writer = _writerService.GetList();
                 foreach (var item in writer)
                 {
-                    if (HashingHelper.WriterVerifyPasswordHash(writerLoginDto.WriterPassword, item.WriterPasswordHash, item.WriterPasswordSalt))
+                    if (HashingHelper.WriterVerifyPasswordHash(writerLoginDto.WriterPassword, item.WriterPasswordHash, item.WriterPasswordSalt) && writerLoginDto.WriterMail==item.WriterMail && item.WriterStatus)
                     {
                         return true;
                     }
