@@ -15,11 +15,18 @@ namespace MvcProjeKampi.Controllers.WriterPanelController
         ContentManager cm = new ContentManager(new EfContentDal());
         public ActionResult Headings()
         {
+            
             var headingList = hm.GetList();
+            foreach (var item in headingList)
+            {
+                var contentCount = cm.GetCountByHeadingID(item.HeadingID);
+                item.HeadingName = item.HeadingName + " (" + contentCount + ")";
+            }
             return View(headingList);
         }
         public PartialViewResult Index(int id = 0)
         {
+            //var contents = cm.GetListByHeadingID()
             var contentList = cm.GetListByHeadingID(id);
             return PartialView(contentList);
         }
