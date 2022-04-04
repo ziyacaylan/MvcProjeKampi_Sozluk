@@ -16,7 +16,7 @@ namespace EntityLayer.Concreate
         [StringLength(50)]
         public string WriterSurname { get; set; }
 
-        [StringLength(250)]
+        [StringLength(500)]
         public string WriterImage { get; set; }
 
         [StringLength(100)]

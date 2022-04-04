@@ -1,11 +1,10 @@
-﻿@model MvcProjeKampi.Models.ImageViewModel
+﻿@model EntityLayer.Dto.WriterLoginDto
 @{
     Layout = null;
 }
 
 <!DOCTYPE html>
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -17,7 +16,7 @@
     <link rel="stylesheet" href="/Themes/Profile_theme/style.css" />
 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="~/Scripts/jquery-3.6.0.js"></script>
+    @*<script src="~/Scripts/jquery-3.6.0.js"></script>*@
 
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -26,7 +25,7 @@
 <body id="background_img">
     <form name="uyelik" method="post">
         <div class="container rounded bg-white mt-5 mb-5" id="container">
-            @using (Html.BeginForm("AddImage", "Banner", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+            @using (Html.BeginForm("WriterRegister", "Register", FormMethod.Post))
             {
                 <div class="row" id="row">
                     <div class="col-md-4 border-right">
@@ -34,7 +33,7 @@
                             <img id="pofile" class="rounded-circle mt-5" src="/Themes/Profile_theme/img/writer_default.png">
                             <span class="font-weight-bold">@*Yazar Resimini Seçiniz*@</span>
                             <!-- <span class="text-black-50">amelly12@bbb.com</span><span>sdfsdfsdf </span> -->
-                        </div>                        
+                        </div>
                     </div>
                     <div class="col-md-8 border-right">
                         <div class="p-3 py-5">
@@ -42,29 +41,53 @@
                                 <h4 class="text-right">Yazar Kayıt</h4>
                             </div>
                             <div class="row mt-2">
-                                <div class="col-md-6"><label class="labels">Adı</label><input type="text" class="form-control" placeholder="Adınızı yazınız" value=""></div>
-                                <div class="col-md-6"><label class="labels">Soyadı</label><input type="text" class="form-control" value="" placeholder="Soyadınızı yazınız"></div>
+                                <div class="col-md-6">
+                                    <label class="labels">Adı</label>@*<input type="text" name="WriterName" class="form-control" placeholder="Adınızı yazınız" value="">*@
+                                    @Html.TextBoxFor(x => x.WriterName, new { @class = "form-control", placeholder = "Adınızı yazınız" })
+                                    @Html.ValidationMessageFor(x => x.WriterName, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="labels">Soyadı</label>@*<input type="text" name="WriterSurname" class="form-control" value="" placeholder="Soyadınızı yazınız">*@
+                                    @Html.TextBoxFor(x => x.WriterSurname, new { @class = "form-control", placeholder = "Soyadınızı yazınız" })
+                                    @Html.ValidationMessageFor(x => x.WriterSurname, "", new { @class = "text-danger" })
+                                </div>
+
                             </div>
                             <div class="row mt-3">
-                                <div class="col-md-12"><label class="labels">Mail Adresiniz</label><input type="text" class="form-control" placeholder="Mail adrsinizi yazınız" value=""></div>
-                                <div class="col-md-12"><label class="labels">Ünvan</label><input type="text" class="form-control" placeholder="Ünvanınızı yazınız" value=""></div>
+                                <div class="col-md-12">
+                                    <label class="labels">Mail Adresiniz</label>@*<input type="text" name="WriterMail" class="form-control" placeholder="Mail adrsinizi yazınız" value="">*@
+                                    @Html.TextBoxFor(x => x.WriterMail, new { @class = "form-control", placeholder = "Mail adrsinizi yazınız" })
+                                    @Html.ValidationMessageFor(x => x.WriterMail, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="labels">Ünvan</label>@*<input type="text" name="WriterTitle" class="form-control" placeholder="Ünvanınızı yazınız" value="">*@
+                                    @Html.TextBoxFor(x => x.WriterTitle, new { @class = "form-control", placeholder = "Ünvanınızı yazınız" })
+                                    @Html.ValidationMessageFor(x => x.WriterTitle, "", new { @class = "text-danger" })
+                                </div>
+
                             </div>
                             <div class="row mt-3">
-                                <div class="col-md-12"><label class="labels">Yazar Hakkında</label><input type="text" class="form-control" placeholder="Hakkında" value=""></div>
+                                <div class="col-md-12">
+                                    <label class="labels">Yazar Hakkında</label>@*<input type="text" name="WriterAbout" class="form-control" placeholder="Hakkında" value="">*@
+                                    @Html.TextBoxFor(x => x.WriterAbout, new { @class = "form-control", placeholder = "Hakkında" })
+                                    @Html.ValidationMessageFor(x => x.WriterAbout, "", new { @class = "text-danger" })
+                                </div>
+
                             </div>
                             <div class="row mt-3">
                                 <div class="col-md-6">
                                     <label class="labels">Parola</label>
-                                    <input name="parola" type="password" class="form-control" placeholder="********" value="">
+                                    @*<input name="parola" type="password" class="form-control" placeholder="********" value="">*@
+                                    @Html.PasswordFor(x => x.WriterPassword, new { @class = "form-control", placeholder = "********" })
                                 </div>
                             </div>
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <label class="labels">Parola Tekrar</label>
-                                    <input name="parola_tekrar" type="password" class="form-control" placeholder="********" value="">
-                                </div>
+                            <div class="mt-4 text-center">
+                                <button type="submit" class="btn btn-primary profile-button">Kayıt Ol</button>
+                                <p class="text-center text-danger bg-dark">@ViewData["ErrorMessage"]</p>
                             </div>
-                            <div class="mt-4 text-center"><button class="btn btn-primary profile-button" type="button" onclick="kontrol();">Kaydet</button></div>
+
                             <div class="mt-3 text-center"><span><a href="/Home/HomePage">Ana Sayfaya Dön</a></span></div>
                         </div>
                     </div>
@@ -75,41 +98,10 @@
         </div>
     </form>
 
-    <script>
-        function kontrol() {
-            var form = self.document.uyelik
-            if (form.parola.value == form.parola_tekrar.value && form.parola.value.length > 7) {
-                form.submit();
-            } else {
-                alert('İki Parola Uyuşmuyor yada Şifreniz 8 Karakterden Az');
-            }
-        }
-    </script>
+    <script src="~/AdminLTE-3.0.4/login-form-20/js/jquery.min.js"></script>
+    <script src="~/AdminLTE-3.0.4/login-form-20/js/popper.js"></script>
+    <script src="~/AdminLTE-3.0.4/login-form-20/js/bootstrap.min.js"></script>
+    <script src="~/AdminLTE-3.0.4/login-form-20/js/main.js"></script>
 
-    <script>
-        $('#yukle').click(function () {
-            (async () => {
-                const { value: file } = await Swal.fire({
-                    title: 'Select image',
-                    input: 'file',
-                    inputAttributes: {
-                        'accept': 'image/*',
-                        'aria-label': 'Upload your profile picture'
-                    }
-                })
-                if (file) {
-                    const reader = new FileReader()
-                    reader.onload = (e) => {
-                        Swal.fire({
-                            title: 'Your uploaded picture',
-                            imageUrl: e.target.result,
-                            imageAlt: 'The uploaded picture'
-                        })
-                    }
-                    reader.readAsDataURL(file)
-                }
-            })()
-        })
-    </script>
 </body>
 </html>

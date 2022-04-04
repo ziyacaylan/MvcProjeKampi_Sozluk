@@ -19,7 +19,8 @@ namespace BusinessLayer.ValidationRules_FluentValidation
             RuleFor(x => x.WriterSurname).NotEmpty().WithMessage("Yazar soyadını boş geçemezsiniz...");
             RuleFor(x => x.WriterPassword).NotEmpty().WithMessage("Şifre alanını boş geçemezsiniz...");
             RuleFor(x => x.WriterAbout).NotEmpty().WithMessage("Hakkında kısmını boş geçemezsiniz...");
-            RuleFor(x => x.WriterTitle).NotEmpty().WithMessage("Ünvan kısmını boş geçemezsiniz...");
+            RuleFor(x => x.WriterTitle).NotEmpty().WithMessage("Ünvan kısmını boş geçemezsiniz...");                
+            RuleFor(x => x.WriterMail).EmailAddress().WithMessage("Geçerli bir e-posta değeri giriniz!").When(i => !string.IsNullOrEmpty(i.WriterMail));
             RuleFor(x => x.WriterAbout).Must(IsAboutValid).WithMessage("Hakkında kısmında mutlaka 'a' harfi geçmesi gerekmektedir.");
             RuleFor(x => x.WriterName).MinimumLength(2).WithMessage("Lütfen en az 2 (iki) karakter girşi yapınız...");
             RuleFor(x => x.WriterName).MaximumLength(20).WithMessage("Lütfen 20 karakterden fazla değer girişi yapmayınız...");

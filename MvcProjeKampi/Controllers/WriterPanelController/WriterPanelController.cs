@@ -13,6 +13,8 @@ using FluentValidation.Results;
 using BusinessLayer.ValidationRules_FluentValidation;
 using EntityLayer.Dto;
 using BusinessLayer.Abstract;
+using MvcProjeKampi.Models;
+using System.IO;
 
 namespace MvcProjeKampi.Controllers.WriterPanelController
 {
@@ -23,6 +25,7 @@ namespace MvcProjeKampi.Controllers.WriterPanelController
         WriterManager wm = new WriterManager(new EfWriterDal());
         IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()), new WriterManager(new EfWriterDal()));
         ContentManager contentManager = new ContentManager(new EfContentDal());
+        ImageFileManager im = new ImageFileManager(new EfImageFileDal());
         int id;
         // GET: WriterPanel
         [HttpGet]
@@ -41,7 +44,7 @@ namespace MvcProjeKampi.Controllers.WriterPanelController
             //var writerValue = wm.GetByIdWriterDto(id);
             WriterValidator writervalidator = new WriterValidator();
             ValidationResult result = writervalidator.Validate(p);
-            
+            p.WriterStatus = true;
 
             if (result.IsValid)
             {

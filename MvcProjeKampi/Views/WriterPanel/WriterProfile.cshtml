@@ -8,36 +8,94 @@
 
 @using (Html.BeginForm("WriterProfile", "WriterPanel", FormMethod.Post))
 {
-    <div class="form-group">
-        @*@Html.Label("Yazar ID")*@
-        @Html.HiddenFor(x => x.id, new { @class = "form-control" })
-        @Html.Label("Yazar Adı")
-        @Html.TextBoxFor(x => x.WriterName, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.WriterName, null, new { @class = "text-danger" })
-        <br />
-        @Html.Label("Yazar Soyadı")
-        @Html.TextBoxFor(x => x.WriterSurname, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.WriterSurname, null, new { @class = "text-danger" })
-        <br />
-        @Html.Label("Yazar Mail")
-        @Html.TextBoxFor(x => x.WriterMail, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.WriterMail, null, new { @class = "text-danger" })
-        <br />
-        @Html.Label("Yazar Şifresi")
-        @Html.TextBoxFor(x => x.WriterPassword, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.WriterPassword, null, new { @class = "text-danger" })
-        <br />
-        @Html.Label("Yazar Ünvanı")
-        @Html.TextBoxFor(x => x.WriterTitle, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.WriterTitle, null, new { @class = "text-danger" })
-        <br />
-        @Html.Label("Yazar Görsel Linki")
-        @Html.TextBoxFor(x => x.WriterImage, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.WriterImage, null, new { @class = "text-danger" })
-        <br />
-        @Html.Label("Yazar Hakkında")
-        @Html.TextBoxFor(x => x.WriterAbout, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.WriterAbout, null, new { @class = "text-danger" })
-        <br />
-        <button class="btn btn-info">Yazarı Güncelle</button>
-    </div>}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    <div class="container">
+
+        <!-- This element is added by Laravel -->
+        <form>
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-3 m-l-0">
+                    <div class="text-center">
+
+                        <img src="@Model.WriterImage" class="avatar img-circle" style="width: 120px; height: 120px; background-color: #95D1CC">
+
+                    </div>
+                </div>
+
+                <!-- edit form column -->
+                <div class="col-md-9 personal-info">
+                    <!-- Change this to a <form> to reproduce your original issue -->
+                    <div class="form-horizontal" role="form">
+                        <div class="form-group">
+                            @Html.HiddenFor(x => x.id, new { @class = "form-control" })
+                            <label class="col-lg-3 control-label">Adı:</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(x => x.WriterName, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.WriterName, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Soyadı:</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(x => x.WriterSurname, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.WriterSurname, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Mail Adresiniz:</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(x => x.WriterMail, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.WriterMail, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Ünvanınız:</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(x => x.WriterTitle, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.WriterTitle, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Hakkınızda:</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(x => x.WriterAbout, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.WriterAbout, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Resim Linki:</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(x => x.WriterImage, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.WriterImage, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">Parola:</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(x => x.WriterPassword, new { @class = "form-control", placeholder = "********" })
+                                @Html.ValidationMessageFor(x => x.WriterPassword, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-8">
+                                <input type="submit" class="btn btn-primary" value="Save Changes">
+                                <span></span>
+                                <a href="/WriterPanel/MyHeading"> <input type="button" class="btn btn-default" value="Cancel"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+        </form>
+    </div>
+   
+}
