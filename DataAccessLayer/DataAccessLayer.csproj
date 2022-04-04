@@ -63,6 +63,7 @@
     <Compile Include="Abstract\IMessageDal.cs" />
     <Compile Include="Abstract\IRepository.cs" />
     <Compile Include="Abstract\IRoleDal.cs" />
+    <Compile Include="Abstract\IScreenShotDal.cs" />
     <Compile Include="Abstract\ITalentDal.cs" />
     <Compile Include="Abstract\IWriterDal.cs" />
     <Compile Include="Concreate\Context.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="EntityFramework\EfImageFileDal.cs" />
     <Compile Include="EntityFramework\EfMessageDal.cs" />
     <Compile Include="EntityFramework\EfRoleDal.cs" />
+    <Compile Include="EntityFramework\EfScreenShotDal.cs" />
     <Compile Include="EntityFramework\EfTalentDal.cs" />
     <Compile Include="EntityFramework\EfWriterDal.cs" />
     <Compile Include="Migrations\202203211541426_mig_admin_update_username_type.cs" />
@@ -114,6 +116,14 @@
     <Compile Include="Migrations\202203311351433_mig_image_table_update.designer.cs">
       <DependentUpon>202203311351433_mig_image_table_update.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204011404392_mig_add_screenshot_table.cs" />
+    <Compile Include="Migrations\202204011404392_mig_add_screenshot_table.designer.cs">
+      <DependentUpon>202204011404392_mig_add_screenshot_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204041013141_mig_update_about_table.cs" />
+    <Compile Include="Migrations\202204041013141_mig_update_about_table.designer.cs">
+      <DependentUpon>202204041013141_mig_update_about_table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -144,6 +154,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203311351433_mig_image_table_update.resx">
       <DependentUpon>202203311351433_mig_image_table_update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204011404392_mig_add_screenshot_table.resx">
+      <DependentUpon>202204011404392_mig_add_screenshot_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204041013141_mig_update_about_table.resx">
+      <DependentUpon>202204041013141_mig_update_about_table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

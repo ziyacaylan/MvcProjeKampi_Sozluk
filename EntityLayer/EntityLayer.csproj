@@ -81,6 +81,7 @@
     <Compile Include="Concreate\ImageFile.cs" />
     <Compile Include="Concreate\Message.cs" />
     <Compile Include="Concreate\Role.cs" />
+    <Compile Include="Concreate\ScreenShot.cs" />
     <Compile Include="Concreate\Talent.cs" />
     <Compile Include="Concreate\Writer.cs" />
     <Compile Include="Dto\AdminLoginDto.cs" />

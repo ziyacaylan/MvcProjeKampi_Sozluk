@@ -53,19 +53,19 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            if (item.Category.CategoryName == "Tiyatro")
+                            if (item.Category.CategoryName == "Css Dersleri")
                             {
                                 color = "badge badge-warning";
                             }
-                            if (item.Category.CategoryName == "Spor")
+                            if (item.Category.CategoryName == "Javascript Dersleri")
                             {
                                 color = "badge badge-success";
                             }
                             if (item.Category.CategoryName == "Yazılım")
                             {
-                                color = "badge badge-info";
+                                color = "badge badge-dark";
                             }
-                            if (item.Category.CategoryName == "Seyehat")
+                            if (item.Category.CategoryName == "C# Dersleri")
                             {
                                 color = "badge badge-secondary";
                             }
@@ -80,6 +80,14 @@
                             if (item.Category.CategoryName == "Kitap")
                             {
                                 color = "badge badge-dark";
+                            }
+                            if (item.Category.CategoryName == "Eğitim")
+                            {
+                                color = "badge badge-primary";
+                            }
+                            if (item.Category.CategoryName == "3D Yazıcılar")
+                            {
+                                color = "badge badge-danger";
                             }
                             <tr>
                                 <td>

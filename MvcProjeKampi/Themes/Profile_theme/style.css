@@ -1,0 +1,78 @@
+body {
+  /* position: relative; */
+  max-width: 100%;
+  height: 100%;
+}
+/* form {
+  background-color: #f4f6f9;
+} */
+#container {
+    background-color: #f4f6f9;
+    opacity: 0.85;
+}
+#row{
+    opacity:0.99;
+}
+#background_img {
+  background-image: url(/Themes/Profile_theme/img/background_image.jpeg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
+  width: auto;
+  height: auto;
+}
+/* .bacground_image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  max-height: auto;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+} */
+#pofile {
+  width: 120px;
+  height: 120px;
+}
+.form-control:focus {
+  box-shadow: none;
+  border-color: #ba68c8;
+}
+
+.profile-button {
+  background: rgb(99, 39, 120);
+  box-shadow: none;
+  border: none;
+}
+
+.profile-button:hover {
+  background: #682773;
+}
+
+.profile-button:focus {
+  background: #682773;
+  box-shadow: none;
+}
+
+.profile-button:active {
+  background: #682773;
+  box-shadow: none;
+}
+
+.back:hover {
+  color: #682773;
+  cursor: pointer;
+}
+
+.labels {
+  font-size: 11px;
+}
+
+.add-experience:hover {
+  background: #ba68c8;
+  color: #fff;
+  cursor: pointer;
+  border: solid 1px #ba68c8;
+}

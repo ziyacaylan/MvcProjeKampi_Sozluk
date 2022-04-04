@@ -21,5 +21,6 @@ namespace DataAccessLayer.Concreate
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Talent> Talents { get; set; }
+        public DbSet<ScreenShot> ScreenShots { get; set; }
     }
 }

@@ -11,11 +11,12 @@ using System.Web.Mvc;
 
 namespace MvcProjeKampi.Controllers.AdminPanelController
 {
+    [Authorize(Roles = "B")] // sadece login olan kişiler görüntüleyebilecek bu nedenle bu attribütü ekledik
     public class CategoryController : Controller
     {
         CategoryManager cm = new CategoryManager(new EfCategoryDal());
 
-        [Authorize(Roles = "B")] // sadece login olan kişiler görüntüleyebilecek bu nedenle bu attribütü ekledik
+        [Authorize(Roles = "B")]
         public ActionResult Index()
         {
             var categoryvalues = cm.GetList();

@@ -1,0 +1,102 @@
+﻿@using EntityLayer.Concreate
+@model List<ScreenShot>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/Themes/dist/css/adminlte.min.css" rel="stylesheet" />
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AdminLTE 3 | Gallery</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/AdminLTE-3.0.4/plugins/fontawesome-free/css/all.min.css">
+    <!-- Ekko Lightbox -->
+    <link rel="stylesheet" href="~/AdminLTE-3.0.4/plugins/ekko-lightbox/ekko-lightbox.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link href="~/Themes/dist/css/adminlte.min.css" rel="stylesheet" />
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="~/Content/PagedList.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+
+</head>
+<body>
+
+    <h2 class="alert alert-secondary" style="text-align:center;"> Banner Ekleme Saydası</h2>
+    <br>
+    <div style="float:right; margin-bottom:5px;" class="m-b-2">
+        <a href="/Banner/AddImage/" class="btn btn-success"> <i class="fas fa-plus"></i>&nbsp&nbsp&nbsp Yeni Ekle</a>
+    </div>
+    <table class="table table-bordered table-responsive m-t-1">
+        <thead>
+            <tr>
+                <th scope="col" style="width: 3%;">Sıra NO</th>
+                <th scope="col" style="width: 20%;">Resim</th>
+                <th scope="col" style="width: 30%;">Resim Adı</th>
+                <th scope="col" style="width: 15%;">Sil</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="align-items-center">
+                    <th scope="row">@item.ID</th>
+                    <td style="vertical-align: middle;"><img src="@item.ImagePath" style="width:133px;height:100px;" /></td>
+                    <td><p style="margin-top: 35px; margin-bottom: 40px;">@item.ImageName</p></td>
+                    <td><a href="/Banner/DeleteImage/@item.ID" class="btn btn-danger preview delete-confirm" style="color: #fff; display: block; justify-content: center; margin-top: 35px; margin-bottom: 40px; "><i class="fas fa-trash-alt"></i>&nbsp&nbsp&nbsp Sil</a></td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+    <script>
+        $('.delete-confirm').on('click', function (event) {
+            event.preventDefault();
+            const url = $(this).attr('href');
+            swal({
+                title: 'Silmek istediğinize emin misiniz_?',
+                text: 'Bu kayıt veritabanından silinecek...!',
+                icon: 'warning',
+                buttons: ["Hayır", "Evet!"],
+            }).then(function (value) {
+                if (value) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
+</body>
+@*<script>
+        $('#yukle').click(function () {
+            (async () => {
+                const { value: file } = await Swal.fire({
+                    title: 'Select image',
+                    input: 'file',
+                    inputAttributes: {
+                        'accept': 'image/*',
+                        'aria-label': 'Upload your profile picture'
+                    }
+                })
+                if (file) {
+                    const reader = new FileReader()
+                    reader.onload = (e) => {
+                        Swal.fire({
+                            title: 'Your uploaded picture',
+                            imageUrl: e.target.result,
+                            imageAlt: 'The uploaded picture'
+                        })
+                    }
+                    reader.readAsDataURL(file)
+                }
+            })()
+        })
+    </script>*@
+

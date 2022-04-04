@@ -65,6 +65,7 @@
     <Compile Include="Abstract\IImageFileService.cs" />
     <Compile Include="Abstract\IMessageService.cs" />
     <Compile Include="Abstract\IRoleService.cs" />
+    <Compile Include="Abstract\IScreenShotService.cs" />
     <Compile Include="Abstract\ITalentService.cs" />
     <Compile Include="Abstract\IWriterService.cs" />
     <Compile Include="Class1.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Concreate\ImageFileManager.cs" />
     <Compile Include="Concreate\MessageManager.cs" />
     <Compile Include="Concreate\RoleManager.cs" />
+    <Compile Include="Concreate\ScreenShotManager.cs" />
     <Compile Include="Concreate\TalentManager.cs" />
     <Compile Include="Concreate\WriterManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

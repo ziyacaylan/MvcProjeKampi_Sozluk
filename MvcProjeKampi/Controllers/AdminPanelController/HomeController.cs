@@ -15,6 +15,7 @@ namespace MvcProjeKampi.Controllers
         WriterManager wm = new WriterManager(new EfWriterDal());
         MessageManager mm = new MessageManager(new EfMessageDal());
         HeadingManager hm = new HeadingManager(new EfHeadingDal());
+        ScreenShotManager screenShotManager = new ScreenShotManager(new EfScreenShotDal());
         public ActionResult Index()
         {
             return View();
@@ -36,7 +37,7 @@ namespace MvcProjeKampi.Controllers
         public ActionResult HomePage()
         {           
 
-            //var files = screenShotManager.GetList();
+            var files = screenShotManager.GetList();
 
             var totalContent = cm.GetTotalContentCount(); //Toplam Entry sayısı
             ViewBag.totalContent = totalContent;
@@ -50,7 +51,7 @@ namespace MvcProjeKampi.Controllers
             var totalMessages = mm.GetTotalMessages(); // Toplam mesaj sayısı
             ViewBag.totalMessages = totalMessages;
 
-            return View();//(files);
+            return View(files);//(files);
         }
     }
 }

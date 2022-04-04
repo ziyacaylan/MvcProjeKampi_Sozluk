@@ -1,7 +1,11 @@
-﻿@{
+﻿@using EntityLayer.Concreate
+@model List<ScreenShot>
+@{
     Layout = null;
 }
-
+@{
+    Random randomScreen = new Random();
+}
 <!--
 Author: W3layouts
 Author URL: http://w3layouts.com
@@ -19,7 +23,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <meta charset="UTF-8" />
     <meta name="keywords" content="Recognize Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
     <script>
-        addEventListener("load", function() {
+        addEventListener("load", function () {
             setTimeout(hideURLbar, 0);
         }, false);
         function hideURLbar() {
@@ -40,6 +44,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <!-- Style-CSS -->
     <link rel="stylesheet" href="~/AdminLTE-3.0.4/web_1/css/fontawesome-all.css">
     <!-- Font-Awesome-Icons-CSS -->
+    <link rel="stylesheet" href="~/AdminLTE-3.0.4/web_1/css/iframe.css">
     <!-- /Fonts -->
     <link href="//fonts.googleapis.com/css?family=Roboto:100,100i,300,400,400i,500,500i,700,700i,900" rel="stylesheet">
     <!-- //Fonts -->
@@ -91,9 +96,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <a href="/Default/Headings/">Sözlük</a>
                     </li>
                     <li class="login">
-                        <button type="button" class="btn login-btn text-uppercase " data-toggle="modal" data-target="#exampleModalCenter">
-                            Giriş Yap
-                        </button>
+                        <button type="submit" class="btn login-btn text-uppercase" data-toggle="modal"><a href="/Login/WriterLogin/">Giriş Yap</a></button>
+                    </li>
+                    <li class="login">
+                        <button type="submit" class="btn login-btn text-uppercase " data-toggle="modal"><a href="/Register/WriterRegister">Kayıt Ol</a></button>
+                    </li>
+                    <li class="login">
+                        <button type="submit" class="btn login-btn text-uppercase" data-toggle="modal"><a href="/Login/AdminLogin/">Admin Giriş</a></button>
                     </li>
                 </ul>
             </div>
@@ -298,118 +307,61 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <!--gallery  -->
     <section class="gallery py-md-5 py-3" id="projects">
         <div class="gallery-inner container py-md-5 pb-3">
-            @*<h4 class="sub-tittle-w3 text-uppercase text-center">View all</h4>*@
             <h3 class="tittle-w3 text-uppercase mb-lg-5 mb-3 text-center">Proje Görselleri</h3>
             <div class="row">
 
                 <div class="col-md-4 proj_gallery_grid" data-aos="zoom-in">
-                    <div class="section_1_gallery_grid">
-                        <a title="Görselin açıklamaları buraya yazılacak" href="~/AdminLTE-3.0.4/web_1/images/g1.jpg">
-                            <div class="section_1_gallery_grid1">
-                                <img src="~/AdminLTE-3.0.4/web_1/images/g1.jpg" alt=" " class="img-fluid" />
-                                <div class="proj_gallery_grid1_pos">
-                                    <h3>Görsel 1</h3>
 
+                    @for (int j = 0; j < 3; j++)
+                    {
+                        int id = randomScreen.Next(0, Model.Count - 1);
+                        <div class="section_1_gallery_grid">
+                            <a title="@Model[id].ImageName" href="@Model[id].ImagePath">
+                                <div class="section_1_gallery_grid1">
+                                    <img src="@Model[id].ImagePath" alt=" " class="img-fluid" />
+                                    <div class="proj_gallery_grid1_pos">
+                                        <h3>@Model[id].ImageName</h3>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="section_1_gallery_grid" data-aos="zoom-in">
-                        <a title="Görselin açıklamaları buraya yazılacak" href="~/AdminLTE-3.0.4/web_1/images/g2.jpg">
-                            <div class="section_1_gallery_grid1">
-                                <img src="~/AdminLTE-3.0.4/web_1/images/g2.jpg" alt=" " class="img-fluid" />
-                                <div class="proj_gallery_grid1_pos">
-                                    <h3>Görsel 2</h3>
+                            </a>
+                        </div>
+                    }
+                </div>
 
+                <div class="col-md-4 proj_gallery_grid" data-aos="zoom-in">
+                    @for (int j = 0; j < 3; j++)
+                    {
+                        int id = randomScreen.Next(0, Model.Count - 1);
+                        <div class="section_1_gallery_grid">
+                            <a title="@Model[id].ImageName" href="@Model[id].ImagePath">
+                                <div class="section_1_gallery_grid1">
+                                    <img src="@Model[id].ImagePath" alt=" " class="img-fluid" />
+                                    <div class="proj_gallery_grid1_pos">
+                                        <h3>@Model[id].ImageName</h3>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="section_1_gallery_grid" data-aos="zoom-in">
-                        <a title="Görselin açıklamaları buraya yazılacak" href="~/AdminLTE-3.0.4/web_1/images/g3.jpg">
-                            <div class="section_1_gallery_grid1">
-                                <img src="~/AdminLTE-3.0.4/web_1/images/g3.jpg" alt=" " class="img-fluid" />
-                                <div class="proj_gallery_grid1_pos">
-                                    <h3>Görsel 3</h3>
-
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
+                    }
                 </div>
                 <div class="col-md-4 proj_gallery_grid" data-aos="zoom-in">
-                    <div class="section_1_gallery_grid">
-                        <a title="Görselin açıklamaları buraya yazılacak" href="~/AdminLTE-3.0.4/web_1/images/g4.jpg">
-                            <div class="section_1_gallery_grid1">
-                                <img src="~/AdminLTE-3.0.4/web_1/images/g4.jpg" alt=" " class="img-fluid" />
-                                <div class="proj_gallery_grid1_pos">
-                                    <h3>Görsel 4</h3>
+                    @for (int j = 0; j < 3; j++)
+                    {
+                        int id = randomScreen.Next(0, Model.Count - 1);
+                        <div class="section_1_gallery_grid">
+                            <a title="@Model[id].ImageName" href="@Model[id].ImagePath">
+                                <div class="section_1_gallery_grid1">
+                                    <img src="@Model[id].ImagePath" alt=" " class="img-fluid" />
+                                    <div class="proj_gallery_grid1_pos">
+                                        <h3>@Model[id].ImageName</h3>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="section_1_gallery_grid" data-aos="zoom-in">
-                        <a title="Görselin açıklamaları buraya yazılacak" href="~/AdminLTE-3.0.4/web_1/images/g5.jpg">
-                            <div class="section_1_gallery_grid1">
-                                <img src="~/AdminLTE-3.0.4/web_1/images/g5.jpg" alt=" " class="img-fluid" />
-                                <div class="proj_gallery_grid1_pos">
-                                    <h3>Görsel 5</h3>
-
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="section_1_gallery_grid" data-aos="zoom-in">
-                        <a title="Görselin açıklamaları buraya yazılacak" href="~/AdminLTE-3.0.4/web_1/images/g6.jpg">
-                            <div class="section_1_gallery_grid1">
-                                <img src="~/AdminLTE-3.0.4/web_1/images/g6.jpg" alt=" " class="img-fluid" />
-                                <div class="proj_gallery_grid1_pos">
-                                    <h3>Görsel 6</h3>
-
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
+                    }
                 </div>
-                <div class="col-md-4 proj_gallery_grid" data-aos="zoom-in">
-                    <div class="section_1_gallery_grid">
-                        <a title="Görselin açıklamaları buraya yazılacak" href="~/AdminLTE-3.0.4/web_1/images/g7.jpg">
-                            <div class="section_1_gallery_grid1">
-                                <img src="~/AdminLTE-3.0.4/web_1/images/g7.jpg" alt=" " class="img-fluid" />
-                                <div class="proj_gallery_grid1_pos">
-                                    <h3>Görsel 7</h3>
-
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="section_1_gallery_grid" data-aos="zoom-in">
-                        <a title="Görselin açıklamaları buraya yazılacak" href="~/AdminLTE-3.0.4/web_1/images/g8.jpg">
-                            <div class="section_1_gallery_grid1">
-                                <img src="~/AdminLTE-3.0.4/web_1/images/g8.jpg" alt=" " class="img-fluid" />
-                                <div class="proj_gallery_grid1_pos">
-                                    <h3>Görsel 8</h3>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="section_1_gallery_grid" data-aos="zoom-in">
-                        <a title="Görselin açıklamaları buraya yazılacak" href="~/AdminLTE-3.0.4/web_1/images/g9.jpg">
-                            <div class="section_1_gallery_grid1">
-                                <img src="~/AdminLTE-3.0.4/web_1/images/g9.jpg" alt=" " class="img-fluid" />
-                                <div class="proj_gallery_grid1_pos">
-                                    <h3>Görsel 9</h3>
-
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <!--end portfolio-area -->
+              
             </div>
-            <!-- //gallery container -->
-        </div>
     </section>
     <!-- //gallery -->
     <!--/stats-->
@@ -585,6 +537,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             </div>
         </div>
     </section>
+
+    <div class="map-responsive">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2531.5167852714176!2d29.178980519244334!3d41.014364509833705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cacee228283919%3A0xe975904936db8bd9!2zTWV0cm9nYXJkZW4gQWzEscWfdmVyacWfIE1lcmtlemk!5e0!3m2!1str!2str!4v1647442795341!5m2!1str!2str" width="600" height="450" frameborder="0" style="border:0" allowfullscreen="" aria-hidden="false" loading="lazy"></iframe>
+    </div>
+    <hr>
     <!-- //Contact -->
     <!--/footer-->
     <footer class="footer text-left">
@@ -653,7 +610,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="copy-right-w3ls">
                     <p>
                         © 2022 Mvc Proje Kampı. Tüm Hakları Saklıdır | Design by
-                        <a href="http://w3layouts.com/"> W3layouts </a>
+                        <a href="#"> Ziya ÇAYLAN </a>
 
                     </p>
                 </div>
@@ -683,7 +640,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 </div>
             </div>
         </div>
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2531.5167852714176!2d29.178980519244334!3d41.014364509833705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cacee228283919%3A0xe975904936db8bd9!2zTWV0cm9nYXJkZW4gQWzEscWfdmVyacWfIE1lcmtlemk!5e0!3m2!1str!2str!4v1647442795341!5m2!1str!2str" width="1200" height="450" style="border:0; margin-left:100px" allowfullscreen="" loading="lazy"></iframe>
     </footer>
 
     <!--//footer-->
@@ -700,24 +656,24 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="modal-body">
 
                     <div class="login px-4 mx-auto mw-100">
-                        <h5 class="text-center mb-4">Login Now</h5>
+                        <h5 class="text-center mb-4">Giriş Yap</h5>
                         <form action="#" method="post">
                             <div class="form-group">
-                                <label class="mb-2">Email address</label>
+                                <label class="mb-2">Email adres</label>
                                 <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" required="">
-                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                                <small id="emailHelp" class="form-text text-muted">E-postanızı asla başkalarıyla paylaşmayacağız.</small>
                             </div>
                             <div class="form-group">
-                                <label class="mb-2">Password</label>
+                                <label class="mb-2">Parola</label>
                                 <input type="password" class="form-control" id="exampleInputPassword1" placeholder="" required="">
                             </div>
                             <div class="form-check mb-2">
                                 <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                                <label class="form-check-label" for="exampleCheck1">Kontrol Et</label>
                             </div>
-                            <button type="submit" class="btn btn-primary submit mb-4">Sign In</button>
+                            <button type="submit" class="btn btn-primary submit mb-4">Kayıt Ol</button>
                             <p class="text-center pb-4">
-                                <a href="#" data-toggle="modal" data-target="#exampleModalCenter2"> Don't have an account?</a>
+                                <a href="#" data-toggle="modal" data-target="#exampleModalCenter2"> Bir hesabınız yok mu</a>
                             </p>
                         </form>
                     </div>
@@ -738,30 +694,30 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 </div>
                 <div class="modal-body">
                     <div class="login px-4 mx-auto mw-100">
-                        <h5 class="text-center mb-4">Register Now</h5>
+                        <h5 class="text-center mb-4">Kayıt Ol</h5>
                         <form action="#" method="post">
                             <div class="form-group">
-                                <label>First name</label>
+                                <label>Adı</label>
 
                                 <input type="text" class="form-control" id="validationDefault01" placeholder="" required="">
                             </div>
                             <div class="form-group">
-                                <label>Last name</label>
+                                <label>Soyadı</label>
                                 <input type="text" class="form-control" id="validationDefault02" placeholder="" required="">
                             </div>
 
                             <div class="form-group">
-                                <label class="mb-2">Password</label>
+                                <label class="mb-2">Parola</label>
                                 <input type="password" class="form-control" id="password1" placeholder="" required="">
                             </div>
                             <div class="form-group">
-                                <label>Confirm Password</label>
+                                <label>Parola Tekrar</label>
                                 <input type="password" class="form-control" id="password2" placeholder="" required="">
                             </div>
 
-                            <button type="submit" class="btn btn-primary submit mb-4">Register</button>
+                            <button type="submit" class="btn btn-primary submit mb-4">Kayıt</button>
                             <p class="text-center pb-4">
-                                <a href="#">By clicking Register, I agree to your terms</a>
+                                <a href="#">Kayıt Ol' a tıklayarak şartları kabul ediyorum.'</a>
                             </p>
                         </form>
 
@@ -820,55 +776,55 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <script src="~/AdminLTE-3.0.4/web_1/js/jquery.roadmap.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             var events = [{
-                    date: 'Oct 2018 - Present',
-                    content: 'Company Name <small>Co-founder, Front-end Designer</small>'
-                },
-                {
-                    date: '2016 - 2018',
-                    content: 'Company Name <small>Senior Visual Designer</small>'
-                },
-                {
-                    date: '2013 - 2016',
-                    content: 'Company Name <small>Mid-level Designer</small>'
-                },
-                {
-                    date: '2012 - 2013',
-                    content: 'Company Name <small>Mid-level Designer</small>'
-                },
-                {
-                    date: '2012 - 2013',
-                    content: 'Company Name <small>Freelance</small>'
-                },
-                {
-                    date: '2011 - 2012',
-                    content: 'San Diego university  <small>For Design</small>'
-                },
-                {
-                    date: '2010 - 2011',
-                    content: 'New York university  <small>For Graphic Design</small>'
-                },
-                {
-                    date: '2009 - 2010',
-                    content: 'New York university  <small>For Graphic Design</small>'
-                },
-                {
-                    date: '2008 - 2009',
-                    content: 'New York university  <small>For Graphic Design</small>'
-                },
-                {
-                    date: '2005 - 2008',
-                    content: 'Lorem Ipsum  <small>Add Description</small>'
-                },
-                {
-                    date: '2003 - 2005',
-                    content: 'Lorem IPsum  <small>Add Description</small>'
-                },
-                {
-                    date: '2001 - 2003',
-                    content: 'Lorem IPsum  <small>Add Description</small>'
-                }
+                date: 'Oct 2018 - Present',
+                content: 'Company Name <small>Co-founder, Front-end Designer</small>'
+            },
+            {
+                date: '2016 - 2018',
+                content: 'Company Name <small>Senior Visual Designer</small>'
+            },
+            {
+                date: '2013 - 2016',
+                content: 'Company Name <small>Mid-level Designer</small>'
+            },
+            {
+                date: '2012 - 2013',
+                content: 'Company Name <small>Mid-level Designer</small>'
+            },
+            {
+                date: '2012 - 2013',
+                content: 'Company Name <small>Freelance</small>'
+            },
+            {
+                date: '2011 - 2012',
+                content: 'San Diego university  <small>For Design</small>'
+            },
+            {
+                date: '2010 - 2011',
+                content: 'New York university  <small>For Graphic Design</small>'
+            },
+            {
+                date: '2009 - 2010',
+                content: 'New York university  <small>For Graphic Design</small>'
+            },
+            {
+                date: '2008 - 2009',
+                content: 'New York university  <small>For Graphic Design</small>'
+            },
+            {
+                date: '2005 - 2008',
+                content: 'Lorem Ipsum  <small>Add Description</small>'
+            },
+            {
+                date: '2003 - 2005',
+                content: 'Lorem IPsum  <small>Add Description</small>'
+            },
+            {
+                date: '2001 - 2003',
+                content: 'Lorem IPsum  <small>Add Description</small>'
+            }
             ];
             $('#my-timeline').roadmap(events, {
                 eventsPerSlide: 6,
@@ -895,8 +851,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <script src="~/AdminLTE-3.0.4/web_1/js/move-top.js"></script>
     <script src="~/AdminLTE-3.0.4/web_1/js/easing.js"></script>
     <script>
-        jQuery(document).ready(function($) {
-            $(".scroll").click(function(event) {
+        jQuery(document).ready(function ($) {
+            $(".scroll").click(function (event) {
                 event.preventDefault();
                 $('html,body').animate({
                     scrollTop: $(this.hash).offset().top
@@ -905,15 +861,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         });
     </script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             /*
-            						var defaults = {
-            							  containerID: 'toTop', // fading element id
-            							containerHoverID: 'toTopHover', // fading element hover id
-            							scrollSpeed: 1200,
-            							easingType: 'linear'
-            						 };
-            						*/
+                                    var defaults = {
+                                          containerID: 'toTop', // fading element id
+                                        containerHoverID: 'toTopHover', // fading element hover id
+                                        scrollSpeed: 1200,
+                                        easingType: 'linear'
+                                     };
+                                    */
             $().UItoTop({
                 easingType: 'easeOutQuart'
             });
