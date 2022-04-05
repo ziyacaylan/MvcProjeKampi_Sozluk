@@ -1,0 +1,2514 @@
+/****************************************************************************************************************************
+														MVC
+														
+Model : Veri tabanýna ait entity katmanýnýn tanýmlandý kýsýmdýr. Bu kýsýnda veri tabaný iþlemleri yapýlýr
+
+Viev : Ýþin tasarým kýsmýnýn yani front-end kýsmýnýn bulunduðu kýsýmdýr.
+
+Controller : Back-end kýsmýnýn yani c# kodlarýnýn bulunduðu kýsýmdýr.
+
+/****************************************************************************************************************************
+NOTLAR:
+
+Index() : Genelde Listeleme iþlemleri için kullanýlan methoddur.
+
+Layout : MVC' de web sayfasý üzerinde gezinir iken sayfanýnsabit kalan ve deðiþmeyen kýsmýna deinr. Web sitelerinde genelde yer almaktadýr. 
+		 Örneðin en üstteki menü kýsmý yada en altta bulunan footer kýsmý gibi...
+		 
+Controller da yapýlan deðiþiklikler : Controllerda deðiþiklik yapýldýðýnda projenin yeniden çalýþtýrýlmasý gerekmektedir. 
+									  Ancak View kýsmýnda bir deðiþiklik yapýldýðýnda sayfayý yenilememiz yeterlidir.
+/****************************************************************************************************************************
+
+1- Entity Layer : Veri tabaný iþlemlerinin yapýldýðý kýsým olacak. Örnek tablo aþaðýdaki gibidir.
+				  Bizim baþlýklar isimli tablomuzun görünümü:
+
+				  Baþlýklar (Tablo) --> c# tarafýnda sýnýf (class)
+
+				  Baþlýk ID			--> c# tarafýnda property
+				  Baþlýk Ýsim
+				  Baþlýk Tarih
+				  Baþlýk Yazar
+
+2- Data Access Layer : Veri eriþim katmaný bu kýsýmdýr. Crud (Create/Read/Update/Delete) iþlemleri bu kýsýmda yapýlacaktýr. Bu iþlemler genel 
+					   iþlemler... Filter iþlemide buraya dahil olacak.
+
+3- Business Layer : Ürünü veri tabanýna eklemeden önce uygunluðun örneðin bir ürünün kaydýnýn yapýlmadna önce baþýl isteinilen karakter uzun
+					luðunda mý, ürünü sadece eklemeye yetkili olan userlar ekleyebilsin v.b. gibi iþlemlerin kontrol edilip gerçekleþtirildiði
+					kýsýmdýr.
+
+4- Presantation Layer - User Interface
+
+/****************************************************************************************************************************
+NOTLAR:
+		Projemiz dört katmanlý mimariden oluþacak. Projemize add diyerek yeni proje ekle kýsmýndan classLibrary(.NETframework)
+seçerekden yeni katmanlarýmýzý (yukarýdaki katmanlarý ekliyoruz.)
+		Daha sonra SQL veri tablolarýný oluþturuyoruz.
+Entity layer : class silinerek yeni sýnýfýmýzý oluþturup içerisini dolduracaðýz.
+Concreate	: Somut olarak tuttuðumuz ifadeleri bir arada tutmak adýna kullanýlan terim genelde concreate terimidir. Bu nedenle ismi bu
+			  bu þekilde tercih edilir.
+Abstract	: Soyut olarak tutulan ifadelerin tutulduðu alanlar genelde bu isimle adlandýrýlýr yada ifade edilir.
+
+			  Projemizde entity kýsmýndaki class larý tanýmlýyoruz. Bunlar Content, Heading, Writer, Category, About, Contact  
+			  sýnýflarý olacak. Daha sonra ise Admin sýnýfý eklenecektir.(TAblo iliþkilerinden dolayý daha sonra eklenecek.)
+			  Tanýmladýðýmýz sýnýflarýn propertileri ekliyoruz.
+			  Daha sonra ise tablolar arasýndaki iliþkilerimizi tanýmlýyoruz.
+
+				Sýnýflar oluþturulduktan sonra ve property ler tanýmlandýktan sonra SQL deki sýnýrlamalarý belirlemek adýna 
+			  key atamasý, karakter sýnýrlamasý v.b. gibi konularý sýnýflarýmýza tanýmlamamýz gerekmektedir.
+
+			  DÝPNOT:  Entity katmanýmýzda key v.b. ifadeleri eklerken bunlar sýnýf tarafýndan tanýnmayacaktýr. Bu nedenle
+					   ilgili sýnýfý import etmemiz gerekmektedir. Bu durumda EntityLayer (proje üzerine) sað týklayarak
+					   "Manage Nuget Packaces" seçeneðine týklayarak "browse" sekmesi altýndan "EntityFramework" yazýp proje
+					   mize eklememiz gerekmektedir. Daha sonra import edebiliriz.
+
+Entity layer : Bu kýsýmda context sýnýfý tanýmlanacaktýr. Yani biz artýk veri tabanýna takblolarýmýzý yansýtmaya hazýrýz.
+			  Concreate (yani soyut bir sýnýf tanýmlayacaðýmýz için) cklasörümüzü oluþtururuz.
+
+			  Bu sýnýfýmýza da baþta "EntityFramework" paketini ekliyoruz.
+
+			  Daha sonra ise veritabanýna ekleyeceðimiz tablolarý buraya tanýmlýyoruz. Ancak veritabanýna eklenecek tablolarýn 
+			  görünümlerini "EntityLayer" tarafýnda tanýmladýðýmýzdan bu katmanýn da projeye referanse edilmesi gerekmektedir.
+			  Bu nedenle "References" üzerine gelip add referance dan "Project" sekmesi altýndan ekliyoruz. Tablo isimlarini 
+			  aþaðýdaki gibi eklediðimizde iþlem tamamlanacaktýr.
+			 
+			  Örnek : "public DbSet<Category> Categories { get; set; }"
+
+/****************************************************************************************************************************
+WEB CONFIG AYARLARI
+
+	Bu kýsýmda web configayarlarýna deðinilecektir. Mesela veritabaný adresi bu kýsýmda tanýmlanmaktadýr.
+Projemizde 404 sayfalarý ile ilgili oturum ile ilgili ayarlarý, yetkilendirme ayarlarý bu kýsýmda yapýlmaktadýr.
+Biz ilk olarak SQL ayarlarýný burada yapacaðýz. 
+
+</system.web> hemen altýna : baðlantý adresimizi ve veritabaný ismimizi içerek tanýmlamamýzý yapýyoruz.
+
+<connectionStrings>
+		<add name="Context" connectionString="data source=.\SQLEXPRESS; initial catalog=DbMvcKamp; integrated security=true;" 
+			 providerName="System.Data.SqlClient"/>
+	</connectionStrings>
+
+/****************************************************************************************************************************
+
+Ders 11-12 : Migrations ve Veri Tabanýnýn Oluþturulmasý
+
+	Migrations "CodeFirst" yardýmýyla oluþturmuþ olduðumuz mimarideki deðiþiklikleri sql e yansýtmasý için kullandýðýmýz bir
+birleþen olarak adlandýrýlmaktadýr.
+
+--> önce projenin içerisine bir migration eklememiz yani migrations ý aktif hale getirmemiz gerekmektedir. Bunun için "Package
+	Mamager Console" a gelip "enable-migrations" ifadesi yazýlýr. Burada dikkat edilmesi gereken en önemli olay migrations 
+	oluþturacaðýmýz kýsmýn olmasý gereken yer "Context" sýnýfýnýn bulunduðu katmanda olmasý gerekmektedir. Bunun için console dan 
+	"Default project" kýsmýndan bizim "Context" sýnýfýmýzýn bulunduðu katman "DataAccessLayer" katmaný ve biz bu katmaný seçiyoruz.
+
+	Daha sonra komutu onayladýðýmýzda veri tabaný baðlantý adresimizde (Web Config alanýnda tanýmlamýþtýk.) bir problem yok ise 
+	karþýmýza bir "Configurations" sayfasý gelecektir.
+
+	public Configuration()
+        {
+            AutomaticMigrationsEnabled = true; //burasý false gelir. Magrations üzerinde deðiþiklikler yapabilmemiz için true yapýyoruz.
+        }
+
+-->	Daha sonra console dan "update-database" yazarak veritabanýna yansýtma iþlemini gerçekleþtiriyoruz.
+	Sonra ise veritabanýmýzý kontrol ediyoruz. Diagram kýsmýný aktif ederek yenidi diagramýn oluþturulmasýný gözlemleyip tablo
+	baðlantýlarýnýn oluþup oluþmadýðýný kontrol ediyoruz.
+
+--> Diyelimki deðiþiklikler yaptýk yada tablo üzerinde eksik yada hatalarla karþýlaþtýðýmýzdan tan yansýma yapamadýk. Bu durumda hatalar
+	giderildikten sonra yada eklemeler yapýldýktan sonra yine migration yapmamýz gerekmektedir. Console gelerek "add-migration mig1" 
+	gibi bir isimle yeni bir migration ekliyoruz.
+	Bu yeni eklenen migration içerisinde yapacaðýmýz deðiþiklikler gösterilmektedir.
+
+--> "update-database" yazarak migration iþleminin database e aktarýlmasýný yani veritabanýnýn güncellenmesi saðlýyoruz. Sonra 
+    veritabanýna giderek güncellemeleri kontrol ediyoruz. Diagramý modify diyerekten güncellemenin aktarýlmasýný saðlýyoruz ve 
+	kaydediyoruz.
+
+/****************************************************************************************************************************
+DERS 14 : Abstract ve Interface Birleþenleri
+
+--> Burada crud iþlemlerinin temelleri oluþturulacak... 
+
+	Sýrasý ile entity de oluþturduðumuz sýnýflar için (ki veritabanýnda tablolara karþýlýk gelmektedir.) interface yapýlarýmýzý
+	oluþturuyoruz.
+
+	--> Bu iþlemlerde DataAccessLayet katmanýnda yapýlmaktadýr.
+	--> Buraya öncelikle bir klasör ekliyoruz. Düzenli çalýþmamýz için önemlidir.
+	--> Oluþturacaðýmýz sýnýflar soyut sýnýflarolduðundan seçilen isim genel itibari ile "abstract" olur.
+	--> Bu klasör içerisine örnek olarak ilk interfaceizim aþaðýdaki gibi tanýmlanacaktýr.
+	--> Sýnýfýn ismi seçilirken interface in ilk hrfi "I" ve entity sýnýfýnýn ismi "Category" ve katmaný belirtmek için de "Dal"
+		ifadeleri kullanýlarak isim belirlenir. Örneðin : ICategoryDal
+
+		Burada bütün sýnýflarýmýzda kod tekrarýolmamasý için generic bir yapýda sýnýf kullanarak kod tekrarýnýn önüne geçmeliyiz.
+		Bu nedenle sýnýfýmýzý interface tanýmlayýp yukarýdaki isimlendirmeye sadýk kalmalý ve bu sýnýflarýn IRepository sýnýfýný 
+		implement etmesi gerekir. 
+		
+				public interface IRepository<T>
+		{
+			List<T> List();
+			void Insert(T p);
+			void Delete(T p);
+			void Update(T p);
+
+			List<T> List(Expression<Func<T, bool>> filter);
+		}
+
+
+		--> Daha sonra ise sýnýflar aþaðýdaki gibi tanýmlanýr.
+
+			public interface IAboutDal: IRepository<About>
+		{
+		}
+
+		public interface ICategoryDal:IRepository<Category>
+		{        
+		}
+
+		public interface IContactDal:IRepository<Contact>
+		{
+		}
+
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<---------------ÖDEV----------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>***********************************
+
+DRY---> Dry yazýlým dünyasýnda her bilgi bir sistem içerisinde tek, kesin ve yetkili bir temsili ile var olmalýdýr. Try prensibi
+		temel olarak oldukça basittir. Yapý olarak bize ayný iþi yapan kod bloðunun birden fazla olmamasý gerektiðini söylemektedir.
+
+<<<<<<<<<<<<<<<<<<<<<<<<<---------------ÖDEV----------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>***********************************
+/****************************************************************************************************************************
+
+DERS 16 : Repository Sýnýfý ve Metodlarýn içinin doldurulmasý
+
+---> Burada Abstract klasör içerisinde yazdýðýmýz interfacelerin içerisindeki metodlarýn doldurulmasý gerekecek. Bu iþlem için
+	 öncelikle 2 adet sýnýfa ihtiyacýmýz var. Bunlardan birincisi "Context" sýnýfý diðeri ise "DbSet<>" sýnýfýdýr. Öncelikle 
+	 bunlar 
+	 tanýmlanýr.
+
+		Kod tekrarýnýn önlemek için burada tek tek bütün sýnýflar için repository oluþturmak yerine hepsinde iþlemler ayný 
+	 olacaðýndan (update,delete,insert,list v.b.) bir adet "Generic" sýnýf oluþturuyoruz. Aþaðýdaki gibi 
+
+	 public class GenericRepository<T> : IRepository<T> where T : class
+    {
+        Context c = new Context();
+        DbSet<T> _object;
+
+        public GenericRepository()
+        {
+            _object = c.Set<T>();
+        }
+        public void Delete(T p)
+        {
+            _object.Remove(p);
+            c.SaveChanges();
+        }
+
+        public void Insert(T p)
+        {
+            _object.Add(p);
+            c.SaveChanges();
+        }
+
+        public List<T> List()
+        {
+            return _object.ToList();
+        } 
+
+        public List<T> List(Expression<Func<T, bool>> filter)
+        {
+            return _object.Where(filter).ToList();
+        }
+
+        public void Update(T p)
+        {
+            c.SaveChanges();
+        }
+    }
+
+
+/****************************************************************************************************************************
+DERS 19: Business Katmaný
+
+---> Öncelikle gerekli olan referanslar yüklenir. Ýlk olarak "EntityFramework" yüklenir. Daha sonra ise "DataAccessLayer" ve
+	 "EntityLayer" buraya referans olarak eklenir.
+
+---> Daha sonra ise sýnýflar oluþturularak kontroller yapýlmalýdýr. Bu katmanda uygunluk kontrolü yapýyoruz. Örnek aþaðýdadýr.
+
+	public class CategoryManager
+    {
+        GenericRepository<Category> repo = new GenericRepository<Category>();
+
+        public List<Category> GetAllBL()
+        {
+            return repo.List();
+        }
+        public void CategoryAddBL(Category p)
+        {
+            if(p.CategoryName=="" || p.CategoryName.Length <= 3 || p.CategoryDescription=="" || p.CategoryName.Length>=51)
+            {
+                // error message here
+            }
+            else
+            {
+                repo.Insert(p);
+            }
+        }
+    }
+
+---> Yukarýdaki kontrol sorgularý çoðaltýlabilir. Örneðin yetki kontrolleri v.s. ilerleyen aþamalarda eklenecek... 
+
+/****************************************************************************************************************************
+DERS 20 : Tablo kullanýmý
+
+---> Ýlk olarak Category kýsmýnda oluþturduðumuz veriler için html tarafýnda bir tablo oluþturalým. Bunun için ana katmana 
+	 yani sunum katmanýna geri dönüyoruz bu derste..
+
+---> Ýlk olarak; bütün tablolar için diyebiliriz bir "Controller" oluþturacaðýz. Ýlk olarak "CategoryController" kýsmýný 
+	 oluþturalým. Daha sonra ise index üzerine sað týklayarak boþ ve herhangi bir yee baðlý olmayan bir view ekleyelim.
+	 View içeriðini silerek örnek tablomuzu html e sadýk kalarak oluþturup ilk gölemlememizi burada yapabiliriz.
+	 Bu ders içeriðinde görsel hakkýnda bilgi verilmiþ ve html ve css bilgisi ele alýnmýþtýr. Yani görsel tarafincelenmiþtir.
+
+	 Css ve html tarafýný bilmemiz bootstrap kütüphanesi hakkýnda bilgimizin olmasý güzel tasarýmlarýn çýkmasýný saðlamaktadýr.
+/****************************************************************************************************************************
+DERS 21: Verilerin Veritabanýndan çekilmesi
+
+---> Ýlk olarak sunum katmanýmýza gelerek referanslarý eklemek ile iþe baþlýyoruz. Yani katmanlý mimaride çalýþtýðýmýzdan ve
+	 diðer katmanlarý ayrý tuttuðumuz için bunlarýn referance a eklenmesi gerekmektedir. 3 katmanýda ("EntityLayer", 
+	 "DataAccessLayer" ve "BusinessLayer")  
+
+---> Daha sonra controller olarak "CategoryController" oluþturuyoruz ve içerisine çaðýrýlacak metodlarýmýzý yazarak dolduruyoruz.
+
+	 public ActionResult GetCategoryList()
+        {
+            var categoryValues = cm.GetAllBL();
+            return View(categoryValues);
+        }
+
+		Yukarýdaki metod kategori listesini veritabanýndan çekmek için oluþturulmuþtur. Daha sonra ise GetAllBL() ye sað týklaya
+		rak yeni bir view ekleriz. View herhangi bir layera baðlamadan boþ olarak ekliyoruz. Ýlerleyen deslerde zaten içerik 
+		doldurulacak. 
+---> Eklediðimiz View geldiðinde doküman içeriðini silerek öncelikle "Content" altýndan bootstarp kütüphanesi sürükleyerek 
+	 görünümümüze import ediyoruz. Çünkü bu kütüphaneyi kullanacaðýz.
+	 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+--->    @using EntityLayer.Concreate
+		@model List<Category>
+		@{
+			Layout = null;
+		}
+
+		<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+		<br />
+
+		<table class="table table-bordered">
+			<tr>
+				<th>ID</th>
+				<th>Ad</th>
+				<th>Açýklama</th>
+				<th>Durum</th>
+			</tr>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.CategoryID</td>
+					<td>@item.CategoryName</td>
+					<td>@item.CategoryDescription</td>
+					<td>@item.CategoryStatus</td>
+				</tr>
+			}
+
+		</table>
+
+		Yukarýda ki kodlarda ilk baþa kullanýlacak referanslar eklenmiþtir. Daha sonra oluþturulacak tablonun kalýbý
+		oluþturularak foreach döngüsü içerisinde veritabanýndan verilere çekilerek doldurulur.
+
+/****************************************************************************************************************************
+DERS 25: HttpGet ve HttpPost Attribute leri
+
+---> Burada amaçlanan eklenecek olan yeni kategorinin doðru adýmlarla veritabanýna eklenmesini saðlamak ve listelemektir.
+	 Category controller a yeni ekleme metodumuzu aþaðýdaki gibi ekliyoruz ve http attribute lerini de kullanýyoruz.
+
+	 [HttpGet]
+        public ActionResult AddCategory()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddCategory(Category p)
+        {
+            cm.CategoryAddBL(p);
+            return RedirectToAction("GetCategoryList");
+        }
+---> Daha sonra public ActionResult AddCategory(Category p) kýsmýnda AddCategori üstünde sað týklayarak yeni bir view ekliyoruz.
+	 Bu View hiçbir yerebaðlý olmayacak þekilde ekliyoruz. 
+
+---> Daha sonra yukarýda eklediðimizsayfaya ulaþabilmek için gereken baðlantýyý kategori tablomuz altýna bir buton ekleyerek 
+	 yeni sayfaya yönlendiriyoruz.
+	 <input type="text" placeholder="Kategori Adý" name="CategoryName" class="form-control" />
+    <br />
+    <input type="text" placeholder="Açýklama" name="CategoryDescription" class="form-control" />
+    <br />
+    <button class="btn btn-primary">Ekle</button>
+
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+ARA NOT: Ctrl + k d :---> bastýðýmýzda kodlarýmýzýn satýr düzenlemelerini ayarlar...!
+/****************************************************************************************************************************
+DERS 27: Business Absctract & ICategoryService
+
+---> Daha önce oluþturduðumuz business katmanýndaki GCategoryManager dosyamýzý solid prensiplerine uygun hale getiriyoruz.
+	 Yani DRY yapýsýna uygun bir yapý;mimari oluþturmalýyýz. Bu nedenle
+
+---> Business katmanýnda Abstract bir dosya ekleyi içerisine ICategoryService interfaceini ekliyoruz ve ilk metodumuz listeleme
+	 List<Category> GetList(); olarak ekleyelim.
+
+---> CategoryManager a gelerek bu sýnýfýn ICategoryService sýnýfýný miras almasýný saðlayalým ve eklediðimiz metodlarý imlement 
+	 edelim. içerik aþaðýdaki gibi olacaktýr.
+
+	     public class CategoryManager : ICategoryService
+    {
+
+        ICategoryDal _categorydal;
+
+        public CategoryManager(ICategoryDal categorydal)
+        {
+            _categorydal = categorydal;
+        }
+
+        public List<Category> GetList()
+        {
+            return _categorydal.List();
+        }
+    }
+
+/****************************************************************************************************************************
+ÖDEV: Dependency Ýnjection: Dependency injection için 3 temel yöntem bulunmaktadýr.
+	 --> 1 constructor injection : Baðýmlýlýklar sýnýfa contructor ile saðlanýr.
+	 --> 2 setter injection : Baðýmlýlýk sýnýfta bulunan bir setter metoduna parametre olarak saðlanýr.
+	 --> 3 interface injection: Baðýmlýlýk (dependency) kendine iletilen bir clienta baðýmlýlýðý aktaracak bir metod saðlar.
+		   Clientlar baðýmlýlýk kabul eden setter metoduna sahip arayüzü implement etmelidir.
+/****************************************************************************************************************************
+DERS 29: EntityFrameworkDal
+
+---> Daha sonra ise CategoryManagera geldiðimizde hata aldýðýmýzý göreceðiz. Bu hatayýda gidermek için bizden istediði bir
+	 sýnýf yada interface tanýmlamamýz gerektiðini göreceðiz. Ýþte burada EntityFramework ler devreye girecek.
+---> Bunun için DataAccessLayer klasörü içerisine bir EntityFramework klasörü ekleyip içerisine dataaccesslayer sýnýflarýný
+	 yazacaðýz. Daha sonra bu sýnýflarda genericRepository deki deðerleri çaðýracak.
+
+---> EntityFramework içerisine classlarýmýzý bütün tblolarýmýz için yapalým. Örneðin "EfCategoryDal","EfWriterDal"...
+
+---> Öncelikle sýnýflarýmýz gene public olacak. Daha sonra ilk olarak EfCategoryDal ile baþlayacaðýmýzdan implement iþlemlerini
+	 yapacaðýz ve kod yapýmýz aþaðýdaki gibi olacaktýr.
+
+	 public class EfCategoryDal:GenericRepository<Category>,ICategoryDal  //<-- burada abstract sýnýfýda implement ediyoruz.
+    {
+
+    }
+
+/****************************************************************************************************************************
+DERS 30: Fluent Validation
+
+---> Normalde EntityLayerda veritabanýna eklenecek tablolarda valitadion iþlemleri gibi atamalar yapmýþtýk. Normalde burada
+	 yapýlmaz. Bu tür iþlemler Business katmanýnda Rules iþlemlerinde yapýlmasý gerekmektedir. 
+
+---> BuesinessLayer katmanýnda "ValidationRules_FluentValidation" isminde bir klasör oluþturarak validationlarýmýzý burada 
+	 oluþturup içerisini dolduralým. 
+
+---> Önce referanslarýmýza "FluentValidation" eklemesini yapmalýyýz(sað click, manage nuget packaces, browse ).	 
+	 
+	 Örnek olarak 
+
+	 public class CategoryValidatior:AbstractValidator<Category>
+    {
+        public CategoryValidatior()
+        {
+            RuleFor(x => x.CategoryName).NotEmpty().WithMessage("Kategori adýný boþ geçemezsiniz...");
+            RuleFor(x => x.CategoryDescription).NotEmpty().WithMessage("Açýklamayý boþ geçemezsiniz...");
+            RuleFor(x => x.CategoryName).MinimumLength(3).WithMessage("Lütfen en az 3 (üç) karakter girþi yapýnýz...");
+            RuleFor(x => x.CategoryName).MaximumLength(20).WithMessage("Lütfen 20 karakterden fazla deðer giriþi yapmayýnýz...");
+        }
+    }
+
+---> CategoryManager a gelerek burada kodlarýmýzý düzenleyerek iþlemlerimize devam ediyoruz. Buraya yeni bir metod eklememiz 
+	 gerekiyor. Ancak metodu buraya eklemeden önce eklenmesi gereken yer "ICategoryService" interface i daha sonra implement
+	 etmemiz gerekecek. void CategoryAddBL(Category category); bu metodu ekledikten sonra tekrar "CategoryManager" a geri dönüyoruz
+	 ve implement iþlemini yapýyoruz.
+
+---> "CategoryController" e gelerek metodumuzu burada oluþturuyoruz. Bu arada UI katmanýnda referanslara "FluentValidation"
+	 eklemeliyiz ki kullanabilelim.
+
+	 [HttpPost]
+        public ActionResult AddCategory(Category p)
+        {
+            //cm.CategoryAddBL(p);
+            CategoryValidator categoryValidator = new CategoryValidator();
+            ValidationResult results = categoryValidator.Validate(p);
+            if(results.IsValid)
+            {
+                cm.CategoryAddBL(p);
+                return RedirectToAction("GetCategoryList");
+            }
+            else
+            {
+                foreach (var item in results.Errors)
+                {
+                    ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+                }
+            }
+            return View(); ;
+        }
+
+---> 
+
+/****************************************************************************************************************************
+DERS 32 : Validation Messagefor ile Validation sýnýfýndaki Mesajlarýn UI da Listelenmesi
+
+---> "AddCategory" ye sað týklayarak "goto view" ile baðlý olan view alanýna gelelim ve burada öncelikle an baþa modelimizi 
+	 ekleyelim. ---@model EntityLayer.Concreate.Category
+
+---> html helper kullanacaðýz. önce form u silelim yada yorum satýrýna dönüþtürelim.
+
+	 	 @model EntityLayer.Concreate.Category
+	 @{
+	 	Layout = null;
+	 }
+	 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+	 <h1>Yeni Kategori Ekleme Sayfasý</h1>
+	 <br />
+	 
+	 @using (Html.BeginForm("AddCategory", "Category", FormMethod.Post))
+	 {
+	 <div class="form-group">
+	 	@Html.Label("Kategori Adý")
+	 	@Html.TextBoxFor(x => x.CategoryName)
+	 	@Html.ValidationMessageFor(x => x.CategoryName)
+	 	<br /><br />
+	 	@Html.Label("Açýklama yazýnýz")
+	 	@Html.TextBoxFor(x => x.CategoryDescription)
+	 	@Html.ValidationMessageFor(x => x.CategoryDescription)
+	 	<br /><br />
+	 	<button class="btn btn-info">Kaydet</button>
+	 </div>
+	 }
+
+/****************************************************************************************************************************
+DERS 33: Temanýn yüklenmesi
+
+---> Arayüz olarak hazýr tema kullanacaðýz. Kullanacaðýmýz tema admin tarafý ve client tarafý için olacak ve düzenleyeceðiz.
+	 Bu nedenle temayý indirerek UI katmanýmýza sürükleyerek yükleyelim. 
+---> UI katmanýmýzda  admin tarafý sabit layout için yeni bir layout ekleyelim ve bunu controller taraýna da yeni bir 
+	 controller ekleyerek baðlayalým.
+---> Adminlayout umuza temadan ilgili layout u bulup, hepsini seçerek kopyalayýp adminlayout una kopyalayalým. renderbody()
+	 metodumuuz sayfaya eklemeyi unutmuyoruz ki sayfamýz hata vermeden çalýþsýn.
+
+---> Sayfamýzýn görüntüsü bozuk gelecektir.Sebebi ise css dosyalarýnýn yolunun bozuk olmasý. Bunlarý düzenleyeceðiz.
+
+---> Temanýn düzenlenmesini yapýyoruz. Kullanmadýðýmýz alanlarý siliyoruz. Böylece yer kaplamýyor.
+
+---> Tabloyu görüntüleyeceðimiz index.cshtml alanýna geçici bir tablo ekleyerek nasýl göründüðünü kontrol ediyoruz.
+
+      <table class="table table-bordered" >
+     <tr>
+         <th>ID</th>
+         <th>Kategori</th>
+         <th>Durum</th>
+     </tr>
+     <tr>
+         <td>1</td>
+         <td>Spor</td>
+         <td>Aktif</td>
+     </tr>
+     <tr>
+         <td>2</td>
+         <td>Yazýlým</td>
+         <td>Aktif</td>
+     </tr>
+     </table> 
+/****************************************************************************************************************************
+NOT: Yukarýdaki tabloyu zaten adminlayout daha önceden zaten baðlamýþtýk.
+/****************************************************************************************************************************
+
+DERS 36: Kategorilerin getirilmesi
+
+---> AdminCategoryController a ilgili metodlar yazýlýr,
+	 [HttpPost]
+        public ActionResult AddCategory(Category p)
+        {
+            CategoryValidator categorivalidator = new CategoryValidator();
+            ValidationResult results = categorivalidator.Validate(p);
+            if(results.IsValid)
+            {
+                cm.CategoryAdd(p);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                foreach (var item in results.Errors)
+                {
+                    ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+                }
+            }
+            return View();
+        }
+
+---> Daha sonra addView diyerek gerekli view ekleriz ve burada kategori listesini getiririz.
+			 @using EntityLayer.Concreate
+		@model List<Category>
+
+		@{
+			ViewBag.Title = "Index";
+			Layout = "~/Views/Shared/_AdminLayout.cshtml";
+		}
+
+		<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+		<br />
+
+		<table class="table table-bordered">
+			<tr>
+				<th>#</th>
+				<th>Kategori Adý</th>
+				<th>Sil</th>
+				<th>Güncelle</th>
+				<th>Baþlýklar</th>
+			</tr>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<th>@item.CategoryID</th>
+					<td>@item.CategoryName</td>
+					<td><a href="#" class="btn btn-danger">Sil</a></td>
+					<td><a href="#" class="btn btn-warning">Güncelle</a></td>
+					<td><a href="#" class="btn btn-primary">Baþlýklar</a></td>
+				</tr>
+			}
+
+		</table>
+		<a href="/AdminCategory/AddCategory" class="btn btn-info"> Yeni Kategori</a> 
+
+---> Daha sonra kategori ekleme layerýnýn once AdminCategoriController a giderek ordan metoddan layer oluþturup içeriðini 
+	 dolduruyoruz.Burada dikkat etmemiz gerek AdminLayout una baðlý olarak yeni bir view eklememiz gerekiyor.
+
+   	 @model EntityLayer.Concreate.Category
+   	 @{
+   	 	ViewBag.Title = "AddCategory";
+   	 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+   	 }
+   	 
+   	 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+   	 <h1>Yeni Kategori Ekleme Sayfasý</h1>
+   	 <br />
+   	 
+   	 @using (Html.BeginForm("AddCategory", "AdminCategory", FormMethod.Post))
+   	 {
+   	 	<div class="form-group">
+   	 		@Html.Label("Kategori Adý")
+   	 		@Html.TextBoxFor(x => x.CategoryName, new { @class = "form-control" })
+   	 		@Html.ValidationMessageFor(x => x.CategoryName)
+   	 		<br /><br />
+   	 		@Html.Label("Açýklama yazýnýz")
+   	 		@Html.TextAreaFor(x => x.CategoryDescription, new { @class = "form-control" })
+   	 		@Html.ValidationMessageFor(x => x.CategoryDescription)
+   	 		<br /><br />
+   	 		<button class="btn btn-info">Kaydet</button>
+   	 	</div>
+   	 }
+
+/****************************************************************************************************************************
+DERS 37 : GetByID ---> id si verilen categori bilgilerine olaþýlmasý:
+
+---> Ýlk olarak silme iþlemi için metodumuzu oluþturmalýyýz. Metodlarýmýz DataAccessLayet katmanýndaydý. Buraya gelerek metodu
+	 oluþturmalýyýz. Metodu abstract içinde imzayý oluþtur (IRepository) daha sonra GenericRepository de içini doldur.
+
+---> IRepository içerisine gelerek metodu tanýmlayalým.
+	 T Get(Expression<Func<T, bool>> filter);
+
+---> GenericRepository zaten hata verecek, implement iþlemini gerçekleþtiriyoruz.
+	 public T Get(Expression<Func<T, bool>> filter)
+        {
+            return _object.SingleOrDefault(filter);
+        }
+	 Burada filtreleme iþlemi yaparak id sileceðimiz öðeyi bulduruyoruz. 
+
+---> Daha sonra BusinessLayer a geliyoruz.  ve "ICategoryService" içerisinde bir metod tanýmlýyoruz. 
+	 Category GetByID(int id);  Bu metod ile filtrelemede dahada sadeleþtiriyoruz. Yukarýdaki metod daha geniþ sorgulama yapý-
+	 yor.
+
+---> CategoryManager a geldiðimizde gene hata fýrlatacak. Gerekli implement iþlemini gerçekleþtirip metod içeriðini 
+	 dolduruyoruz. 
+	 public Category GetByID(int id)
+     {
+         return _categorydal.Get(x => x.CategoryID==id);
+     }
+
+/****************************************************************************************************************************
+DERS 38 : Kategorinin Silinmesi iþlemi
+
+---> AdminCategoryController a gelerek bir ActionResult tanýmlýyoruz. Tanýmladýðýmýz bu ActionResult  fonksiyonunun adý
+	 "DeleteCategory" tabiki.
+	 public ActionResult DeleteCategory(int id)
+        {
+            var categoryvalue = cm.GetByID(id);
+            cm.CategoryDelete(categoryvalue);
+            return RedirectToAction("Index");
+        }
+---> Bir önceki dersde hazýrladýðýmýz metod kullanýlarak id si bilinen categori bilgilerine ulaþýldý ve silinecek metoda gön-
+	 derildi.
+
+---> Bu fonkisyonda espri þuradadýr. Fonksiyon görevini yerine getiricek ancak herhangi bir view u olmayacak. Sadece index
+	 üzerinde çaðýrýlarak kullanýlacak bu nedenle index sayfamýza gidip orda butonumuzu aþaðýdaki gibi modifiye ediyoruz.
+	 <td><a href="/AdminCategory/DeleteCategory/@item.CategoryID" class="btn btn-danger">Sil</a></td>
+
+	 @using EntityLayer.Concreate
+	 @model List<Category>
+	 
+	 @{
+	 	ViewBag.Title = "Index";
+	 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+	 }
+	 
+	 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+	 <br />
+	 
+	 <table class="table table-bordered">
+	 	<tr>
+	 		<th>#</th>
+	 		<th>Kategori Adý</th>
+	 		<th>Sil</th>
+	 		<th>Güncelle</th>
+	 		<th>Baþlýklar</th>
+	 	</tr>
+	 	@foreach (var item in Model)
+	 	{
+	 		<tr>
+	 			<th>@item.CategoryID</th>
+	 			<td>@item.CategoryName</td>
+	 			<td><a href="/AdminCategory/DeleteCategory/@item.CategoryID" class="btn btn-danger">Sil</a></td>
+	 			<td><a href="#" class="btn btn-warning">Güncelle</a></td>
+	 			<td><a href="#" class="btn btn-primary">Baþlýklar</a></td>
+	 		</tr>
+	 	}
+	 
+	 </table>
+	 <a href="/AdminCategory/AddCategory" class="btn btn-info"> Yeni Kategori</a> 
+
+---> Silme iþleminin tamalanmasý için ICategoryService e gelip burada da metodumuzun gövdesini tanýmlýyoruz.
+	 void CategoryDelete(Category category);
+
+---> Daha sonra CategoryManager sýnýfýna gelerek içerisini doldurmamýz gerekiyor.Zaten hata vericektir. Metod impelent
+	 edildikten sonra içerisi doldurulur.
+	 public void CategoryDelete(Category category)
+     {
+         _categorydal.Delete(category);
+     }
+
+/****************************************************************************************************************************
+DERS 39 : Güncelleme Bilgilerinin Getirilmesi:
+
+---> ICategoryService e gelerek metodumuzun gövdesini burada tanýmlýyoruz. void CategoryUpdate(Category category);
+
+---> CategoryManager a geldiðimizda normal olarak hata fýrlatacaktýr. Yazdýðýmýz metodu implement ederek içini dolduralým.
+	 public void CategoryUpdate(Category category)
+     {
+         _categorydal.Update(category);
+     }
+
+---> AdminCategoryController kýsmýna geliyoruz.Burada metodumuzu tanýmlýyoruz. Ancak ilk önce bizim güncelleyeceðimiz kategoriyi
+	 bulmamýz gerekiyor.
+	 
+	 [HttpGet]
+     public ActionResult EditCategory(int id)
+     {
+         var categorivalue = cm.GetByID(id);
+         return View(categorivalue);
+     }
+	 Metodu tanýmladýktan sonra EditCategori üzerine sað týklayarak addView diyoruz. Adminlayout u kullanarak yenisini ekliyoruz.
+
+---> Eklediðimiz layut a ulaþmak için index sayfasýndaki üncelleme butounun href ini dolduruyoruz.
+	 <td><a href="/AdminCategory/EditCategory/@item.CategoryID" class="btn btn-warning">Güncelle</a></td>
+
+---> Yeni eklediðimiz layout u dolduruyoruz. 
+	 @model EntityLayer.Concreate.Category
+	 @{
+	     ViewBag.Title = "EditCategory";
+	     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+	 }
+	 
+	 <h2>Kategori Güncelleme Sayfasý</h2>
+	 
+	 @using (Html.BeginForm("AditCategory", "AdminCategory", FormMethod.Post))
+	 {
+	 <div class="form-group">
+	     @Html.Label("Kategory ID")
+	     @Html.TextBoxFor(x => x.CategoryID,new {@class ="form-control"})
+	     <br />
+	     @Html.Label("Kategori Adý")
+	     @Html.TextBoxFor(x => x.CategoryName, new { @class = "form-control" })
+	     <br />
+	     @Html.Label("Açýklama")
+	     @Html.TextAreaFor(x=>x.CategoryDescription, new { @class = "form-control" })
+	     <br />
+	     <button class="btn btn-success">Güncelle</button>
+	 </div>
+	 }
+/****************************************************************************************************************************
+DERS 40: Güncelleme Ýþlemi
+
+---> AdminCategoryController a geliyoruz.ve güncelleme için 
+	 [HttpGet]
+        public ActionResult EditCategory(int id)
+        {
+            var categorivalue = cm.GetByID(id);
+            return View(categorivalue);
+        }
+        [HttpPost]
+        public ActionResult EditCategory(Category p)
+        {
+            cm.CategoryUpdate(p);
+            return RedirectToAction("Index");
+        }
+
+---> Yukarýdaki gibi [HttpPost] kýsmýnýda ekliyoruz ve Viev a geçiyoruz.
+
+/****************************************************************************************************************************
+ÖNEMLÝ NOT: 
+
+---> Ancak View a yukarýda geçmeden önce solid mimariye saðdýk kalmak adýna GenericRepository deki kodlarýmýzý güncellememiz 
+	 gerekiyor.
+
+	 public class GenericRepository<T> : IRepository<T> where T : class
+    {
+        Context c = new Context();
+        DbSet<T> _object;
+
+        public GenericRepository()
+        {
+            _object = c.Set<T>();
+        }
+        public void Delete(T p)
+        {
+            var deletedEntity = c.Entry(p);
+            deletedEntity.State = EntityState.Deleted;
+            //_object.Remove(p);
+            c.SaveChanges();
+        }
+
+        public T Get(Expression<Func<T, bool>> filter)
+        {
+            return _object.SingleOrDefault(filter);
+        }
+
+        public void Insert(T p)
+        {
+            var addedEntity = c.Entry(p);
+            addedEntity.State = EntityState.Added;
+            //_object.Add(p);
+            c.SaveChanges();
+        }
+
+        public List<T> List()
+        {
+            return _object.ToList();
+        }
+
+        public List<T> List(Expression<Func<T, bool>> filter)
+        {
+            return _object.Where(filter).ToList();
+        }
+
+        public void Update(T p)
+        {
+            var updatedEntity = c.Entry(p);
+            updatedEntity.State = EntityState.Modified;
+            //_object.Remove(p);
+            c.SaveChanges();
+        }
+    }
+
+---> Yukarýda EntityState devreye girdiðini gözlemleyebiliriz. Update,Delete ve Insert metodlarýmýzý güncelledik. Böylece
+	 kullanacaðýmýz bütün noktalarda da bu metodlarý kullanabilicez ve bir yerden deðiþtirmek ile iþi halletmiþ olduk.
+
+/****************************************************************************************************************************
+DERS 42: Yazar Ýþlemleri baþlýyor (Writer)
+
+---> Business Katmanýndan baþlýyoruz.
+
+---> Abstract klasörüne gelerek bir interface ekliyoruz ve metod gövdelerini yazýyoruz.
+
+---> Concreate klasörüne geliyoruz ve buraya WriterService sýnýfýný ekleyerek IWriterService interfaceinden miras alýyoruz.
+
+---> Burada bir constructor bir metod oluþturmamýz gerekiyor ki istediðimiz interfaceine ulaþalým ve atamalarý yapabilelim.
+	 IWriterDal _writerDal;
+
+        public WriterManager(IWriterDal writerDal)
+        {
+            _writerDal = writerDal;
+        }
+
+---> Daha sonra sýrayla metodlarýmýzýn gövdelerini dolduruyoruz.
+
+---> UI katmanýnda Controller a geliyoruz ve yeni controller ýmýzý ekliyoruz. "WriterController"
+
+---> Burada üzerinde çalýþacaðýmýz business katmanýný önce çaðýrýyoruz. 
+	 WriterManager wm = new WriterManager(new EfWriterDal());
+	 Parantez içerisinde EtnityFramework unu yazýyoruz. Daha sonra bunlarý kullanabilmek için ekliyoruz. (import ediyoruz)
+
+---> Ýlk olarak index metodumuzu dolduruyoruz.
+	 public ActionResult Index()
+     {
+         var writervalues = wm.GetList();
+         return View(writervalues);
+     }
+
+---> Metodumuzu ilk olarak veritabanýndan verilere çekecek þekilde ayarladýk. Yani GetList yapýyor.Þimdi buraya bir görünüm
+	 ekliyoruz. Bu görünüm adminlayout una baðlý olacak. 
+
+---> Eklediðimiz görünümün içini dolduruyoruz ve verileri tabloya çekiyoruz. Ýleride buraya bir tema koyaran front end kýsmýný
+	 dahada güzel hale getireceðiz.
+/****************************************************************************************************************************
+DERS 44: Migration Yazar iþlemlerinin devamý (Yazar tsblosuna yeni kolon ekleme ve güncelleme)
+
+---> Veritabanýndaki tablomuzu güncelleyeceðiz. Bu nedenle biz CodeFirst yaklaþýmýyla çalýþtýðýmýz için Entity katmanýnda biz
+	 sýnýfýmýzý (Writer sýnýfýný) güncelliyoruz.
+	 
+	  public class Writer
+     {
+         [Key]
+         public int WriterID { get; set; }
+         [StringLength(50)]
+         public string WriterName { get; set; }
+         [StringLength(50)]
+         public string WriterSurname { get; set; }
+	 
+         [StringLength(100)]
+         public string WriterImage { get; set; }
+	 
+         [StringLength(100)]
+         public string WriterAbout { get; set; }
+	 
+         [StringLength(200)]
+         public string WriterMail { get; set; }
+	 
+         [StringLength(200)]
+         public string WriterPassword { get; set; }
+	 
+         public ICollection<Heading> Headings { get; set; }
+         public ICollection<Content> Contenet { get; set; }
+	 
+     }
+
+---> Bu deðiþiklikleri veritabanýna yansýtma iþlemini yapýyoruz. Konsola gelip: 
+	 
+	 add-migration mig_Writer_edit
+	 update-database
+
+
+---> Veritabanýmýz güncellendi kontrol saðlayabiliriz.
+
+---> Daha sonra yazar iþlemlerine devam ediyoruz.
+
+---> Writer View da about güncellemelerini yapýyoruz ki bunlar 
+	 <p class="text-muted text-sm"><b>Hakkýnda: </b> @item.WriterAbout. </p>
+
+---> Daha sonra kontroller a gelerek (WriterController) Add metodumuzu ekleyelim (yeni yazar ekleme iþlemi)
+	 [HttpGet]
+     public ActionResult AddWriter()
+     {
+         return View();
+     }
+     [HttpPost]
+     public ActionResult AddWriter(Writer p)
+     {
+         return View();
+     }
+
+---> Ekleme iþleminden önce ValidationResult a gitmemiz ve ekleme kurallarýný yazmamýz gerekiyor
+	 BusinessLayer altýnda ValidationRules_FluentValidation klasöründe 
+
+---> WriterController a gelerek ekleme metodunu dolduruyoruz.
+	 
+	 [HttpPost]
+     public ActionResult AddWriter(Writer p)
+     {
+         WriterValidator writervalidator = new WriterValidator();
+         ValidationResult result = writervalidator.Validate(p);
+         if(result.IsValid)
+         {
+             wm.WriterAdd(p);
+             return RedirectToAction("index");
+         }
+         else
+         {
+             foreach (var item in result.Errors)
+             {
+                 ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+             }
+         }
+         return View();
+     }
+
+---> AddWriter a sað týklayarak addView ile yeni bir view ekliyoruz. Bu view gene adminlayout u kullanacak...
+
+---> Burada Ekleme formumuzu oluþturup yazarýn bilgilerini alacak þekilde formu hazýrlýyoruz. Daha sonra metodlarýmýz hazýr 
+	 olduðundan ekleme iþlemini gerçekleþtirip eklemiþmi diye veritabanýndan kontrol ediyoruz.
+
+	 @Html.Label("Yazar Adý")
+    @Html.TextBoxFor(x => x.WriterName, new { @class = "form-control}" })
+    @Html.ValidationMessageFor(x => x.WriterName)
+    <br />
+    @Html.Label("Yazar Soyadý")
+    @Html.TextBoxFor(x => x.WriterSurname, new { @class = "form-control}" })
+    @Html.ValidationMessageFor(x => x.WriterSurname)
+    <br />
+    @Html.Label("Yazar Adý")
+    @Html.TextBoxFor(x => x.WriterMail, new { @class = "form-control}" })
+    @Html.ValidationMessageFor(x => x.WriterMail)
+    <br />
+    @Html.Label("Yazar Þifresi")
+    @Html.TextBoxFor(x => x.WriterPassword, new { @class = "form-control}" })
+    @Html.ValidationMessageFor(x => x.WriterPassword)
+    <br />
+    @Html.Label("Yazar Görsel Linki")
+    @Html.TextBoxFor(x => x.WriterImage, new { @class = "form-control}" })
+    @Html.ValidationMessageFor(x => x.WriterImage)
+    <br />
+    @Html.Label("Yazar Hakkýnda")
+    @Html.TextBoxFor(x => x.WriterAbout, new { @class = "form-control}" })
+    @Html.ValidationMessageFor(x => x.WriterAbout)
+    <br />
+    <button class="btn btn-info">Yazarý Ekle</button>
+
+/****************************************************************************************************************************
+ÖDEV : Yazarýn hakkýnda kýsmýnda mutlaka "a" harfinin geçmesi gerekiyor çözüm:
+
+	 RuleFor(x => x.WriterAbout).Must(IsAboutValid).WithMessage("Hakkýnda kýsmýnda mutlaka 'a' harfi geçmesi gerekmektedir.");
+
+	 // Yazarýn hakkýnda kýsmýnda mutlaka "a" harfinin geçmesi gerekiyor ödevinin sonucu
+     bool IsAboutValid(string arg)
+     {
+         try
+         {
+             Regex regex = new Regex(@"^(?=.*[a,A])");
+             return regex.IsMatch(arg);
+         }
+         catch (Exception)
+         {
+
+             return false;
+         }
+     }
+
+/****************************************************************************************************************************
+DERS 45 : Yazar Ýþlemlerinin Tamamlanmasý
+
+---> Yazarýn profilini düzenlemek için metodumuzu ekliyoruz. WriterController a
+     [HttpGet]
+     public ActionResult EditWriter(int id)
+     {
+         var writervalue = wm.GetByID(id);
+         return View(writervalue);
+     }
+
+     [HttpPost]
+     public ActionResult EditWriter(Writer p)
+     {
+         ValidationResult result = writervalidator.Validate(p);
+         if (result.IsValid)
+         {
+             wm.WriterUpdate(p);
+             return RedirectToAction("index");
+         }
+         else
+         {
+             foreach (var item in result.Errors)
+             {
+                 ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+             }
+         }
+         return View();
+     }
+
+     Bu iþlemden sonra EditWriter a sað click yaparak yeni bir admine baðlý view ekliyoruzve içeriðini dolduruyoruz. Dikkat 
+     etmemiz gereken koný burada id de iþleme alýnýyor. Çünkü güncelleme esnasýlda lazým olacak.
+
+     @model EntityLayer.Concreate.Writer
+     @{
+         ViewBag.Title = "EditWriter";
+         Layout = "~/Views/Shared/_AdminLayout.cshtml";
+     }
+     <br />
+     <h2>Yazar Düzenleme Sayfasý</h2>
+     @using (Html.BeginForm("EditWriter", "Writer", FormMethod.Post))
+     {
+     <div class="form-group">
+         @Html.Label("Yazar ID")
+         @Html.TextBoxFor(x => x.WriterID, new { @class = "form-control" })
+         <br />
+         @Html.Label("Yazar Adý")
+         @Html.TextBoxFor(x => x.WriterName, new { @class = "form-control" })
+         @Html.ValidationMessageFor(x => x.WriterName)
+         <br />
+         @Html.Label("Yazar Soyadý")
+         @Html.TextBoxFor(x => x.WriterSurname, new { @class = "form-control" })
+         @Html.ValidationMessageFor(x => x.WriterSurname)
+         <br />
+         @Html.Label("Yazar Mail")
+         @Html.TextBoxFor(x => x.WriterMail, new { @class = "form-control" })
+         @Html.ValidationMessageFor(x => x.WriterMail)
+         <br />
+         @Html.Label("Yazar Þifresi")
+         @Html.TextBoxFor(x => x.WriterPassword, new { @class = "form-control" })
+         @Html.ValidationMessageFor(x => x.WriterPassword)
+         <br />
+         @Html.Label("Yazar Görsel Linki")
+         @Html.TextBoxFor(x => x.WriterImage, new { @class = "form-control" })
+         @Html.ValidationMessageFor(x => x.WriterImage)
+         <br />
+         @Html.Label("Yazar Hakkýnda")
+         @Html.TextBoxFor(x => x.WriterAbout, new { @class = "form-control" })
+         @Html.ValidationMessageFor(x => x.WriterAbout)
+         <br />
+         <button class="btn btn-info">Yazarý Güncelle</button>
+     </div>
+     }
+
+
+/****************************************************************************************************************************
+ÖDEV: ValitationMessage kýsmýndaki yazý renklerinin kýrmýzý olarak gösterilmesi
+
+     @Html.ValidationMessageFor(x => x.WriterName,null,new {@class="text-danger" })
+     Þeklinde yapýlabilir.
+     Ancak farklý çözümlerde kullanýlabilir. Bunlardan biri css dosyasýný bulup oraya bir css kodu eklemeliyiz. Tabi ondan 
+     önce bu mesajlarý yazdýrdýðýmýz textlere bir class yada bir id atamasý yapýp css dosyasýnda o class a color:red; yazýlabilir.
+     Baþka bir yöntem ise editView içerisinde gene  hata mesajýný bir etilet içerisine alarak buna bir style css kodu yazabi-
+     liriz.
+     <div style='color:red'
+          @Html.ValidationMessageFor(x => x.WriterName)
+     </div>
+/****************************************************************************************************************************
+DERS 46 Baþlýk (Heading) Ýþlemleri
+
+---> Busines katmanýnda
+
+---> IHeadingService interface ekle ve içerisini doldur
+
+---> Concreate dosyasý altýna HeadingService isimli sýnýfý oluþtur ve IHeadingService den mirazs alarak metodlarý doldur.
+
+---> UI katmanýna gelerek Controller altýna HeadingController ekliyoruz
+
+---> Çalýþacaðýmýz kýsým Heading olduðundan ilgili sýnýfa ait manager sýnýfýnýn ilk baþta çaðýrýlmasý (oluþturulmasý) gerekiyor. 
+     Bunun içinde bilgilerini eksik doldurduðýmýz DataAccessLayer katmanýna giderek önce EfHeadingDal içerisini düzenliyoruz.
+     sýnýf public olacak, nereden miras alacak v.s.
+
+---> Bu iþlemlerin ardýndan controller a geri dönüyoruz ve ilk olarak listeleme iþlemi ile baþlayacaðýmýzdan ilk metodumuu 
+     düzenliyoruz.
+     // GET: Heading
+     HeadingManager hm = new HeadingManager(new EfHeadingDal());
+     public ActionResult Index()
+     {
+         var headingvalues = hm.GetList();
+         return View(headingvalues);
+     }
+
+---> Daha sonra indekse yeni bir view ekliyoruz.
+
+     @using EntityLayer.Concreate
+     @model List<Heading>
+     @{
+         ViewBag.Title = "Index";
+         Layout = "~/Views/Shared/_AdminLayout.cshtml";
+     }
+     
+     <h2>Index</h2>
+     <br />
+     <table class="table table-bordered">
+         <tr>
+             <th>ID</th>
+             <th>Baþlýk</th>
+             <th>Kategori</th>
+         </tr>
+         @foreach (var item in Model)
+         {
+             <tr>
+                 <td>@item.HeadingID</td>
+                 <td>@item.HeadingName</td>
+                 <td>@item.Category.CategoryName</td>
+             </tr>
+         }
+     
+     </table>
+
+/****************************************************************************************************************************
+DERS 47 Baþlýk Ýþlemlerinde DropDownList ve Ýliþki Kurma:
+
+---> Baþlýk ekleme için controllerda ilgili metodlarý dolduruyoruz. Burada önemli olan ilgili tablolardan deðer çekmek.
+     Yani kategori tablosundan id deðil kategori adýný yazarlar tablosundan ise yazarýn adýný göstermemiz gerekecek.
+     Bu nedenle burada linq sorgularýný kullanarak önce bunlarý çekiyoruz ve view üzerinde dropdown içerisinde göstereceðiz.
+
+---> controller içerisine ilgili medodlarý ekleyelim.
+     public class HeadingController : Controller
+     {
+         // GET: Heading
+         HeadingManager hm = new HeadingManager(new EfHeadingDal());
+         CategoryManager cm = new CategoryManager(new EfCategoryDal());
+         WriterManager wm = new WriterManager(new EfWriterDal());
+         public ActionResult Index()
+         {
+             var headingvalues = hm.GetList();
+             return View(headingvalues);
+         }
+         [HttpGet]
+         public ActionResult AddHeading()
+         {
+             List<SelectListItem> valuecategory = (from x in cm.GetList()
+                                                   select new SelectListItem
+                                                   {
+                                                       Text = x.CategoryName,
+                                                       Value = x.CategoryID.ToString()
+                                                   }).ToList();
+             List<SelectListItem> valuewriter = (from x in wm.GetList()
+                                                 select new SelectListItem
+                                                 {
+                                                     Text = x.WriterName + " " + x.WriterSurname,
+                                                     Value = x.WriterID.ToString()
+                                                 }).ToList();
+             ViewBag.vlc = valuecategory;
+             ViewBag.vlw = valuewriter;
+             return View();
+         }
+         [HttpPost]
+         public ActionResult AddHeading(Heading heading)
+         {
+             heading.HeadingDate = DateTime.Parse(DateTime.Now.ToShortDateString());
+             hm.HeadingAdd(heading);
+             return RedirectToAction("Index");
+         }
+     }
+
+---> AddHeading sayfasýný controllerdan ekleyelim ve dolduralým
+
+     @model EntityLayer.Concreate.Category
+     @{
+         Layout = null;
+     }
+     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+     <h1>Yeni Kategori Ekleme Sayfasý</h1>
+     <br />
+     
+     @using (Html.BeginForm("AddCategory", "AdminCategory", FormMethod.Post))
+     {
+     <div class="form-group">
+         @Html.Label("Kategori Adý")
+         @Html.TextBoxFor(x => x.CategoryName, new { @class="form-control"})
+         @Html.ValidationMessageFor(x => x.CategoryName)
+         <br /><br />
+         @Html.Label("Açýklama yazýnýz")
+         @Html.TextBoxFor(x => x.CategoryDescription, new { @class = "form-control" })
+         @Html.ValidationMessageFor(x => x.CategoryDescription)
+         <br /><br />
+         <button class="btn btn-info">Kaydet</button>
+     </div>
+     }
+
+/****************************************************************************************************************************
+DERS 49 Baþlýklar Sayfasýnýn Düzenlenmesi ve Temanýn Yüklenmesi
+
+---> @using EntityLayer.Concreate
+     @model List<Heading>
+     @{
+         ViewBag.Title = "Index";
+         Layout = "~/Views/Shared/_AdminLayout.cshtml";
+     }
+     @{string color = ""; }
+     <!DOCTYPE html>
+     <html>
+     
+     <body class="hold-transition sidebar-mini">
+     
+         <!-- Main content -->
+         <section class="content">
+     
+             <!-- Default box -->
+             <div class="card">
+                 <div class="card-header">
+                     <h3 class="card-title">Baþlýk Ýþlemleri</h3>
+     
+                     <div class="card-tools">
+                         <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                             <i class="fas fa-minus"></i>
+                         </button>
+                         <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                             <i class="fas fa-times"></i>
+                         </button>
+                     </div>
+                 </div>
+                 <div class="card-body p-0">
+                     <table class="table table-striped projects">
+                         <thead>
+                             <tr>
+                                 <th style="width: 1%">
+                                     #
+                                 </th>
+                                 <th style="width: 20%">
+                                     Baþlýk Adý
+                                 </th>
+                                 <th style="width: 30%">
+                                     Oluþturan Yazar
+                                 </th>
+                                 <th style="width: 8%" class="text-center">
+                                     Kategori
+                                 </th>
+                                 <th style="width: 20%">
+                                 </th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             @foreach (var item in Model)
+                             {
+                                 if(item.Category.CategoryName=="Tiyatro")
+                                 {
+                                     color = "badge badge-warning";
+                                 }
+                                 if(item.Category.CategoryName=="Spor")
+                                 {
+                                     color = "badge badge-success";
+                                 }
+                                 if (item.Category.CategoryName == "Yazýlým")
+                                 {
+                                     color = "badge badge-info";
+                                 }
+                                 if (item.Category.CategoryName == "Seyehat")
+                                 {
+                                     color = "badge badge-secondary";
+                                 }
+                                 if (item.Category.CategoryName == "Dizi")
+                                 {
+                                     color = "badge badge-danger";
+                                 }
+                                 if (item.Category.CategoryName == "Film")
+                                 {
+                                     color = "badge badge-light";
+                                 }
+                                 if (item.Category.CategoryName == "Kitap")
+                                 {
+                                     color = "badge badge-dark";
+                                 }
+                                 <tr>
+                                     <td>
+                                         @item.HeadingID
+                                     </td>
+                                     <td>
+                                         <a>
+                                             @item.HeadingName
+                                         </a>
+                                         <br />
+                                         <small>
+                                             @item.HeadingDate
+                                         </small>
+                                     </td>
+                                     <td>
+                                         <ul class="list-inline">
+                                             <li class="list-inline-item">
+                                                 <img alt="Avatar" class="table-avatar" src="~/AdminLTE-3.0.4/dist/img/avatar.png">
+                                             </li>
+                                         </ul>
+                                     </td>
+                                     <td class="project-state">
+                                         <span class="@color">@item.Category.CategoryName</span>
+                                     </td>
+                                     <td class="project-actions text-right">
+                                         <a class="btn btn-primary btn-sm" href="#">
+                                             <i class="fas fa-folder">
+                                             </i>
+                                             Yazýlar
+                                         </a>
+                                         <a class="btn btn-info btn-sm" href="#">
+                                             <i class="fas fa-pencil-alt">
+                                             </i>
+                                             Düzenle
+                                         </a>
+                                         <a class="btn btn-danger btn-sm" href="#">
+                                             <i class="fas fa-trash">
+                                             </i>
+                                             Sil
+                                         </a>
+                                     </td>
+                                 </tr>
+                             }
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+         </section>
+     </body>
+     </html>
+/****************************************************************************************************************************
+DERS 50: Baþlýklara Devam:
+
+---> baþlýklar indeksinde güncellemeler ve sayfa düzeni resimler için avatar linki v.s.
+     @(((DateTime)item.HeadingDate).ToString("dd-MMM-yyyy")) --- tarih formatý ayarlandý
+
+/****************************************************************************************************************************
+DERS 51: Content by Heading Sayfasý:
+
+---> Content içerik sayfa görseli hazýr olarak tema düzenlenmiþ olarak alýndý 
+
+     @{
+    ViewBag.Title = "ContentByHeading";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    
+    <!DOCTYPE html>
+    <html>
+    <body class="hold-transition sidebar-mini">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+            <section class="content">
+                <div class="container-fluid">
+    
+                    <!-- Timelime example  -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- The time line -->
+                            <div class="timeline">
+                                <!-- timeline time label -->
+                                <div class="time-label">
+                                    <span class="bg-success">Tarih</span>
+                                </div>
+                                <!-- /.timeline-label -->
+                                <!-- timeline item -->
+                                <div>
+                                    <i class="fas fa-comment bg-yellow"></i>
+                                    <div class="timeline-item">
+                                        <h3 class="timeline-header"><a href="#">Test</a> Deneme</h3>
+                                        <div class="timeline-body">
+                                            Ýçerik
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END timeline item -->
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </div>
+                <!-- /.timeline -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- ./wrapper -->
+    </body>
+    </html>
+/****************************************************************************************************************************
+DERS 52 : Content Controller:
+
+---> Content controller i yazabilmek için öncelikle eksik olan businesslayer daki sýnýflarýmýzý dolduruyoruz.
+     Abstract/IContentService, Concreate/ContentManager ve DataAccessLayer altýndaki Abstract/IContentDal
+---> Daha sonra ContentController oluþturulup içerisine ilk metod olaraklisteleme metodu yazýlýr. Ancak burad dikkat etmemiz
+     gereken id ye göre listeleme yapýyoruz.  Ve bu id contentID deðil HeadingID dir. Çüntü baþlýða göre contentlisteleme
+     yapacaðýz. Bunun için özellikle businesslayerdaki interfaceimizdeki id ye göre listeleme metodunu yazýyoruz.
+     List<Content> GetListByHeadingID(int id);
+
+---> public class ContentController : Controller
+    {
+        // GET: Content
+
+        ContentManager cm = new ContentManager(new EfContentDal());
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult ContentByHeading(int id)
+        {
+            var contentvalues = cm.GetListByHeadingID(id);
+            return View(contentvalues);
+        }
+    }
+
+---> Daha sonraaddview diyerek adminlayout a baðlý contentbyheading view oluþturuyoruz ve içeriðini temaya uygun olarak yazýp 
+     dolduruyoruz.
+
+     @using EntityLayer.Concreate
+     @model List<Content>
+     @{
+         ViewBag.Title = "ContentByHeading";
+         Layout = "~/Views/Shared/_AdminLayout.cshtml";
+     }
+     
+     <!DOCTYPE html>
+     <html>
+     <body class="hold-transition sidebar-mini">
+         <!-- Site wrapper -->
+         <div class="wrapper">
+             <section class="content">
+                 <div class="container-fluid">
+     
+                     <!-- Timelime example  -->
+                     <div class="row">
+                         <div class="col-md-12">
+                             <!-- The time line -->
+                             <div class="timeline">
+                                 <!-- timeline time label -->
+                                 @foreach (var item in Model)
+                                 {
+                                     <div class="time-label">
+                                         <span class="bg-success">@(((DateTime)item.ContentDate).ToString("dd-MMM-yyyy"))</span>
+                                     </div>
+                                     <!-- /.timeline-label -->
+                                     <!-- timeline item -->
+                                     <div>
+                                         <i class="fas fa-comment bg-yellow"></i>
+                                         <div class="timeline-item">
+                                             <h3 class="timeline-header"><a href="#">@item.Writer.WriterName @item.Writer.WriterSurname</a> </h3>
+                                             <div class="timeline-body">
+                                                 @item.ContentValue
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <!-- END timeline item -->
+                                 }
+                             </div>
+                         </div>
+                         <!-- /.col -->
+                     </div>
+                 </div>
+                 <!-- /.timeline -->
+             </section>
+             <!-- /.content -->
+         </div>
+         <!-- ./wrapper -->
+     </body>
+     </html>
+/****************************************************************************************************************************
+DERS 54 Baþlýk Ýþlemleri:
+
+---> Baþlýk iþlemleri için baþlýða ait yorumlar için eklediðimiz ContentByHeading view u ve bunu  çalýran metodu sildik
+
+---> Bunun yerine bu derste baþýl düzenleme komutunu çalýþtýrdýk. bunun içinde metodu yazýp view unun oluþturduk ve içini 
+     doldurduk
+     [HttpGet]
+        public ActionResult EditHeading(int id)
+        {
+            List<SelectListItem> valuecategory = (from x in cm.GetList()
+                                                  select new SelectListItem
+                                                  {
+                                                      Text = x.CategoryName,
+                                                      Value = x.CategoryID.ToString()
+                                                  }).ToList();
+            ViewBag.vlc = valuecategory;
+            var HeadingValue = hm.GetByID(id);
+            return View(HeadingValue);
+        }
+
+---> View ise aþaðýdaki gibidir.
+
+     @model EntityLayer.Concreate.Heading
+     @{
+         ViewBag.Title = "EditHeading";
+         Layout = "~/Views/Shared/_AdminLayout.cshtml";
+     }
+     
+     <h2>Baþlýk Güncelleme Sayfasý</h2>
+     
+     @using (Html.BeginForm("EditHeading", "Heading", FormMethod.Post))
+     {
+     <div class="form-group">
+         @Html.Label("Baklýk ID")
+         @Html.TextBoxFor(x => x.HeadingID, new { @class = "form-control" })
+         <br />
+         @Html.Label("Tarih")
+         @Html.TextBoxFor(x => x.HeadingName, new { @class = "form-control" })
+         <br />
+         @Html.Label("Tarih")
+         @Html.TextBoxFor(x => x.HeadingDate, new { @class = "form-control" })
+         <br />
+         @Html.Label("Yazar ID")
+         @Html.TextBoxFor(x => x.WriterID, new { @class = "form-control" })
+         <br />
+         @Html.Label("Kategori")
+         @Html.DropDownListFor(x => x.CategoryID, (List<SelectListItem>)ViewBag.vlc, new { @class = "form-control" })
+         <br />
+         <button class="btn btn-success">Güncelle</button>
+     </div>
+     }
+/****************************************************************************************************************************
+DERS 55: Baþlýk Silinmesi
+
+---> Burada baþlýðý silmeyip durumunu pasif yapacaðýz. Sebep ise genelde veritabaný iþlemlerinde diðer tablolarda ektilene
+     ceði düþünüldüðünde veriler genelde silinmez bunun yerine aktif pasif gibi iþlemlere tabii tutulur ve gizlenirler.
+
+---> Bu iþlem için önce HeadingManager daki "HeadingDelete" metodumuzun gövdesini güncelliyoruz. Yani silmesi yerine update
+     yapmasýný saðlýyoruz. 
+
+     public void HeadingDelete(Heading heading)
+     {
+         heading.HeadingStatus = false;
+         _headingDal.Update(heading);
+     }
+
+---> Daha sonra ise "HeadingControler" daki metodumuzu yazýyoruz. 
+     
+     public ActionResult DeleteHeading(int id)
+     {
+         var headingvalue = hm.GetByID(id);
+         hm.HeadingDelete(headingvalue);
+         return RedirectToAction("Index");
+     }
+
+---> Daha sonra ise index sayfamýzdaki sil butonuna metodun atamasýný yapýyoruz.
+     <a class="btn btn-danger btn-sm" href="/Heading/DeleteHeading/@item.HeadingID">
+         <i class="fas fa-trash">
+         </i>
+         Sil
+     </a>
+
+---> Bu iþlem den sonra ise durumunun index sayfasýnda görünmesi için indek sayfasýna Durum kýsmýný ekliyoruz.
+     
+     @using EntityLayer.Concreate
+     @model List<Heading>
+     @{
+         ViewBag.Title = "Index";
+         Layout = "~/Views/Shared/_AdminLayout.cshtml";
+     }
+     @{string color = ""; }
+     <!DOCTYPE html>
+     <html>
+     
+     <body class="hold-transition sidebar-mini">
+     
+         <!-- Main content -->
+         <section class="content">
+     
+             <!-- Default box -->
+             <div class="card">
+                 <div class="card-header">
+                     <h3 class="card-title">Baþlýk Ýþlemleri</h3>
+     
+                     <div class="card-tools">
+                         <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                             <i class="fas fa-minus"></i>
+                         </button>
+                         <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                             <i class="fas fa-times"></i>
+                         </button>
+                     </div>
+                 </div>
+                 <div class="card-body p-0">
+                     <table class="table table-striped projects">
+                         <thead>
+                             <tr>
+                                 <th style="width: 1%">
+                                     #
+                                 </th>
+                                 <th style="width: 20%">
+                                     Baþlýk Adý
+                                 </th>
+                                 <th style="width: 15%">
+                                     Oluþturan Yazar
+                                 </th>
+                                 <th style="width: 10%">
+                                     Durum
+                                 </th>
+                                 <th style="width: 8%" class="text-center">
+                                     Kategori
+                                 </th>
+                                 <th style="width: 20%">
+                                 </th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             @foreach (var item in Model)
+                             {
+                                 if(item.Category.CategoryName=="Tiyatro")
+                                 {
+                                     color = "badge badge-warning";
+                                 }
+                                 if(item.Category.CategoryName=="Spor")
+                                 {
+                                     color = "badge badge-success";
+                                 }
+                                 if (item.Category.CategoryName == "Yazýlým")
+                                 {
+                                     color = "badge badge-info";
+                                 }
+                                 if (item.Category.CategoryName == "Seyehat")
+                                 {
+                                     color = "badge badge-secondary";
+                                 }
+                                 if (item.Category.CategoryName == "Dizi")
+                                 {
+                                     color = "badge badge-danger";
+                                 }
+                                 if (item.Category.CategoryName == "Film")
+                                 {
+                                     color = "badge badge-light";
+                                 }
+                                 if (item.Category.CategoryName == "Kitap")
+                                 {
+                                     color = "badge badge-dark";
+                                 }
+                                 <tr>
+                                     <td>
+                                         @item.HeadingID
+                                     </td>
+                                     <td>
+                                         <a>
+                                             @item.HeadingName
+                                         </a>
+                                         <br />
+                                         <small>
+                                             @(((DateTime)item.HeadingDate).ToString("dd-MMM-yyyy"))
+                                         </small>
+                                     </td>
+                                     <td>
+                                         <ul class="list-inline">
+                                             <li class="list-inline-item">
+                                                 <img alt="Avatar" class="table-avatar" src="@item.Writer.WriterImage">
+                                             </li>
+                                         </ul>
+                                     </td>
+                                     <th>
+                                        @Html.Raw(item.HeadingStatus==true ? "<span class='badge badge-success'>Aktif</span>" : "<span class='badge badge-danger'>Pasif</span>")
+                                     </th>
+                                     <td class="project-state">
+                                         <span class="@color">@item.Category.CategoryName</span>
+                                     </td>
+                                     <td class="project-actions text-right">
+                                         <a class="btn btn-primary btn-sm" href="/Content/ContentByHeading/@item.HeadingID">
+                                             <i class="fas fa-folder">
+                                             </i>
+                                             Yazýlar
+                                         </a>
+                                         <a class="btn btn-info btn-sm" href="/Heading/EditHeading/@item.HeadingID">
+                                             <i class="fas fa-pencil-alt">
+                                             </i>
+                                             Düzenle
+                                         </a>
+                                         <a class="btn btn-danger btn-sm" href="/Heading/DeleteHeading/@item.HeadingID">
+                                             <i class="fas fa-trash">
+                                             </i>
+                                             Sil
+                                         </a>
+                                     </td>
+                                 </tr>
+                             }
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+         </section>
+     </body>
+     </html>
+     <a href="/Heading/AddHeading/" class="btn btn-primary">Yeni Baþlýk Giriþi</a>
+
+/****************************************************************************************************************************
+ÖDEV : Durumunda true ve false yerine "Aktif" veya "Pasif" yazmasýný saðlayalým. Ayrýca aktif farklý renkte pasif ise farklý 
+       renkte görüntülensin.
+
+       Bunu birkaç farklý yöntem ile yapabiliriz. iki tanesi aþaðýdaki gibidir.
+
+       @Html.Raw(item.HeadingStatus==true ? "<span class='badge badge-success'>Aktif</span>" : "<span class='badge 
+       badge-danger'>Pasif</span>")
+
+       Sil butonu içindeki class içerisine @item.HeadingStatus==true ? "btn-success" : "btn-danger"
+       Text kýsmýna ise @item.HeadingStatus==true ? "Aktif" : "Pasif"
+       
+/****************************************************************************************************************************
+DERS 56 : Popup Kullanýmý (ABOUT KISMINI YAPIYORUZ)
+
+---> About Kýsmýný yapacaðýz.
+---> BusinessLAyer a gelerek Abstract klasörüne önce IAboutService i ekleyerek metod gövdelerini dolduralým
+---> BusinessLAyer da Concreate e gelerek AboutManager sýnýfýný ekleyerek az önce oluþturduðumuz sýnýftan miras alalým
+     metod içlerini dolduralým.
+---> UI katmanýna gelerek AboutController ý ekleyelim ve buna bir view ekleyerek view a gidelim. View admine baðlý olarak
+     çalýþacak.
+     public ActionResult Index()
+     {
+         return View();
+     }
+
+---> Eklediðimiz view a popup ekleyeceðiz popup içerisinde form olacak ve hakkýmda kýsýmýný buradan alacaðýz
+     @{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    
+    <h2>Index</h2>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#modal_1">
+        Yeni Hakkýmýzda Yazý Giriþi
+    </button>
+    
+    <div class="modal" id="modal_1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Hakkýmýzda Yazý Metin Giriþi</h2>
+                </div>
+                <form method="post" action="#">
+                    <div class="modal-body">
+                        <label>Hakkýmda Metin 1</label>
+                        <input type="text" name="#" class="form-control" />
+                        <br />
+                        <label>Hakkýmda Metin 2</label>
+                        <input type="text" name="#" class="form-control" />
+                        <label>Hakkýmda Görsel 1</label>
+                        <input type="text" name="#" class="form-control" />
+                        <label>Hakkýmda Görsel 2</label>
+                        <input type="text" name="#" class="form-control" />
+                        <br />
+                        <button class="btn btn-info">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+/****************************************************************************************************************************
+DERS 57 Hakkýmýzda Sayfasý
+
+---> Bu derste bazý hatalarý düzelttik ve admindashboard dan sayfalýza link verdim. Bunun için adminlayout a gidip orda 
+     Hakkýmýzda elementinin yani a tag inin href bilgisine /About/Index/ bilgisini yazarak link verdik
+
+/****************************************************************************************************************************
+DERS 58 : Gelen Kutusu Sayfasý Hazýrlýðý:
+
+---> Partial kullanýmý yapacaðýz. Bunun için tanýmladýðýmýz view bir PartialResultView olacak. Yani kontroller tarafýnda taným-
+     layacaðýz. Dikkat etmemiz gereken ise view oluþturulurken admin layouta baðlý deðil de üstteki sekme "Create as a partial
+     view" seçeceðiz.
+
+     Burada amaç ekleme iþlemi pop up da ki gibi ayný view üzerinde deðilde yeni bir view üzerinde yapmak. Þayet yapmazsak 
+     solid prensiplerini ezmiþ oluyoruz. Bu nedenle genepop up kullanýcaz ama bu pop up pencere yeni bir view yani partialview
+     içerisinde olacak.Aslýnde deðiþen birþey gene olmamýþ olacak. Sadece prensipler doðru iþleyecek
+
+     public PartialViewResult AboutPartial()
+     {
+         return PartialView();
+     }
+
+---> bu partialview u biz index altýnda çaðýracaðýz. bu nedenle index altýna bir action oluþturmamýz gerekiyor.
+
+     <button class="btn btn-primary" data-toggle="modal" data-target="#modal_1">
+     Yeni Hakkýmýzda Yazý Giriþi
+     </button>
+     
+     <div class="modal" id="modal_1">
+         <div class="modal-dialog">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h2 class="modal-title">Hakkýmýzda Yazý Metin Giriþi</h2>
+                 </div>
+                 <form method="post" action="/About/AddAbout/">
+                     <div class="modal-body">
+                         <label>Hakkýmda Metin 1</label>
+                         <input type="text" name="AboutDetails1" class="form-control" />
+                         <br />
+                         <label>Hakkýmda Metin 2</label>
+                         <input type="text" name="AboutDetails2" class="form-control" />
+                         <label>Hakkýmda Görsel 1</label>
+                         <input type="text" name="AboutImage1" class="form-control" />
+                         <label>Hakkýmda Görsel 2</label>
+                         <input type="text" name="AboutImage2" class="form-control" />
+                         <br />
+                         <button class="btn btn-info">Kaydet</button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
+
+     Yukarýdaki içerik index içerisinden kesilerek partialview içerisine taþýnýr.
+
+---> Daha sonra ise ContactController ekliyoruz ki artýk iletiþim kýsmýna geçelim 
+     Daha sonra controller a herhangi bir metod eklemeden yada veri listelemeden buraya baðlý görünümü (view) oluþturalým ve 
+     temadan aldýðýmýz kodlarý buraya yapýþtýrarak türkçeleþtirelim.
+
+     @{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    
+    <!DOCTYPE html>
+    <html>
+    
+    <body class="hold-transition sidebar-mini">
+    
+        <!-- Content Wrapper. Contains page content -->
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Mesaj Sayfasý</h1>
+                    </div>                
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="compose.html" class="btn btn-primary btn-block mb-3">Gelen Kutusu</a>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Seçenekler</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="nav nav-pills flex-column">
+                                <li class="nav-item active">
+                                    <a href="#" class="nav-link">
+                                        <i class="fas fa-inbox"></i> Gelen Mesajlar
+                                        <span class="badge bg-primary float-right">12</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-envelope"></i> Gönderilen Mesajlar
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-file-alt"></i> Taslaklar
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="fas fa-filter"></i> Spam
+                                        <span class="badge bg-warning float-right">65</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-trash-alt"></i> Çöp Kutusu
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Diðer</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="nav nav-pills flex-column">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle text-danger"></i>
+                                        Önemliler
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle text-warning"></i> Tanýtýmlar
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle text-primary"></i>
+                                        Sosyal Medya
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-9">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">Gelen Mesajlar</h3>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" placeholder="Mail Kutusunda Ara">
+                                    <div class="input-group-append">
+                                        <div class="btn btn-primary">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <div class="mailbox-controls">
+                                <!-- Check all button -->
+                                <button type="button" class="btn btn-default btn-sm checkbox-toggle">
+                                    <i class="far fa-square"></i>
+                                </button>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-sm"><i class="far fa-trash-alt"></i></button>
+                                    <button type="button" class="btn btn-default btn-sm"><i class="fas fa-reply"></i></button>
+                                    <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i></button>
+                                </div>
+                                <!-- /.btn-group -->
+                                <button type="button" class="btn btn-default btn-sm"><i class="fas fa-sync-alt"></i></button>
+                                <div class="float-right">
+                                    1-50/200
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-left"></i></button>
+                                        <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                    <!-- /.btn-group -->
+                                </div>
+                                <!-- /.float-right -->
+                            </div>
+                            <div class="table-responsive mailbox-messages">
+                                <table class="table table-hover table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="icheck-primary">
+                                                    <input type="checkbox" value="" id="check1">
+                                                    <label for="check1"></label>
+                                                </div>
+                                            </td>
+                                            <td class="mailbox-star"><a href="#"><i class="fas fa-star text-warning"></i></a></td>
+                                            <td class="mailbox-name"><a href="read-mail.html">Alexander Pierce</a></td>
+                                            <td class="mailbox-subject">
+                                                <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
+                                            </td>
+                                            <td class="mailbox-attachment"></td>
+                                            <td class="mailbox-date">5 mins ago</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- /.table -->
+                            </div>
+                            <!-- /.mail-box-messages -->
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer p-0">
+                            <div class="mailbox-controls">
+                                <!-- Check all button -->
+                                <button type="button" class="btn btn-default btn-sm checkbox-toggle">
+                                    <i class="far fa-square"></i>
+                                </button>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-sm"><i class="far fa-trash-alt"></i></button>
+                                    <button type="button" class="btn btn-default btn-sm"><i class="fas fa-reply"></i></button>
+                                    <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i></button>
+                                </div>
+                                <!-- /.btn-group -->
+                                <button type="button" class="btn btn-default btn-sm"><i class="fas fa-sync-alt"></i></button>
+                                <div class="float-right">
+                                    1-50/200
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-left"></i></button>
+                                        <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                    <!-- /.btn-group -->
+                                </div>
+                                <!-- /.float-right -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </section>
+    
+    </body>
+    </html>
+/****************************************************************************************************************************
+DERS 59: Mesajlarýn Listelenmesi
+
+---> BusinessLayer a gelerek IContactService ve ContactManager kýsýmlarýný oluþturarak sýnýflarý hazýrlayalým.
+
+---> ContactValidator yani mesaj kurallarý kontrol listesi sinifinýda oluþturarak içerisini dolduralým
+---> Mesajlarý controller da listeleme iþlemini index içerisinde yazaran view a gidip orda listele iþlemini yapýyoruz. foreach
+     döngüsü kullanarak mesajlar veritabanýndan çekiliyor.
+/****************************************************************************************************************************
+DERS 60: Mesaj Detaylarý:
+
+---> Controller a gelerek mesaj detaylarý için gereken metod yazalým. 
+     public ActionResult GetContactDetails (int id)
+        {
+            var contactvalues = cm.GetByID(id);
+            return View(contactvalues);
+        }
+    }
+
+    Yukarýdaki metodda sadee 1 adet mesaj çekilmiþtir. Yani bir liste deðil sadece 1 adet contact çekiyoruz. Buna dikkat.
+
+---> Daha sonra ise bu metodumuza baðlý view a giderek içerisini doldurmalýyýz yani temasýný önceden hazýrladýðýmýz kýsmýn
+     içerisine datalarý çekleliyiz. Burada gene dikkat etmemiz gereken 1 liste ile çalýþmadýðýmýz elimizde sadece 1 objeye 
+     ait bilgiler olduðudur. Bu nedenle sayfanýn baþýnda 
+     @model EntityLayer.Concreate.Contact
+     þeklinde modelimizi tanýmladýk ve bu model ile çalýþacaðýmýzý belirttik. Daha sonra ise liste ile çalýþmadýðýmýzdan ve 
+     tek bir obje ile çalýþtýðýmýz için bir foreach döngüsü kullanamayýz. Bunun yerine ise HTML içerisindei bir metodu kullan-
+     malýyýz: 
+     @Html.DisplayFor(x=>x.UserSubject) ---> bu metod ile x yani Contact objemize ait olan verilere çekerek ilgili kýsýmlarý
+     doldurabiliriz.
+/****************************************************************************************************************************
+DERS 61: Mesaj Sýnýfý: Veritabanýna message tablosunun eklenmesi
+
+---> Veritabanýna messages tablosunu eklememiz gerekiyor. Yani veritabanýna CodeFirst kullanarak yeni bir tablo ekleyeceðiz.
+     Bu iþlem için önce EntityLayer katmanýmýzda Concreate altýnda mesaj sýnýfýmýzý oluþturuyoruz.
+
+---> DataAccessLayer katmanýna gelerek Conreate klasörü altýndaki Contek sýnýfýmýza eklenecek tabloyu tanýmlamamýz gerekiyor.
+     bunu ekliyoruz
+
+---> Daha sonra migration oluþturmamýz gerekiyor. Migration veritabanýna tablomuzu ekleyecek.
+
+---> BusinessLayer katmanýnda yer alan MessageValitator kýsmý bize býrakýldý istersek ekleyeceðiz.
+
+---> 
+/****************************************************************************************************************************
+ÖDEV : Mesaj menusunün PartialView a taþýnmasý ödevi 
+
+---> ContactController a gelerek burada bir metod oluþturuyoruz. Bu metod bie bir partialview getirecek. Daha doðrusu biz
+     oluþturup bu metoda ekleyerek bu metod vasýtasýyla çaðýracaðýz.
+
+     public PartialViewResult MessageListMenu()
+     {
+         return PartialView();
+     }
+
+---> Bir view ekliyoruz metoda ancak bu view admine baðlý deðil pirtialview sekmesini seçiyoruz.
+
+---> Index içersinde menünün nereden baðladýðýný bularak kesiyoruz ve yerine partialmenünün çaðýrýlacaðý kodu ekliyoruz.
+     Aslýnda bir aksiyon tanýmlýyoruz. Aksiyona neresi olduðunu ve çaðrýlan aksiyonun nereden geldiðini bildiriyoruz.
+     @Html.Action("MessageListMenu","Contact")
+
+---> Daha sonra kestiðimiz kodu partialview içerisine yapýþtýrarak kaydediyoruz. Kodun derlenmesi için index den kodumuzu 
+     çalýþtýrdýðýmýzda menümüzün eskisi ile ayný yerde gelmesini saðlayacak. Burada amaçlanan daha temiz ve okunabilir kod
+     yazmak amaçlandýðýný göreibiliriz.
+
+/****************************************************************************************************************************
+DERS 62: MessageController ve Admine gelen Mesajlar
+
+---> Bu bölümde gelen mesajlar için yani kiþisel mesajlar için bir view oluþturduk
+
+---> Bu view a verileri çekebilmek için Message ksýmý için mvc mimarisi oluþturmamýz gerekmektedir çünkü daha oluþturmadýk.
+    
+---> BusinessLayer Katmanýna gelerek burada Abstract altýnda interface imizi oluþturup sýnýf için gerekli olan metod gövdelerini
+     burada yazýyoruz. 
+
+---> Daha sonra MessageManager sýnýfýmýzý Concreate altýndaoluþturarak interfaceimizden miras alarak burada metodlarý 
+     dolduruyoruz. Listeleme olaylarý burada önem arzetmektedir. Metodlarda daha sonra deðiþiklikler yapýlacaktýr.
+
+---> DataAccessLayer altýnda EntityFrameWork klasörü altýna EfMessageDal sýnýfýmýzý da ekleyerek gerekli kalýtýmsal iþlemleri
+     yapýyoruz. Möylece sýnýflarýmýz kullanýma hazýr oluyor.
+/****************************************************************************************************************************
+DERS63 Yeni Mesaj Sayfasý :
+
+---> 
+/****************************************************************************************************************************
+Ders 66 : Mesaj Ýþlemlerinin Tamamlanmasý
+
+---> Bu derste mesaj gönderme iþlemi tamamlandý.
+---> MessageController a metodu yazýlarak view eklendi ve sayfa içerisinde düzenlemeler saðlandý
+/****************************************************************************************************************************
+DERS 67 : 404 Sayfa Hatalarý
+
+---> Kullanýcý linki yanlýþ girdiðinde yada benzeri bir durumda biz kullanýcýnýn 404 hatasýný görmesini istemeyiz bunun yerine
+     bir sayfa atayýp onu göstermek daha mantýklý olacaktýr.
+
+---> Önce ErrorPageController adýnda bir controller oluþturuyoruz.
+---> Bu metod içerisine 2 adet metod tatýmladýk ancak sadece 404 olanýný dolduruyoruz.
+     public ActionResult Page403()
+     {
+         Response.StatusCode = 403;
+         Response.TrySkipIisCustomErrors = true;
+         return View();
+     }
+     public ActionResult Page404()
+     {
+         Response.StatusCode = 404;
+         Response.TrySkipIisCustomErrors = true;
+         return View();
+     }
+
+---> Daha sonra hata sayfa kýsmýmýzýn çalýþmasý için bir view ekliyoruz 404 olan metoda ve bir thema kullanýyoruz. Temamýzýda 
+     ekliyoruz
+---> Sayfanýn çalýþmasý için web.config dosyamýza giderek burada bir kaç iþlem yapmamýz gerekiyor.
+     <system.web> altýna gelerek 
+     <customErrors mode="On">
+		  <error statusCode="404" redirect="/ErrorPage/Page404/"/>
+	 </customErrors>
+
+---> Sayfanýn gerekli güncellemelerini yaptýðýmýzda hazýr olacaktýr.
+/****************************************************************************************************************************
+DERS 68 : Galeri Oluþturma
+
+---> Öncelikle controller tanýmlayarak baþlýyoruz. 
+---> Daha sonra hazýrladýðýmýz image klasörünü projemize sürükle býrak ile kopyalýyoruz.
+---> Galeri için hazýr tema kullandýk. Temayý projeye kopyalayarak türkçeleþtirme iþlemini yapýyoruz.
+---> 
+/****************************************************************************************************************************
+DERS 69 : Login Temasýnýn oluþturulmasý ve ayarlarý
+
+---> Temayý yüklemeden önce admincontroller ý eliyoruz ve ilk actionresult metodumuza bir view ekliyoruz. Bu View herhangi bir
+     layout a baðlý olmayacak.
+---> Eklediðimiz layout a temamýzý kopyalayarak gerekli css ayarlarý, image v.b. ayarlarýný yapýyoruz.
+---> Form türkçeleþtirme iþlemlerini yapýyoruz.
+
+/****************************************************************************************************************************
+DERS 70 : Admin Login iþlemi
+
+---> 2 þekilde yapacaðýz biri solidi ezerek kodlar burada olacak sadece
+---> Ýkinci ise solid prensipleri ezmeden MVC mimarisine uygun þekilde kendimi yapacaðýz.
+
+---> [HttpGet]
+     public ActionResult Index()
+     {
+         return View();
+     }
+
+     [HttpPost]
+     public ActionResult Index(Admin admin)
+     {
+         Context c = new Context();
+         var adminuserinfo = c.Admins.FirstOrDefault(x => x.AdminUserName == admin.AdminUserName && x.AdminPassword == admin.AdminPassword);
+         if (adminuserinfo!=null)
+         {
+             return RedirectToAction("Index", "AdminCategory");
+         }
+         else
+         {
+             RedirectToAction("Index");
+         }
+         return View();
+     }
+     Yukarýda LoginController metodlarý görülmektedir (Solid prensibine göre yazýlmamýþtýr.)
+---> Lonig ekraný üzerindeki form ayarlarýný yapmamýz gerekiyor. name vermemiz gerekiyor ki inputun girilen deðerlerine 
+     ulaþabilelim. Daha sonra html helper kullanacaðýz. @using (Html.BeginForm(//....))
+
+---> Ancak daha sonra MVC mimarisine uygun olarak biz yazacaðýz.
+/****************************************************************************************************************************
+DERS 71 : Authentication ve Session :
+
+---> Öncelikle login olurken 401 hatasýný almamak yani bu sayfayý görmemek için 401 sayfasý yerine bizi farklý bir istediðimiz
+     sayfaya yönlendirsin. Örneðin tekrar giriþ sayfasýna
+---> Bunun için web.config dosyamýza tekrar giderrek </system.web> içerisine ve en alta
+     <authentication mode="Forms">
+		  <forms loginUrl="/Login/Index/"></forms>
+	  </authentication>
+     kodumuzu ekliyoruz. Ayrýca burada yer alan kodlar incelenebilir. Mesela süre ile ilgili iþlemler yapýlmak istenirse
+     mesela timeout gibi burdaki kodlar kullanýlacaktýr.
+
+
+---> Mimariye uygun gerekli interface ve abstrack sýnýf ve normal sýnýflarýmýzý ilgili katmanlar altýnda oluþturuyoruz ve 
+     içlerini dolduruyouz (EntityLayer: haha önceden veritabanýna eklemek için oluþturmuþtuk "Admin")
+     DataAccessLayer : EfAdminDal, Abstract : IAdminDal
+     BusinessLayer : Abstract : IAdminService, Concreate : AdminManager
+/****************************************************************************************************************************
+DERS 72 : Rolleme 
+
+---> Bu bölümde kullanýcý rolleri iþlenecektir.
+
+---> Öncelikle UI katmanýnda bir "Roles" isminde klasör oluþturuyoruz.
+---> Daha sonra buraya "AdminRoleProvider" isminde bir sýnýf ekleyerek "RoleProvider" sýnýfýndan miras almasýný saðlýyoruz
+---> Daha sonra imlement etmemiz gereken metodlarý implement edip içerilerini dolduracaðýz. Ancak þimdilik sadece bir tane-
+     sini dolduracaðýz. 
+---> Solid mimariye uygun yazýlmayacak ancak ödev olarak biz düzelterek soli mimariye uygun yazacaðýz. 
+
+---> Daha sonra web.config e geliyoruz ve 
+     <roleManager enabled="true" defaultProvider="TestRoleProvider">
+		  <providers>
+			  <add name="TestRoleProvider" type="MvcProjeKampi.Roles.AdminRoleProvider"/>
+		  </providers>
+	 </roleManager>
+
+     ayarlarýný ekliyoruz.
+/****************************************************************************************************************************
+ÖDEVLER:
+
+---> Gelen kutusunda okundu okunmadý seçeneði
+---> Okunmamýþ Message sayýsý
+---> Aktif yap - Pasif yap 
+---> Admin Bilgilerini Hashleme
+---> Oturum açma iþlemini mimariye taþýma
+---> Rolleme Ýþlemi mimariye taþýnsýn
+---> Size ait bir yetenek kartý sayfasý projede bir bölüme eklensin.
+/****************************************************************************************************************************
+DERS 73 Yazar Paneli
+
+---> Yazar paneli için öncelikle bir Layout oluþturarak iþleme baþlýyoruz.
+---> Bu projenin ön kýsmý olacak dolayýsý ile admin paneli arka tarafta kalmasý gerekiyor.
+---> Ancak yazar kýsmýný da biz admin layoutuna benzer bir yapýda kullanacaðýz. Bu nedenle yeni bir layout oluþturuyorz ve 
+     bu layout hiçbir layout a baðlý olmuyor. Bu layout Shared klasörüne sað clik ile oluþturuyoruz.
+---> Daha sonra adminlayout u kopyalayarak içerisine gerekli düzenlemeleri yapýyoruz.
+---> Yeni bir controller oluþturuyoruz. Ve buna ilk view umuzu ekliyoruz. "WriterPanelController" kontroler ismi olacak.
+---> Ýlk metodumuz ilgili yazarýn baðlýklarýnýn listelenmesi olacak. Dolayýsý ile GetList() metodumuzu kullanýcaz ancak,
+     mevcut hali bütün listeyi getiriyor, dolayýsý ile bizim yeni bir GetListByWriter() gibi bir metod eklememiz gerekiyor.
+     Ýlgili metidu önce "IHeadingService" e daha sonra implement ederek içeriðini id ye göre dolduruyoruz.
+     public List<Heading> GetListByWriter()
+     {
+         return _headingDal.List(x => x.WriterID == 4);
+     }
+---> Yukarýda 4 yerine saha sonra session ekleyeceðiz ki oturum açan yazar iþlemleri gelsin.
+/****************************************************************************************************************************
+DERS 74 Yazar Baþlýk Ýþlemleri
+
+---> Yazar sadece kendi baþlýklarýný görüntüleyip iþlem yapabilecek. Bu nedenle WriterControllerdan önce yazarýmýzýn kendi 
+     baþlýklarýný görüntülemesini saðlýyoruz. 
+---> Daha sonra ise bu sayfaya baðlý linklerden edit ve newHeading (yeni baþlýk) açma iþlemlerini yapýyoruz. 
+---> Bu iþlemler için yeni metodlar ekliyor ve metodlarýmýza uygun yeni viewlar ekliyoruz. Aslýnda eklemeden kullanýcý
+     kontrolleri yapýlarak adminlayout altýndaki sayfalarda kullanýlabilir ancak þu anda biz ekleyerek gideceðiz.
+---> Baþlýk iþlemleri için validation yapýlmamýþ istersek daha sonra biz ekleyebiliriz.
+/****************************************************************************************************************************
+DERS 75 Yazar Baþlýk Ýþlemleri
+
+---> Bu bölümde sadece yazara ait baþlýklarýn listelendiði bir view ekledik ve burada yazarýn baþlýklarýný getirdik. Yazar
+     kendi baþlýklarýný düzenleyip yeni baþlýk açabilmektedir. Gerekli view düzenlemeleri ve controller düzenlemeleri buna
+     göre yapýlmýþtýr.
+---> Daha sonra ise mesaj içeriðini görüntülemek için ise ilgili sayfa eklenmiþtir.
+---> Hangi yazarýn sisteme baðlandýðý verileri daha sonra session dersinde düzenlenecektir.
+
+/****************************************************************************************************************************
+DERS 76 Yazarýn Yazdýðý Yazýlar:
+
+---> 
+/****************************************************************************************************************************
+DERS 77 Yazar Login:
+
+---> Hazýr tema ile login formu sayfamýzý ekliyoruz. 
+---> LoginController ekleyerek metodumuza (ismi Login) yeni bir view ekliyoruz ve bu herhangi bir layout olmayýp baðýmsýz bir 
+     layout oluyor. Ekleme iþleminden sonra 
+     [HttpGet]
+         public ActionResult WriterLogin()
+         {
+             return View();
+         }
+         [HttpPost]
+         public ActionResult WriterLogin(Writer writer)
+         {
+             WriterManager writerManager = new WriterManager(new EfWriterDal());
+             var values = writerManager.GetByWriterMail(writer.WriterMail);
+     
+             if (values.WriterMail == writer.WriterMail && values.WriterPassword == writer.WriterPassword)
+             {
+                 FormsAuthentication.SetAuthCookie(values.WriterMail, false);
+                 Session["WriterMail"] = values.WriterMail;
+                 return RedirectToAction("MyContent", "WriterPanelContent");
+             }
+             else
+             {
+                 RedirectToAction("WriterLogin");
+             }
+             return View();
+         }
+     }
+
+/****************************************************************************************************************************
+DERS 78 Session Ýle Bilgi Getirme:
+
+---> Session bilgilerini önce solidi ezerek kullanarak login iþlemini yapacaðýz. Login iþlemi esnasýnda kullanýcý mail adresi
+     ile sisteme giriþ yaptýðýndan elimizde mail adresi var.
+---> Mail adresini kullanarak id bilgisini sistemden çekeceðiz ve id ile sisteme giriþ yapacaðýz.
+     public ActionResult MyContent(string p)
+     {
+         Context c = new Context();
+         p = (string)Session["WriterMail"];
+         var writeridinfo = c.Writers.Where(x => x.WriterMail == p).Select(y => y.WriterID).FirstOrDefault();
+         var contentvalues = cm.GetListByWriter(writeridinfo);
+         return View(contentvalues);
+     }
+
+---> Solid prensiplerine uygun olmasý için ise bu kodlarýn aþaðýdaki þekilde "WriterManager" tarfýnda düzenlenmesi gerekmektedir.
+
+---> Öncelikle "IWriterService" içerisine "int GetWriterIDByWriterMail(string mail);" metodunu tanýmlarýz ve "WriterManager"
+     tarafýndan implement iþlemini gerçekleþtiri içerisine sorgumuzu yazarak id deðerini döndürürüz.
+
+     public int GetWriterIDByWriterMail(string mail)
+     {
+         return (_writerDal.List(x => x.WriterMail == mail).Select(y => y.WriterID).FirstOrDefault());
+     }
+
+---> "WriterPanelContentController" a gelerek solid prensiplerini ezmeden kodumuzu aþaðýdaki gibi düzenleriz.
+     ContentManager cm = new ContentManager(new EfContentDal());
+     WriterManager wm = new WriterManager(new EfWriterDal());
+     public ActionResult MyContent(string p)
+     {
+         p = (string)Session["WriterMail"];
+         var writeridinfo = wm.GetWriterIDByWriterMail(p);
+         var contentvalues = cm.GetListByWriter(writeridinfo);
+         return View(contentvalues);
+     }
+
+/****************************************************************************************************************************
+ÖNEMLÝ NOT: 
+---> Controller içerisinde aþaðýdaki session deðerleri yazýldý ve veinin gelip gelmediði view üzerinde test edildi. "ViewBag"
+     kullanýldý. Daha sonra benzer yapýlarda test amaçlý olarak bu yapý kullanýlarak gelen verinin ne oldugu da sayfa üzerinde
+     kontrol edilebilir
+     public ActionResult MyContent(string p)
+     {
+         int id=2;
+         p = (string)Session["WriterMail"];
+         ViewBag.d = p;
+         var contentvalues = cm.GetListByWriter(id);
+         return View(contentvalues);
+     }
+
+---> Daha sonr ise view sayfasýna giderek istediðimiz bir alana bir "h" etiketi içerisinde verinin ismi yazýlarak görüntüle
+     nebilir.
+     <h2>@ViewBag.d</h2>
+
+/****************************************************************************************************************************
+DERS 79 Session Allow Anonymous :
+
+---> UI katmanýnda "Global.asax" içerisine gelerek buraya bir filtreleme metodu ekliyoruz.
+     GlobalFilters.Filters.Add(new AuthorizeAttribute());
+---> Bu arada baþlangýç ekranýnýn WriterLogin ekraný olmasý gerektiðinden
+     <authentication mode="Forms">
+		  <forms loginUrl="/Login/WriterLogin/"></forms>
+	 </authentication>
+     þeklinde web.config den düzenliyoruz.
+
+---> Daha sonra id gerekli bölümlerde ("WriterPanelController -> public ActionResult MyContent(string p)") v.b. bölümlerde
+     Session iþlemlerimizi yaparak ilgili verilere ulaþabiliyoruz.
+
+---> Sayfalarda karþýlaþýlan bir çok hatanýn önüne geçebilmek adýna "ValidationRules" kýsmýnýn mutlaka yapýlarak kontrollü
+     bir þekilde veri eklenmesi bir çok hatanýn önüne geçilecektir. Örneðin bir baþlýk eklerken baþlýk karakter uzunluðu
+     veritabanýnda tanýmlanan deðerin üzerinde olursa hata verecektir. Biz bunu validationRules içerisinde baþtan kontrol 
+     edersek ozaman hata almadan kontrollü kayýt saðlamýþ oluruz.
+/****************************************************************************************************************************
+DERS 80 Oturum Baþlýk Yönetimi:
+
+---> Solid prensiplerini ezmeden uygun bir þekilde yeni baþlýk ekleme iþlemlerini tamamladýk.
+/****************************************************************************************************************************
+DERS 81 Vitrin Sayfasý :
+
+---> Öncelikle hiçbir layout a baðlý olmayan bir layout oluþturuyoruz.
+---> bu layout da menü yerine biz baþlýklarý getireceðiz. 
+
+/****************************************************************************************************************************
+DERS 82 Vitrinde Tüm Baþlýlarýn Listelenmesi:
+
+---> Öncelikle bir adet partialview ekliyoruz. Bu partialview u az önce eklediðimiz "Headings" layout u içerisinde "content"
+     alanýnda çaðýrýyoruz. Buraca bütün yorumlarý listelicez ancak baþlýklaragöre yorumlar listelenecetir.
+---> Ýlk önce bu sayfa için oluþturmuþ olsduðumuz "DefaultController" a gelerek "ContentManager" a ekliyoruz ki yorumlarý
+     çekebilelim.
+/****************************************************************************************************************************
+DERS 83 Baþlýða Göre Yazýlarýn Listelenmesi:
+
+---> 
+/****************************************************************************************************************************
+DERS 85 : Paging-Sayfalama Ýþlemi
+
+---> Bu derste tüm baþlýklarý listelerken "paging" yani sayfalama yapacaðýz bý iþlem için önce kontrollerda açýlan sayfa bil
+     gisini ve her sayfada görüntülenecek baþlýk (data bilgisi) bilgisini göndermemiz gerekiyor.
+     public ActionResult AllHeading(int sayfa=1)
+     {
+
+         var headings = hm.GetList().ToPagedList(sayfa, 10);
+         return View(headings);
+     }
+
+---> Daha sonra referances lara "PageList" ve "PageList.Mvc" yi yüklememiz gerekiyor.
+
+---> View a giderek önce referanslara eklediðimiz dosyalarý baþta kullanacaðýmýzý belirtmemiz gerekiyor ve sayfanýn altýna 
+     gerekli kodlarý yazmamýz gerekiyor.
+
+     @using PagedList
+     @using PagedList.Mvc
+
+     Sayfa Sonuna bu komutu eklediðimizde sayfalama ikonlarýný göreceðiz.
+     @Html.PagedListPager((IPagedList)Model, sayfa => Url.Action("AllHeading", new { sayfa }))
+     ,new PagedListRenderOptions
+     {
+     LiElementClasses=new List<string>
+     { "page-link"}
+     })
+
+---> Ýkinci yöntem ise projemizin Content dosyasý içerisinde yer alan "PageList.css" dosyasýný sayfaya eklememiz ve sayfa 
+     sonuda aþaðýdaki komutu  yazmamýzla sayfalama çaðýrýlmýþ olacaktýr.
+
+     @Html.PagedListPager((IPagedList)Model, sayfa => Url.Action("AllHeading", new { sayfa }))
+
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
+
+/****************************************************************************************************************************
