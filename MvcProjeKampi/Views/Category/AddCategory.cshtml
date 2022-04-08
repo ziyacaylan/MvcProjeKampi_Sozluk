@@ -7,7 +7,7 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="~/Scripts/jquery-3.4.1.js"></script>
 
-<h1>Yeni Kategori Ekleme Sayfası</h1>
+<h1 class="alert alert-secondary" style="text-align:center">Yeni Kategori Ekleme Sayfası</h1>
 <br />
 
 @using (Html.BeginForm("AddCategory", "Category", FormMethod.Post))
@@ -15,11 +15,11 @@
     <div class="form-group">
         @Html.Label("Kategori Adı")
         @Html.TextBoxFor(x => x.CategoryName, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.CategoryName)
+        @Html.ValidationMessageFor(x => x.CategoryName,null, new { @class = "text-danger" })
         <br /><br />
         @Html.Label("Açıklama yazınız")
         @Html.TextAreaFor(x => x.CategoryDescription, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.CategoryDescription)
+        @Html.ValidationMessageFor(x => x.CategoryDescription,null, new { @class = "text-danger" })
         <br /><br />
         <button class="btn btn-info" id="btn_kaydet">Kaydet</button>
     </div>

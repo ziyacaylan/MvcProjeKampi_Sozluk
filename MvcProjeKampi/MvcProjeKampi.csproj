@@ -3174,6 +3174,9 @@
     <Content Include="Themes\Login_v12\vendor\bootstrap\css\bootstrap.css.map" />
     <Content Include="Themes\Login_v12\vendor\bootstrap\css\bootstrap.min.css.map" />
     <Content Include="Views\Register\WriterRegister.cshtml" />
+    <Content Include="Views\Heading\HeadingByWriter.cshtml" />
+    <Content Include="Views\Heading\HeadingByCategory.cshtml" />
+    <Content Include="Views\About\EditAbout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

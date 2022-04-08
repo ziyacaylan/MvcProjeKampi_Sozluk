@@ -4,8 +4,10 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
 
-<h2>Hakkımda Veri Listesi</h2>
+<h2 class="alert alert-secondary" style="text-align:center">Hakkımda Veri Listesi</h2>
 <table class="table table-bordered">
     <tr>
         <th>ID</th>
@@ -15,13 +17,31 @@
     </tr>
     @foreach (var item in Model)
     {
-        <tr>
-            <td>@item.AboutID</td>
-            <td>@item.AboutTitle</td>
-            <td><a href="#" class="btn btn-warning">Aktip Yap</a></td>
-            <td><a href="#" class="btn btn-danger">Pasif Yap</a></td>
-        </tr>
+<tr>
+    <td>@item.AboutID</td>
+    <td>@item.AboutTitle</td>
+    <td><a href="/About/EditAbout/@item.AboutID" class="btn btn-info">Düzenle</a></td>
+    <td><a href="/About/DeleteAbout/@item.AboutID" class="btn btn-danger preview delete-confirm">Sil</a></td>
+</tr>
     }
 </table>
 
 @Html.Action("AboutPartial", "About")
+
+
+<script>
+        $('.delete-confirm').on('click', function (event) {
+            event.preventDefault();
+            const url = $(this).attr('href');
+            swal({
+                title: 'Silmek istediğinize emin misiniz_?',
+                text: 'Bu kayıt veritabanından silinecek...!',
+                icon: 'warning',
+                buttons: ["Hayır", "Evet!"],
+            }).then(function (value) {
+                if (value) {
+                    window.location.href = url;
+                }
+            });
+        });
+</script>

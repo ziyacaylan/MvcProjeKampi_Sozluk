@@ -1,6 +1,9 @@
 ﻿using BusinessLayer.Concreate;
+using BusinessLayer.ValidationRules_FluentValidation;
 using DataAccessLayer.EntityFramework;
 using EntityLayer.Concreate;
+using FluentValidation;
+using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +18,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         HeadingManager hm = new HeadingManager(new EfHeadingDal());
         CategoryManager cm = new CategoryManager(new EfCategoryDal());
         WriterManager wm = new WriterManager(new EfWriterDal());
+        HeadingValidator validationRules = new HeadingValidator();
         public ActionResult Index()
         {
             var headingvalues = hm.GetList();
@@ -47,10 +51,24 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         }
         [HttpPost]
         public ActionResult AddHeading(Heading heading)
-        {
-            heading.HeadingDate = DateTime.Parse(DateTime.Now.ToShortDateString());
-            hm.HeadingAdd(heading);
-            return RedirectToAction("Index");
+        {            
+            ValidationResult result = validationRules.Validate(heading);
+
+            if (result.IsValid)
+            {
+                heading.HeadingDate = DateTime.Parse(DateTime.Now.ToShortDateString());
+                heading.HeadingStatus = true;
+                hm.HeadingAdd(heading);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                foreach (var item in result.Errors)
+                {
+                    ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+                }
+            }
+            return View();
         }
         [HttpGet]
         public ActionResult EditHeading(int id)
@@ -86,6 +104,19 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
             }
             hm.HeadingDelete(headingvalue);
             return RedirectToAction("Index");
+        }
+        public ActionResult HeadingByCategory(int id)
+        {
+            var headingValue = hm.GetListByCategory(id);
+            return View(headingValue);
+        }
+
+        public ActionResult HeadingByWriter(int id)
+        {
+            var headingValue = hm.GetListByWriter(id);
+            var writervalue = wm.GetByID(id);
+            ViewBag.writerName = writervalue.WriterName + " " + writervalue.WriterSurname;
+            return View(headingValue);
         }
     }
 }

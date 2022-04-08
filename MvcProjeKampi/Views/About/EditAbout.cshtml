@@ -1,0 +1,25 @@
+﻿@model EntityLayer.Concreate.About
+@{
+    ViewBag.Title = "EditAbout";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="alert alert-secondary" style="text-align:center">Hakkında Güncelleme</h2>
+
+<br />
+
+@using (Html.BeginForm("EditAbout", "About", FormMethod.Post))
+{
+<div class="form-group">
+    @Html.HiddenFor(x => x.AboutID, new { @class = "form-control" })
+    @Html.Label("Başlık")
+    @Html.TextBoxFor(x => x.AboutTitle, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.AboutTitle, null, new { @class = "text-danger" })
+    <br /><br />
+    @Html.Label("Metin Detayları")
+    @Html.TextAreaFor(x => x.AboutDetails, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.AboutDetails, null, new { @class = "text-danger" })
+    <br /><br />
+    <button class="btn btn-warning">Güncelle</button>
+</div>
+}

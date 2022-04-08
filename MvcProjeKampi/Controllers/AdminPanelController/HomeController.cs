@@ -16,6 +16,7 @@ namespace MvcProjeKampi.Controllers
         MessageManager mm = new MessageManager(new EfMessageDal());
         HeadingManager hm = new HeadingManager(new EfHeadingDal());
         ScreenShotManager screenShotManager = new ScreenShotManager(new EfScreenShotDal());
+        AboutManager ab = new AboutManager(new EfAboutDal());
         public ActionResult Index()
         {
             return View();
@@ -50,6 +51,8 @@ namespace MvcProjeKampi.Controllers
 
             var totalMessages = mm.GetTotalMessages(); // Toplam mesaj sayısı
             ViewBag.totalMessages = totalMessages;
+
+            var aboutValue = ab.GetList();            
 
             return View(files);//(files);
         }

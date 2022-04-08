@@ -11,7 +11,8 @@ namespace BusinessLayer.Abstract
     {
         List<About> GetList();
         void AboutAdd(About about);
-        About GetByID(int id);
+        About GetByID(int id);        
+        string GetMaxID();        
         void AboutDelete(About about);
         void AboutUpdate(About about);
     }

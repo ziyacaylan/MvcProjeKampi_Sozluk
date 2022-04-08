@@ -5,6 +5,7 @@ using DataAccessLayer.EntityFramework;
 using EntityLayer.Concreate;
 using EntityLayer.Dto;
 using FluentValidation.Results;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +19,9 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         WriterManager wm = new WriterManager(new EfWriterDal());
         WriterValidator writervalidator = new WriterValidator();
         IAuthService authService = new AuthManager(new AdminManager(new EfAdminDal()), new WriterManager(new EfWriterDal()));
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            var writervalues = wm.GetList();
+            var writervalues = wm.GetList().ToPagedList(page ?? 1, 12);
             return View(writervalues);
         }
 

@@ -15,8 +15,8 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
     public class CategoryController : Controller
     {
         CategoryManager cm = new CategoryManager(new EfCategoryDal());
-
-        [Authorize(Roles = "B")]
+        CategoryValidator categorivalidator = new CategoryValidator();
+        //[Authorize(Roles = "B")]
         public ActionResult Index()
         {
             var categoryvalues = cm.GetList();
@@ -30,8 +30,8 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         [HttpPost]
         public ActionResult AddCategory(Category p)
         {
-            CategoryValidator categorivalidator = new CategoryValidator();
             ValidationResult results = categorivalidator.Validate(p);
+
             if (results.IsValid)
             {
                 cm.CategoryAdd(p);

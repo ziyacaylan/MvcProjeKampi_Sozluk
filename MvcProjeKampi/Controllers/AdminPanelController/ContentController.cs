@@ -14,6 +14,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         // GET: Content
 
         ContentManager cm = new ContentManager(new EfContentDal());
+        HeadingManager hm = new HeadingManager(new EfHeadingDal());
         public ActionResult Index()
         {
             return View();
@@ -33,6 +34,7 @@ namespace MvcProjeKampi.Controllers.AdminPanelController
         public ActionResult ContentByHeading(int id)
         {
             var contentvalues = cm.GetListByHeadingID(id);
+            ViewBag.headingName = (hm.GetByID(id)).HeadingName;
             return View(contentvalues);
         }
     }

@@ -38,6 +38,12 @@ namespace BusinessLayer.Concreate
             return _aboutDal.Get(x => x.AboutID == id);
         }
 
+        public string GetMaxID()
+        {
+            var value = _aboutDal.List().Max();
+            return value.AboutID.ToString();
+        }
+
         public List<About> GetList()
         {
             return _aboutDal.List();

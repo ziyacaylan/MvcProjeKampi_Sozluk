@@ -86,8 +86,10 @@
     <Compile Include="Utilies\Common\AllowExtensionsAttribute.cs" />
     <Compile Include="Utilies\Common\AllowFileSizeAttribute.cs" />
     <Compile Include="Utilies\Cryptos\Hashing\HashingHelper.cs" />
+    <Compile Include="ValidationRules_FluentValidation\AboutValidator.cs" />
     <Compile Include="ValidationRules_FluentValidation\CategoryValidator.cs" />
     <Compile Include="ValidationRules_FluentValidation\ContactValidator.cs" />
+    <Compile Include="ValidationRules_FluentValidation\HeadingValidator.cs" />
     <Compile Include="ValidationRules_FluentValidation\MessageValidator.cs" />
     <Compile Include="ValidationRules_FluentValidation\TalentValidator.cs" />
     <Compile Include="ValidationRules_FluentValidation\WriterValidator.cs" />

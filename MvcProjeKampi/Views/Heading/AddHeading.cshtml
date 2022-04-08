@@ -4,23 +4,21 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Yeni Başlık Ekle</h2>
+<h2 class="alert alert-secondary" style="text-align:center">Yeni Başlık Ekle</h2>
 
 @using (Html.BeginForm("AddHeading", "Heading", FormMethod.Post))
 {
-    <div class="form-group">
-        @Html.Label("Başlık Adı")
-        @Html.TextBoxFor(x => x.HeadingName, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.HeadingName, null, new { @class = "text-danger" })
-        <br />
-        @Html.Label("Kategori")
-        @Html.DropDownListFor(x => x.CategoryID, (List<SelectListItem>)ViewBag.vlc, new { @class = "form-control" })
-        <br />
-        @Html.Label("Yazar Adı")
-        @Html.DropDownListFor(x => x.WriterID, (List<SelectListItem>)ViewBag.vlw, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.WriterID, null, new { @class = "text-danger" })
-
-        <br />
-        <button class="btn btn-info">Başlık Oluştur</button>
-    </div>
+<div class="form-group">
+    @Html.Label("Başlık Adı")
+    @Html.TextBoxFor(x => x.HeadingName, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x.HeadingName, null, new { @class = "text-danger" })
+    <br />
+    @Html.Label("Kategori")
+    @Html.DropDownListFor(x => x.CategoryID, (List<SelectListItem>)ViewBag.vlc, new { @class = "form-control" })
+    <br />
+    @Html.Label("Yazar Adı")
+    @Html.DropDownListFor(x => x.WriterID, (List<SelectListItem>)ViewBag.vlw, new { @class = "form-control" })
+    <br />
+    <button class="btn btn-info">Başlık Oluştur</button>
+</div>
 }

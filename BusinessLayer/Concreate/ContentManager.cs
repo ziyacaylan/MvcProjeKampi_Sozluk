@@ -57,7 +57,6 @@ namespace BusinessLayer.Concreate
         {
             return _contentDal.List(X => X.WriterID == id);
         }
-
         public int GetTotalContentCount()
         {
             return _contentDal.List().Count();
