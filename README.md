@@ -1,4 +1,5 @@
 # MvcProjeKampi_Sozluk
+![HomePage](https://user-images.githubusercontent.com/83708039/162782575-bbca04d5-b3f2-4dd5-8afd-cc516f22a967.jpg)
 Ders 40: Sertifika Görevi Ekran Görüntüsü (Proje içerisindeki klasörde de mevcuttur)
 ![istatistikler](https://user-images.githubusercontent.com/83708039/159359042-20bdafbe-068b-4f06-98a7-d269142fb5f2.png)
 ![AddNewTalent](https://user-images.githubusercontent.com/83708039/160470448-a365cdd1-8328-4c84-9bf0-c3a04004aefc.jpg)
@@ -24,3 +25,4 @@ Ders 40: Sertifika Görevi Ekran Görüntüsü (Proje içerisindeki klasörde de
 ![Grafik_1](https://user-images.githubusercontent.com/83708039/161653041-5b53df2f-4ed2-4afe-9580-2a1af96d762d.jpg)
 ![Headings_Index](https://user-images.githubusercontent.com/83708039/161653042-00a72cd4-df70-4c6a-9bb8-a0fb3d6d92de.jpg)
 ![Writer_Index](https://user-images.githubusercontent.com/83708039/161653044-bf79db5f-916f-4adc-8a68-949e98a44a37.jpg)
+
